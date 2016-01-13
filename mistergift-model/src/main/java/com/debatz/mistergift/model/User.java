@@ -1,5 +1,6 @@
 package com.debatz.mistergift.model;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class User
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
+
+    @Column(name = "role")
+    private Rank role;
 
     @OneToOne
     @JoinColumn(name = "picture_id", nullable = true)
@@ -97,6 +101,24 @@ public class User
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Returns the user role.
+     *
+     * @return The user role.
+     */
+    public Rank getRole() {
+        return role;
+    }
+
+    /**
+     * Set the user role.
+     *
+     * @param role The user role.
+     */
+    public void setRole(Rank role) {
+        this.role = role;
     }
 
     /**
