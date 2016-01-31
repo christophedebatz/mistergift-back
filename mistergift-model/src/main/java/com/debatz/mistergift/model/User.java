@@ -1,33 +1,63 @@
 package com.debatz.mistergift.model;
 
-import javax.management.relation.Role;
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(schema = "mistergift", name = "users")
-public class User
-{
+public class User {
+
+    /**
+     * The user id.
+     */
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    /**
+     * The user first name.
+     */
     @Column(name = "first_name", length = 255, nullable = false)
     private String firstName;
 
+    /**
+     * The user last name.
+     */
     @Column(name = "last_name", length = 255, nullable = false)
     private String lastName;
 
+    /**
+     * The user email.
+     */
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "role")
-    private Rank role;
+    /**
+     * The user password.
+     */
+    @Column(name = "password", length = 255, nullable = false)
+    private String password;
 
+    /** The user role. */
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
+
+    /** The user token. */
+    @OneToOne(mappedBy = "user")
+    @JoinColumn(name = "token_value", referencedColumnName = "value", nullable = true)
+    private Token token;
+
+    /**
+     * The user picture.
+     */
     @OneToOne
     @JoinColumn(name = "picture_id", nullable = true)
     private FileMetadata picture;
 
+    /**
+     * The user groups.
+     */
     @OneToMany
     private List<Group> groups;
 
@@ -47,6 +77,24 @@ public class User
      */
     public void setId(long id) {
         this.id = id;
+    }
+
+    /**
+     * Returns the user password.
+     *
+     * @return The user password.
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the user password.
+     *
+     * @param password The user password.
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -108,8 +156,17 @@ public class User
      *
      * @return The user role.
      */
-    public Rank getRole() {
+    public Role getRole() {
         return role;
+    }
+
+    /**
+     * Returns the user role as a string.
+     *
+     * @return The user role.
+     */
+    public String getRoleName() {
+        return role.getName();
     }
 
     /**
@@ -117,7 +174,7 @@ public class User
      *
      * @param role The user role.
      */
-    public void setRole(Rank role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -128,6 +185,24 @@ public class User
      */
     public FileMetadata getPicture() {
         return picture;
+    }
+
+    /**
+     * Returns the user token.
+     *
+     * @return The user token.
+     */
+    public Token getToken() {
+        return token;
+    }
+
+    /**
+     * Sets the user token.
+     *
+     * @param token The user token.
+     */
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     /**
@@ -155,5 +230,31 @@ public class User
      */
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    /*
+     * Each user has a rank that defines its rights.
+     */
+    public enum Role {
+
+        /**
+         * An administrator.
+         */
+        ADMI("ROLE_ADMIN"),
+
+        /**
+         * A user.
+         */
+        USER("ROLE_ADMIN");
+
+        private String name;
+
+        Role(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

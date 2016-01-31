@@ -6,7 +6,7 @@
 	   					   http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="com.debatz.mistergift.model"/>
-    <jpa:repositories base-package="com.debatz.mistergift.data.persistence.repository" />
+    <jpa:repositories base-package="com.debatz.mistergift.data.persistence.jpa.repository" />
 
     <beans>
         <bean id="mistergift_ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
