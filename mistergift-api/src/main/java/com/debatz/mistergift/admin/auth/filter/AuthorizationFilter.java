@@ -26,17 +26,10 @@ public class AuthorizationFilter extends GenericFilterBean {
     @Inject
     private TokenService tokenService;
 
-    /** The authentication manager. */
-    private AuthenticationManager authenticationManager;
-
     /**
      * Default constructor.
-     *
-     * @param authenticationManager The authentication manager.
      */
-    public AuthorizationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+    public AuthorizationFilter(AuthenticationManager auth) { }
 
     /**
      * Checks if the request contains a valid token for current user.
@@ -66,8 +59,7 @@ public class AuthorizationFilter extends GenericFilterBean {
                 // set user details by the request
                 authenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
-                SecurityContextHolder.getContext().setAuthentication(
-                        authenticationManager.authenticate(authenticationToken));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 

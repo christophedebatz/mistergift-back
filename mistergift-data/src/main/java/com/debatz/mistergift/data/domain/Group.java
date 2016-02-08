@@ -1,4 +1,4 @@
-package com.debatz.mistergift.model;
+package com.debatz.mistergift.data.domain;
 
 import javax.persistence.*;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.debatz.mistergift.data.persistence;
 
 import com.debatz.mistergift.data.persistence.repository.GroupRepository;
-import com.debatz.mistergift.model.Group;
+import com.debatz.mistergift.data.domain.Group;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;

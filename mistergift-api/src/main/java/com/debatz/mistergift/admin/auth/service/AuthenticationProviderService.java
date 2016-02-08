@@ -1,7 +1,7 @@
 package com.debatz.mistergift.admin.auth.service;
 
 import com.debatz.mistergift.data.persistence.UserPersistenceService;
-import com.debatz.mistergift.model.User;
+import com.debatz.mistergift.data.domain.User;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,7 +42,7 @@ public class AuthenticationProviderService implements AuthenticationProvider {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority(user.getRoleName()));
 
-        authentication = new UsernamePasswordAuthenticationToken(email, password,authorities);
+        authentication = new UsernamePasswordAuthenticationToken(email, password, authorities);
         authentication.setAuthenticated(true);
 
         return authentication;

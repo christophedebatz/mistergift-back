@@ -1,6 +1,6 @@
 package com.debatz.mistergift.data.persistence.repository;
 
-import com.debatz.mistergift.model.Group;
+import com.debatz.mistergift.data.domain.Group;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

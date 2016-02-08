@@ -1,7 +1,10 @@
 package com.debatz.mistergift.admin.controller;
 
-import com.debatz.mistergift.model.User;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,9 +17,9 @@ import java.util.Objects;
 @RestController
 public class AuthController {
 
-    /** The user service. */
+    /** The authentication manager. */
     @Inject
-    private Authenticable userService;
+    private AuthenticationManager authenticationManager;
 
     /**
      * Returns the new logged user.
@@ -25,15 +28,17 @@ public class AuthController {
      * @param password The entered password.
      * @return The user.
      */
-    @RequestMapping("/login")
-    public User login(
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Authentication login(
             @RequestParam(value="email") String email,
             @RequestParam(value = "password") String password) {
 
         Objects.requireNonNull(email);
         Objects.requireNonNull(password);
 
-        return userService.auth(email, password);
+        return authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(email, password)
+        );
     }
 
     @RequestMapping("/logout")

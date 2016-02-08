@@ -1,12 +1,12 @@
-package com.debatz.mistergift.model;
+package com.debatz.mistergift.data.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(schema = "mistergift", name = "users")
 public class User {
-
     /**
      * The user id.
      */
@@ -44,8 +44,8 @@ public class User {
     private Role role;
 
     /** The user token. */
-    @OneToOne(mappedBy = "user")
-    @JoinColumn(name = "token_value", referencedColumnName = "value", nullable = true)
+    @OneToOne
+    @JoinColumn(name = "token_id")
     private Token token;
 
     /**
@@ -54,6 +54,13 @@ public class User {
     @OneToOne
     @JoinColumn(name = "picture_id", nullable = true)
     private FileMetadata picture;
+
+    /**
+     *
+     */
+    public User() {
+        this.groups = new ArrayList<Group>();
+    }
 
     /**
      * The user groups.
@@ -240,7 +247,7 @@ public class User {
         /**
          * An administrator.
          */
-        ADMI("ROLE_ADMIN"),
+        ADMIN("ROLE_ADMIN"),
 
         /**
          * A user.

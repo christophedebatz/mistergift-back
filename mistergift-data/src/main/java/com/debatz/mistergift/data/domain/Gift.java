@@ -1,13 +1,13 @@
-package com.debatz.mistergift.model;
+package com.debatz.mistergift.data.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(schema = "mistergift", name = "gifts")
-public class Gift
-{
+@Table(schema = "mistergift", name = "gift")
+public class Gift {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
@@ -39,6 +39,14 @@ public class Gift
     @Temporal(TemporalType.DATE)
     @Column(name = "modification_date", nullable = false)
     private Date modificationDate;
+
+    /**
+     *
+     */
+    public Gift() {
+        groups = new ArrayList<Group>();
+    }
+
 
     /**
      * Returns the gift id.

@@ -1,7 +1,7 @@
 package com.debatz.mistergift.data.persistence;
 
 import com.debatz.mistergift.data.persistence.repository.FileMetadataRepository;
-import com.debatz.mistergift.model.FileMetadata;
+import com.debatz.mistergift.data.domain.FileMetadata;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;

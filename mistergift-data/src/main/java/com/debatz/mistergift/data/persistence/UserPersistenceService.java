@@ -1,7 +1,7 @@
 package com.debatz.mistergift.data.persistence;
 
 import com.debatz.mistergift.data.persistence.repository.UserRepository;
-import com.debatz.mistergift.model.User;
+import com.debatz.mistergift.data.domain.User;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.Objects;
 @Service
 public class UserPersistenceService implements UserRepository {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "mg-em-default")
     private EntityManager em;
 
     public <S extends User> S save(S s) {

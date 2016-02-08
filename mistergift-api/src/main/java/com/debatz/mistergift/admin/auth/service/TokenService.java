@@ -3,8 +3,8 @@ package com.debatz.mistergift.admin.auth.service;
 import com.debatz.mistergift.admin.auth.exception.MissingTokenException;
 import com.debatz.mistergift.data.persistence.TokenPersistenceService;
 import com.debatz.mistergift.data.persistence.UserPersistenceService;
-import com.debatz.mistergift.model.Token;
-import com.debatz.mistergift.model.User;
+import com.debatz.mistergift.data.domain.Token;
+import com.debatz.mistergift.data.domain.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.Objects;
 
 
+/**
+ * Manages tokens checking.
+ */
 @Service
 public class TokenService {
 
@@ -26,9 +29,10 @@ public class TokenService {
     private TokenPersistenceService tokenPersistenceService;
 
     /**
+     * Returns the token associated with a user.
      *
-     * @param userDetails
-     * @return
+     * @param userDetails The user.
+     * @return The token.
      * @throws MissingTokenException
      */
     public String getToken(UserDetails userDetails) throws MissingTokenException {
@@ -43,9 +47,10 @@ public class TokenService {
     }
 
     /**
+     * Returns if the given token is currently valid.
      *
-     * @param token
-     * @return
+     * @param token The token.
+     * @return True or false if token is valid or not.
      */
     public boolean isTokenValid(String token) {
         Objects.requireNonNull(token);
@@ -56,9 +61,10 @@ public class TokenService {
     }
 
     /**
+     * Returns the token associated user.
      *
-     * @param token
-     * @return
+     * @param token The token.
+     * @return The user.
      */
     public UserDetails getUserFromToken(String token) {
         Objects.requireNonNull(token);
@@ -69,9 +75,11 @@ public class TokenService {
 
             if (user != null) {
                 return new org.springframework.security.core.userdetails.User(
-                        user.getEmail(),
-                        user.getPassword(),
-                        Collections.singletonList(new SimpleGrantedAuthority(user.getRoleName()))
+                    user.getEmail(),
+                    user.getPassword(),
+                    Collections.singletonList(
+                        new SimpleGrantedAuthority(user.getRoleName())
+                    )
                 );
             }
         }

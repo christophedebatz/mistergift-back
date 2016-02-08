@@ -1,14 +1,17 @@
-package com.debatz.mistergift.model;
+package com.debatz.mistergift.data.domain;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(schema = "mistergift", name = "user_group")
+@Table(schema = "mistergift", name = "token")
 public class Token
 {
     @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "value", length = 75, nullable = false)
     private String value;
 
@@ -16,9 +19,13 @@ public class Token
     @Temporal(TemporalType.DATE)
     private Date expirationDate;
 
-    @OneToOne(mappedBy = "token")
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(mappedBy = "token", fetch = FetchType.LAZY)
     private User user;
+
+    /**
+     *
+     */
+    public Token() { }
 
     /**
      *

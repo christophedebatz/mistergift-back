@@ -1,6 +1,6 @@
 package com.debatz.mistergift.data.persistence;
 
-import com.debatz.mistergift.model.Token;
+import com.debatz.mistergift.data.domain.Token;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,7 @@ import java.util.Objects;
 public class TokenPersistenceService {
 
     /** The persistence context. */
-    @PersistenceContext
+    @PersistenceContext(unitName = "mg-em-default")
     private EntityManager em;
 
     /**
