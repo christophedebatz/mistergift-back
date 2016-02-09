@@ -4,11 +4,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.debatz.mistergift</groupId>
+        <groupId>com.gvstave.mistergift</groupId>
         <artifactId>mistergift</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.debatz.mistergift.data</groupId>
+    <groupId>com.gvstave.mistergift.data</groupId>
     <artifactId>mistergift-data</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>mistergift-data</name>

@@ -13,7 +13,7 @@
     <import resource="classpath:WEB-INF/data-context.xml" />
 
     <context:annotation-config />
-    <context:component-scan base-package="com.debatz.mistergift" />
+    <context:component-scan base-package="com.gvstave.mistergift" />
 
     <security:http use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="authenticationEntryPoint">
         <security:custom-filter ref="authenticationTokenProcessingFilter" position="FORM_LOGIN_FILTER"/>
@@ -23,9 +23,9 @@
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
-    <bean id="authenticationEntryPoint" class="com.debatz.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
+    <bean id="authenticationEntryPoint" class="com.gvstave.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
 
-    <bean id="authenticationTokenProcessingFilter" class="com.debatz.mistergift.admin.auth.filter.AuthorizationFilter">
+    <bean id="authenticationTokenProcessingFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter">
         <constructor-arg ref="authenticationManager"/>
     </bean>
 
@@ -33,5 +33,5 @@
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
 
-    <bean id="authenticationProvider" class="com.debatz.mistergift.admin.auth.service.AuthenticationProviderService" />
+    <bean id="authenticationProvider" class="com.gvstave.mistergift.admin.auth.service.AuthenticationProviderService" />
 </beans>
