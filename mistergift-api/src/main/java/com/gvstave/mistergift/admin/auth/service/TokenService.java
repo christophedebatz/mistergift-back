@@ -8,16 +8,17 @@ import com.gvstave.mistergift.data.domain.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Objects;
 
-
 /**
  * Manages tokens checking.
  */
 @Service
+@Transactional(readOnly = true)
 public class TokenService {
 
     /** The user persistence service. */
@@ -47,6 +48,17 @@ public class TokenService {
     }
 
     /**
+     * Returns token from token value.
+     *
+     * @param token The token value.
+     * @return The token.
+     */
+    public Token getToken(String token) {
+        Objects.requireNonNull(token);
+        return tokenPersistenceService.findOne(token);
+    }
+
+    /**
      * Returns if the given token is currently valid.
      *
      * @param token The token.
@@ -57,7 +69,28 @@ public class TokenService {
         Token foundToken = tokenPersistenceService.findOne(token);
 
         return foundToken != null && foundToken.isValid();
+    }
 
+    /**
+     * Returns the token associated user.
+     *
+     * @param token The token.
+     * @return The user.
+     */
+    public UserDetails getUserFromToken(Token token) {
+        User user = token.getUser();
+
+        if (user != null) {
+            return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(),
+                    user.getPassword(),
+                    Collections.singletonList(
+                            new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
+                    )
+            );
+        }
+
+        return null;
     }
 
     /**
@@ -78,7 +111,7 @@ public class TokenService {
                     user.getEmail(),
                     user.getPassword(),
                     Collections.singletonList(
-                        new SimpleGrantedAuthority(user.getRoleName())
+                        new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
                     )
                 );
             }

@@ -1,10 +1,14 @@
 package com.gvstave.mistergift.admin.auth.exception;
 
-
+/**
+ *
+ */
 public class MissingTokenException extends Exception {
 
+    /**
+     * Constructor.
+     */
     public MissingTokenException() {
-        super("No token has been found.");
+        super("Missing authorization token.");
     }
-
 }

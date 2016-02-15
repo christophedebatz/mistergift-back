@@ -1,8 +1,15 @@
 package com.gvstave.mistergift.data.persistence;
 
+import com.gvstave.mistergift.data.domain.QUser;
 import com.gvstave.mistergift.data.persistence.repository.UserRepository;
 import com.gvstave.mistergift.data.domain.User;
 import com.google.common.collect.Lists;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.OrderSpecifier;
+import com.mysema.query.types.Predicate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -100,5 +107,39 @@ public class UserPersistenceService implements UserRepository {
         CriteriaQuery<User> byEmail = cq.select(user).where(cb.equal(user.get("email"), email));
         TypedQuery<User> allQuery = em.createQuery(byEmail);
         return allQuery.getSingleResult();
+    }
+
+    public User findOne(Predicate predicate) {
+        QUser qUser = QUser.user;
+        JPAQuery query = new JPAQuery(em);
+        return query.from(qUser).where(predicate).uniqueResult(qUser);
+    }
+
+    public Iterable<User> findAll(Predicate predicate) {
+        return null;
+    }
+
+    public Iterable<User> findAll(Predicate predicate, Sort sort) {
+        return null;
+    }
+
+    public Iterable<User> findAll(Predicate predicate, OrderSpecifier<?>... orderSpecifiers) {
+        return null;
+    }
+
+    public Iterable<User> findAll(OrderSpecifier<?>... orderSpecifiers) {
+        return null;
+    }
+
+    public Page<User> findAll(Predicate predicate, Pageable pageable) {
+        return null;
+    }
+
+    public long count(Predicate predicate) {
+        return 0;
+    }
+
+    public boolean exists(Predicate predicate) {
+        return false;
     }
 }

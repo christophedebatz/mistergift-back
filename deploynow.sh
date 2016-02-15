@@ -1,7 +1,6 @@
 #!/bin/bash
 #file: execute.sh
 
-# do not touch after this line
 mvn clean install -DskipTests
 
 cd ./mistergift-data

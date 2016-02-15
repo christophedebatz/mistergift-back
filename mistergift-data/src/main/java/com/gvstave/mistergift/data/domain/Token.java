@@ -29,6 +29,16 @@ public class Token
 
     /**
      *
+     * @param expirationDate
+     * @param user
+     */
+    public Token(Date expirationDate, User user) {
+        this.expirationDate = expirationDate;
+        this.user = user;
+    }
+
+    /**
+     *
      * @return
      */
     public String getValue() {

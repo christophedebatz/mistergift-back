@@ -10,28 +10,53 @@
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-    <import resource="classpath:WEB-INF/data-context.xml" />
+    <import resource="classpath:WEB-INF/data-context.xml"/>
 
     <context:annotation-config />
-    <context:component-scan base-package="com.gvstave.mistergift" />
+    <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
+    <context:component-scan base-package="com.gvstave.mistergift.**" />
 
-    <security:http use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="authenticationEntryPoint">
-        <security:custom-filter ref="authenticationTokenProcessingFilter" position="FORM_LOGIN_FILTER"/>
-        <security:intercept-url pattern="/*" access="isAuthenticated()"/>
-        <security:intercept-url pattern="/authenticate" access="permitAll"/>
+    <security:http pattern="/authenticate" authentication-manager-ref="authenticationManager" use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint">
+        <security:csrf disabled="true" />
+        <security:intercept-url pattern="/authenticate" access="permitAll" />
+        <security:custom-filter ref="authenticationFilter" after="LAST" />
+        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
     </security:http>
+    
+    <security:http pattern="/**" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
+        <security:csrf disabled="true" />
+        <security:custom-filter ref="authorizationFilter" after="FIRST" />
+        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+    </security:http>
+
+    <security:global-method-security secured-annotations="enabled" />
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="userProvider">
+            <security:password-encoder ref="bcryptEncoder" />
+        </security:authentication-provider>
+    </security:authentication-manager>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
-    <bean id="authenticationEntryPoint" class="com.gvstave.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
-
-    <bean id="authenticationTokenProcessingFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter">
-        <constructor-arg ref="authenticationManager"/>
+    <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg name="strength" value="11" />
     </bean>
 
-    <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider ref="authenticationProvider" />
-    </security:authentication-manager>
+    <bean id="unauthorizedEntryPoint" class="com.gvstave.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
 
-    <bean id="authenticationProvider" class="com.gvstave.mistergift.admin.auth.service.AuthenticationProviderService" />
+    <bean id="authorizationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter">
+        <property name="authenticationManager" ref="authenticationManager" />
+    </bean>
+
+    <bean id="authenticationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthenticationFilter">
+        <constructor-arg type="java.lang.String" value="/authenticate"/>
+        <property name="authenticationManager" ref="authenticationManager" />
+    </bean>
+
+    <bean id="userService" class="com.gvstave.mistergift.data.service.UserService">
+        <constructor-arg ref="bcryptEncoder" />
+    </bean>
+
+    <bean id="userProvider" class="com.gvstave.mistergift.admin.auth.service.UserProvider"/>
 </beans>

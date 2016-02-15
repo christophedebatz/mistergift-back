@@ -29,7 +29,7 @@ public class User {
     /**
      * The user email.
      */
-    @Column(name = "email", length = 100, nullable = false)
+    @Column(name = "email", unique = true, length = 150, nullable = false)
     private String email;
 
     /**
@@ -168,15 +168,6 @@ public class User {
     }
 
     /**
-     * Returns the user role as a string.
-     *
-     * @return The user role.
-     */
-    public String getRoleName() {
-        return role.getName();
-    }
-
-    /**
      * Set the user role.
      *
      * @param role The user role.
@@ -252,9 +243,9 @@ public class User {
         /**
          * A user.
          */
-        USER("ROLE_ADMIN");
+        USER("ROLE_USER");
 
-        private String name;
+        private final String name;
 
         Role(String name) {
             this.name = name;
@@ -264,4 +255,5 @@ public class User {
             return name;
         }
     }
+
 }

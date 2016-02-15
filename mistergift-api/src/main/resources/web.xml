@@ -7,6 +7,11 @@
     <description>Restful API of mistergift.</description>
 
     <context-param>
+        <param-name>contextInitializerClasses</param-name>
+        <param-value>com.gvstave.mistergift.config.ContextInitializer</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>log4jConfigLocation</param-name>
         <param-value>classpath:WEB-INF/log4j.properties</param-value>
     </context-param>
@@ -33,5 +38,20 @@
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
+
+    <servlet>
+        <servlet-name>appServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:WEB-INF/application-context.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>appServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
 </web-app>
