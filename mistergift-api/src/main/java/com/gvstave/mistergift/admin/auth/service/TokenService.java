@@ -18,7 +18,6 @@ import java.util.Objects;
  * Manages tokens checking.
  */
 @Service
-@Transactional(readOnly = true)
 public class TokenService {
 
     /** The user persistence service. */

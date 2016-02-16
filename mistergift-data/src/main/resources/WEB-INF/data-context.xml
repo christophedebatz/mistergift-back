@@ -36,9 +36,6 @@
             <property name="dataSource" ref="mg-ds-default" />
             <property name="jpaVendorAdapter" ref="jpa-adapter"/>
             <property name="persistenceUnitName" value="mistergift_pu" />
-            <property name="loadTimeWeaver">
-                <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
-            </property>
             <property name="packagesToScan" >
                 <list>
                     <value>com.gvstave.mistergift.data.domain</value>
@@ -57,10 +54,8 @@
             <property name="entityManagerFactory" ref="mg-em-default" />
         </bean>
 
-        <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+        <tx:annotation-driven transaction-manager="transactionManager" />
 
-        <bean id="persistenceExceptionTranslationPostProcessor"
-              class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
     </beans>
 </beans>
 

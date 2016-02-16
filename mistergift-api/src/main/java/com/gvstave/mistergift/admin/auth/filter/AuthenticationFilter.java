@@ -95,16 +95,15 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
 
         // else, create token
         Date expireAt = DateTime.now().plusSeconds(Integer.parseInt(environment.getProperty("token.ttl"))).toDate();
-        Token token = tokenPersistenceService.save(new Token(expireAt, user));
+        user.setToken(tokenPersistenceService.save(new Token(expireAt, user)));
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-            user.getEmail(),
+            user,
             user.getPassword(),
             Collections.singletonList(
                 new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
             )
         );
-        authenticationToken.setDetails(user);
 
         // set user details by the request
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

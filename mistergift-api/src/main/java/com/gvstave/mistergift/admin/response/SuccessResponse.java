@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -13,7 +12,7 @@ import java.util.Map;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect
-public class DataResponse {
+public class SuccessResponse {
 
     /** The response status. */
     @JsonProperty
@@ -21,25 +20,25 @@ public class DataResponse {
 
     /** The payload. */
     @JsonProperty
-    private List<Map<String, Object>> payload;
+    private Map<String, Object> payload;
 
     /**
      * Constructor.
      *
      * @param status The response status.
      */
-    public DataResponse(int status) {
+    public SuccessResponse(int status) {
         this.status = status;
-        this.payload = new ArrayList<>();
+        this.payload = new HashMap<>();
     }
 
     /**
      * Add a payload to the response.
      *
-     * @param payload The payload.
+     * @param entry The payload entry.
      */
-    public void addPayload(Map<String, Object> payload) {
-        this.payload.add(payload);
+    public void addPayload(Map.Entry<String, Object> entry) {
+        payload.put(entry.getKey(), entry.getValue());
     }
 
 }

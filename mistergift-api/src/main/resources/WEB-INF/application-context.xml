@@ -14,7 +14,8 @@
 
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
-    <context:component-scan base-package="com.gvstave.mistergift.**" />
+    <context:component-scan base-package="com.gvstave.mistergift.admin" />
+    <context:component-scan base-package="com.gvstave.mistergift.data" />
 
     <security:http pattern="/authenticate" authentication-manager-ref="authenticationManager" use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />

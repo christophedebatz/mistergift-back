@@ -37,6 +37,15 @@ public class ErrorResponse {
     }
 
     /**
+     * Constructor.
+     *
+     * @param status The status code.
+     */
+    public ErrorResponse(int status) {
+        this.status = status;
+    }
+
+    /**
      * Returns an error response from an exception.
      *
      * @param exception The exceptin.
@@ -74,6 +83,33 @@ public class ErrorResponse {
      */
     public String getMessage() {
         return message;
+    }
+
+    /**
+     * Sets the status code.
+     *
+     * @param status The status code.
+     */
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    /**
+     * Sets the exception.
+     *
+     * @param exception The exception.
+     */
+    public void setException(String exception) {
+        this.exception = exception;
+    }
+
+    /**
+     * Sets the message.
+     *
+     * @param message The message.
+     */
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
