@@ -7,7 +7,6 @@ import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
@@ -15,7 +14,6 @@ import javax.inject.Inject;
  *
  */
 @Service
-@Transactional
 public class UserService {
 
     /** The user persistence service. */
@@ -42,20 +40,21 @@ public class UserService {
      * @return The user if found, null else.
      */
     public User fromCredentials(String email, String rawPassword) {
-
-        // null case
         if (email == null || rawPassword == null) {
             return null;
         }
 
-        // get encoded password
-        String password = passwordEncoder.encode(rawPassword);
-
         // compute database expression
-        BooleanExpression pUser = QUser.user.email.eq(email).and(QUser.user.password.eq(password));
+        BooleanExpression pUser = QUser.user.email.eq(email);
 
         // search in database
-        return userPersistenceService.findOne(pUser);
+        User user = userPersistenceService.findOne(pUser);
+
+        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return user;
+        }
+
+        return null;
     }
 
 }

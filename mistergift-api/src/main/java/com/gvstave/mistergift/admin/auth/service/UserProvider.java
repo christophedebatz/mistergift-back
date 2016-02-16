@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import java.util.Collections;
  *
  */
 @Service
-@Transactional(readOnly = true)
 public class UserProvider implements UserDetailsService {
 
     /** The user persistence service. */
@@ -35,7 +33,7 @@ public class UserProvider implements UserDetailsService {
                     user.getEmail(),
                     user.getPassword(),
                     Collections.singletonList(
-                            new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
+                        new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
                     )
             );
         }

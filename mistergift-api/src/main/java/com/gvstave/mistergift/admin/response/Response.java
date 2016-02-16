@@ -15,15 +15,15 @@ public class Response {
 
     /** The data response. */
     @JsonProperty
-    private DataResponse data;
+    private SuccessResponse data;
 
     /**
      * Constructor.
      *
      * @param error The error response.
-     * @param data The payloaded response.
+     * @param data  The data response.
      */
-    public Response(DataResponse data, ErrorResponse error) {
+    public Response(SuccessResponse data, ErrorResponse error) {
         this.error = error;
         this.data = data;
     }
@@ -44,7 +44,7 @@ public class Response {
      * @param data The data response.
      * @return The response.
      */
-    public static Response withData(DataResponse data) {
+    public static Response withData(SuccessResponse data) {
         return new Response(data, null);
     }
 
@@ -60,7 +60,7 @@ public class Response {
      *
      * @return
      */
-    public DataResponse getData() {
+    public SuccessResponse getData() {
         return data;
     }
 

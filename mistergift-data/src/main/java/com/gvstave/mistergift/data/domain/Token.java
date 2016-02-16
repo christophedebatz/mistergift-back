@@ -57,7 +57,7 @@ public class Token
      *
      * @return
      */
-    public Date getExpirationDate() {
+    public Date getExpireAt() {
         return expirationDate;
     }
 
