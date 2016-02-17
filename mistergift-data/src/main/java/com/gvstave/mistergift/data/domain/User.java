@@ -44,8 +44,8 @@ public class User {
     private Role role;
 
     /** The user token. */
-    @OneToOne
-    @JoinColumn(name = "token_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "token_id", referencedColumnName = "id")
     private Token token;
 
     /**
@@ -59,7 +59,7 @@ public class User {
      *
      */
     public User() {
-        this.groups = new ArrayList<Group>();
+        this.groups = new ArrayList<>();
     }
 
     /**
@@ -238,12 +238,12 @@ public class User {
         /**
          * An administrator.
          */
-        ADMIN("ROLE_ADMIN"),
+        ROLE_ADMIN("ROLE_ADMIN"),
 
         /**
          * A user.
          */
-        USER("ROLE_USER");
+        ROLE_USER("ROLE_USER");
 
         private final String name;
 

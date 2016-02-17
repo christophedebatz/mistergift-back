@@ -4,6 +4,7 @@ import com.gvstave.mistergift.admin.response.ErrorResponse;
 import com.gvstave.mistergift.admin.response.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,8 +30,11 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ErrorResponse.fromException(exception, HttpStatus.INTERNAL_SERVER_ERROR.value())
         );
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
         return handleExceptionInternal(exception, response,
-                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+                headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
 }

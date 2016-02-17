@@ -7,6 +7,11 @@
     <description>Restful API of mistergift.</description>
 
     <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>mg</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>contextInitializerClasses</param-name>
         <param-value>com.gvstave.mistergift.config.ContextInitializer</param-value>
     </context-param>

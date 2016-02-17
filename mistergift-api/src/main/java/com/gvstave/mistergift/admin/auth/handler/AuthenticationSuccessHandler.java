@@ -1,9 +1,10 @@
-package com.gvstave.mistergift.admin.auth.service.handler;
+package com.gvstave.mistergift.admin.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -15,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- *
+ * Called when user has successfully login.
  */
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -32,7 +33,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
         Token token = user.getToken();
 
         Map<String, Object> session = new LinkedHashMap<>();
-        session.put("token", token.getValue());
+        session.put("token", token.getId());
         session.put("expireAt", token.getExpireAt());
 
         Map<String, Object> general = new LinkedHashMap<>();
@@ -47,6 +48,8 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
         response.put("payload", general);
 
         ObjectMapper mapper = new ObjectMapper();
+        httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        httpResponse.setStatus(HttpStatus.OK.value());
         httpResponse.getWriter().print(mapper.writeValueAsString(response));
 
     }

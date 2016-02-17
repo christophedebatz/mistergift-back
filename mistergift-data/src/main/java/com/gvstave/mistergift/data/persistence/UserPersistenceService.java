@@ -1,16 +1,17 @@
 package com.gvstave.mistergift.data.persistence;
 
-import com.gvstave.mistergift.data.domain.QUser;
-import com.gvstave.mistergift.data.persistence.repository.UserRepository;
-import com.gvstave.mistergift.data.domain.User;
 import com.google.common.collect.Lists;
+import com.gvstave.mistergift.data.domain.QUser;
+import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.persistence.repository.UserRepository;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,17 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Service
+@Repository
 public class UserPersistenceService implements UserRepository {
 
     @PersistenceContext(unitName = "mg-em-default")
     private EntityManager em;
 
-    public <S extends User> S save(S s) {
-        Objects.requireNonNull(s);
-        em.persist(s);
+    @Transactional
+    public <S extends User> S save(S user) {
+        Objects.requireNonNull(user);
+        S newUser = em.merge(user);
         em.flush();
-        return s;
+        return newUser;
     }
 
     public <S extends User> Iterable<S> save(Iterable<S> entities) {

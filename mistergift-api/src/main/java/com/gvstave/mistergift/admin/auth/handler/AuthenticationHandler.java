@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.admin.auth.service.handler;
+package com.gvstave.mistergift.admin.auth.handler;
 
 import com.google.common.collect.Lists;
 import com.gvstave.mistergift.data.domain.User;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 /**
- *
+ * Handler for http authentication.
  */
 @Service
 public class AuthenticationHandler implements AuthenticationManager {

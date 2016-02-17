@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.admin.auth.service;
+package com.gvstave.mistergift.data.service;
 
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
@@ -24,7 +24,6 @@ public class UserProvider implements UserDetailsService {
     /**
      * {@inheritDoc}
      */
-    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userPersistenceService.findByEmail(email);
 

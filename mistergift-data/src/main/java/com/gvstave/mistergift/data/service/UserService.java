@@ -44,10 +44,7 @@ public class UserService {
             return null;
         }
 
-        // compute database expression
         BooleanExpression pUser = QUser.user.email.eq(email);
-
-        // search in database
         User user = userPersistenceService.findOne(pUser);
 
         if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {

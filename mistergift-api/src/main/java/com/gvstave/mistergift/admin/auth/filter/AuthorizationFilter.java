@@ -1,8 +1,8 @@
 package com.gvstave.mistergift.admin.auth.filter;
 
-import com.gvstave.mistergift.admin.auth.service.TokenService;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
+import com.gvstave.mistergift.data.service.TokenService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -67,12 +67,13 @@ public class AuthorizationFilter extends UsernamePasswordAuthenticationFilter {
                 UserDetails user = tokenService.getUserFromToken(token);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     user.getUsername(),
-                    user.getPassword()
+                    user.getPassword(),
+                    user.getAuthorities()
                 );
 
                 // refresh token expiration date
                 int expireAt = Integer.parseInt(environment.getProperty("token.ttl"));
-                token.setExpirationDate(DateTime.now().plusSeconds(expireAt).toDate());
+                token.setExpireAt(DateTime.now().plusSeconds(expireAt).toDate());
                 tokenPersistenceService.save(token);
 
                 // set user details by the request

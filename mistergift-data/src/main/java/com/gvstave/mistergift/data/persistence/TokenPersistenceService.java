@@ -23,9 +23,9 @@ public class TokenPersistenceService {
     @Transactional
     public Token save(Token token) {
         Objects.requireNonNull(token);
-        em.persist(token);
+        Token newToken = em.merge(token);
         em.flush();
-        return token;
+        return newToken;
     }
 
     /**

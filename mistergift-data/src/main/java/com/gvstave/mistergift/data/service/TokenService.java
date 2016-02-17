@@ -1,6 +1,5 @@
-package com.gvstave.mistergift.admin.auth.service;
+package com.gvstave.mistergift.data.service;
 
-import com.gvstave.mistergift.admin.auth.exception.MissingTokenException;
 import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.domain.Token;
@@ -8,14 +7,13 @@ import com.gvstave.mistergift.data.domain.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Objects;
 
 /**
- * Manages tokens checking.
+ * The token service.
  */
 @Service
 public class TokenService {
@@ -33,17 +31,16 @@ public class TokenService {
      *
      * @param userDetails The user.
      * @return The token.
-     * @throws MissingTokenException
      */
-    public String getToken(UserDetails userDetails) throws MissingTokenException {
+    public String getToken(UserDetails userDetails) {
         Objects.requireNonNull(userDetails);
         User user = userPersistenceService.findByEmail(userDetails.getUsername());
 
         if (user != null && user.getToken() != null && user.getToken().isValid()) {
-            return user.getToken().getValue();
+            return user.getToken().getId();
         }
 
-        throw new MissingTokenException();
+        return null;
     }
 
     /**

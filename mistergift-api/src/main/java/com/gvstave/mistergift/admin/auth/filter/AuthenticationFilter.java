@@ -1,10 +1,11 @@
 package com.gvstave.mistergift.admin.auth.filter;
 
-import com.gvstave.mistergift.admin.auth.service.handler.AuthenticationErrorHandler;
-import com.gvstave.mistergift.admin.auth.service.handler.AuthenticationSuccessHandler;
+import com.gvstave.mistergift.admin.auth.handler.AuthenticationErrorHandler;
+import com.gvstave.mistergift.admin.auth.handler.AuthenticationSuccessHandler;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
+import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.UserService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
@@ -35,13 +36,17 @@ import java.util.Date;
 @Service
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    /** The token service. */
-    @Inject
-    private TokenPersistenceService tokenPersistenceService;
-
     /** The user persistence service. */
     @Inject
     private UserService userService;
+
+    /** The user persistence service. */
+    @Inject
+    private UserPersistenceService userPersistenceService;
+
+    /** The token persistence service. */
+    @Inject
+    private TokenPersistenceService tokenPersistenceService;
 
     /** The environment/ */
     @Inject
@@ -70,7 +75,6 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-
         // ensure request method
         if (!request.getMethod().equalsIgnoreCase("post")) {
             throw new AuthenticationServiceException("Bad request method.");
@@ -80,22 +84,24 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // ensure parameters are not null
         if (email == null || password == null) {
             throw new AuthenticationCredentialsNotFoundException("Credentials not found.");
         }
 
         // try getting user from database
         User user = userService.fromCredentials(email, password);
-
-        // if user not found, bad credentials
         if (user == null) {
             throw new BadCredentialsException("Invalid credentials.");
         }
 
-        // else, create token
-        Date expireAt = DateTime.now().plusSeconds(Integer.parseInt(environment.getProperty("token.ttl"))).toDate();
-        user.setToken(tokenPersistenceService.save(new Token(expireAt, user)));
+        // if user already has a token, replace it
+        // todo
+
+        // create token
+        int ttl = Integer.parseInt(environment.getProperty("token.ttl"));
+        Date expireAt = DateTime.now().plusSeconds(ttl).toDate();
+        user.setToken(new Token(expireAt, user));
+        user = userPersistenceService.save(user);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
             user,

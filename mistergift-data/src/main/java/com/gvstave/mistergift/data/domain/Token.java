@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.data.domain;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,14 +13,15 @@ public class Token
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "value", length = 75, nullable = false)
-    private String value;
+    @Column(name = "id", length = 75, nullable = false)
+    private String id;
 
-    @Column(name = "expiration_date", nullable = false)
+    @Column(name = "expire_at", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date expirationDate;
+    private Date expireAt;
 
-    @OneToOne(mappedBy = "token", fetch = FetchType.LAZY)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     /**
@@ -29,11 +31,11 @@ public class Token
 
     /**
      *
-     * @param expirationDate
+     * @param expireAt
      * @param user
      */
-    public Token(Date expirationDate, User user) {
-        this.expirationDate = expirationDate;
+    public Token(Date expireAt, User user) {
+        this.expireAt = expireAt;
         this.user = user;
     }
 
@@ -41,16 +43,16 @@ public class Token
      *
      * @return
      */
-    public String getValue() {
-        return value;
+    public String getId() {
+        return id;
     }
 
     /**
      *
-     * @param value
+     * @param id
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
@@ -58,15 +60,15 @@ public class Token
      * @return
      */
     public Date getExpireAt() {
-        return expirationDate;
+        return expireAt;
     }
 
     /**
      *
-     * @param expirationDate
+     * @param expireAt
      */
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
+    public void setExpireAt(Date expireAt) {
+        this.expireAt = expireAt;
     }
 
     /**
@@ -90,6 +92,7 @@ public class Token
      * @return
      */
     public boolean isValid() {
-        return expirationDate.after(new Date());
+        return expireAt.after(new Date());
     }
+
 }
