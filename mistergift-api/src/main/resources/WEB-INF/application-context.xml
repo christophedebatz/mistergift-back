@@ -2,8 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+          http://www.springframework.org/schema/beans
                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
           http://www.springframework.org/schema/security
           http://www.springframework.org/schema/security/spring-security-4.0.xsd
@@ -12,6 +15,7 @@
 
     <import resource="classpath:WEB-INF/data-context.xml"/>
 
+    <mvc:annotation-driven/>
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
     <context:component-scan base-package="com.gvstave.mistergift.admin" />
@@ -21,13 +25,13 @@
         <security:csrf disabled="true" />
         <security:intercept-url pattern="/authenticate" access="permitAll" />
         <security:custom-filter ref="authenticationFilter" after="LAST" />
-        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+        <security:intercept-url pattern="/**" access="isAuthenticated()" />
     </security:http>
-    
+
     <security:http pattern="/**" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
-        <security:custom-filter ref="authorizationFilter" position="FIRST" />
-        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+        <security:custom-filter ref="authorizationFilter" after="BASIC_AUTH_FILTER" />
+        <security:intercept-url pattern="/**" access="isAuthenticated()" />
     </security:http>
 
     <security:global-method-security secured-annotations="enabled" />
@@ -46,9 +50,7 @@
 
     <bean id="unauthorizedEntryPoint" class="com.gvstave.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
 
-    <bean id="authorizationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter">
-        <property name="authenticationManager" ref="authenticationManager" />
-    </bean>
+    <bean id="authorizationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter" />
 
     <bean id="authenticationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthenticationFilter">
         <constructor-arg type="java.lang.String" value="/authenticate"/>

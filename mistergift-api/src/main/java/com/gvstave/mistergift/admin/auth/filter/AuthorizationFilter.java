@@ -8,9 +8,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.filter.GenericFilterBean;
 
 import javax.inject.Inject;
 import javax.servlet.FilterChain;
@@ -25,7 +25,7 @@ import java.util.Optional;
  * Checks the header user token to maintains a stateless connection.
  */
 @Service
-public class AuthorizationFilter extends UsernamePasswordAuthenticationFilter {
+public class AuthorizationFilter extends GenericFilterBean {
 
     /** The token service. */
     @Inject
@@ -56,6 +56,8 @@ public class AuthorizationFilter extends UsernamePasswordAuthenticationFilter {
         // typecast the default given request
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         Optional<String> headerToken = Optional.ofNullable(httpRequest.getHeader(HEADER_NAME));
+
+        SecurityContextHolder.getContext().setAuthentication(null);
 
         // ensure that request contains a token
         if (headerToken.isPresent()) {

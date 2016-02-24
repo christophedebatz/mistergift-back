@@ -1,9 +1,9 @@
 package com.gvstave.mistergift.data.service;
 
-import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
+import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,15 @@ import java.util.Objects;
 @Service
 public class TokenService {
 
-    /** The user persistence service. */
+    /**
+     * The user persistence service.
+     */
     @Inject
     private UserPersistenceService userPersistenceService;
 
-    /** The token persistence service. */
+    /**
+     * The token persistence service.
+     */
     @Inject
     private TokenPersistenceService tokenPersistenceService;
 
@@ -80,8 +84,10 @@ public class TokenService {
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
                     user.getPassword(),
-                    Collections.singletonList(
-                            new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
+                    Collections.unmodifiableList(
+                            Collections.singletonList(
+                                    new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
+                            )
                     )
             );
         }
@@ -104,11 +110,11 @@ public class TokenService {
 
             if (user != null) {
                 return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
-                    user.getPassword(),
-                    Collections.singletonList(
-                        new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
-                    )
+                        user.getEmail(),
+                        user.getPassword(),
+                        Collections.singletonList(
+                                new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
+                        )
                 );
             }
         }

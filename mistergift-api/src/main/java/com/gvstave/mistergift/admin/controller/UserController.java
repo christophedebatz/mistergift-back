@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-    @Secured({ "ROLE_USER" })
-    @RequestMapping(value = "/", method = { RequestMethod.GET }, produces = { "application/json" })
+    @Secured("ROLE_USER")
+    @RequestMapping(method = { RequestMethod.GET }, produces = { "application/json" })
     public ResponseEntity<User> getCurrentUser() {
         return new ResponseEntity<>(new User(), HttpStatus.OK);
     }

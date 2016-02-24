@@ -4,7 +4,6 @@ import com.gvstave.mistergift.admin.auth.handler.AuthenticationErrorHandler;
 import com.gvstave.mistergift.admin.auth.handler.AuthenticationSuccessHandler;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.UserService;
 import org.joda.time.DateTime;
@@ -43,10 +42,6 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
     /** The user persistence service. */
     @Inject
     private UserPersistenceService userPersistenceService;
-
-    /** The token persistence service. */
-    @Inject
-    private TokenPersistenceService tokenPersistenceService;
 
     /** The environment/ */
     @Inject
