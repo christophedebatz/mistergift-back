@@ -1,13 +1,19 @@
 package com.gvstave.mistergift.admin.controller;
 
+import javax.inject.Inject;
+
 import com.gvstave.mistergift.admin.response.PageResponse;
+import com.gvstave.mistergift.config.annotation.Get;
+import com.gvstave.mistergift.config.annotation.UserOnly;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(
@@ -26,20 +32,22 @@ public class UserController extends BaseController {
      *
      * @return Serialized users list.
      */
-    @Secured("ROLE_USER")
-    @RequestMapping(method = { RequestMethod.GET })
+    @Get
+    @UserOnly
     public @ResponseBody PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") final Integer page) {
-        return new PageResponse<>(userPersistenceService.findAll(getPageRequest(page)));
+        PageRequest pageRequest = getPageRequest(page);
+        return new PageResponse<>(userPersistenceService.findAll(pageRequest));
     }
 
 
     /**
-     *  Returns the user that owns the request.
+     * Returns the user that owns the request.
      *
      * @return Serialized user.
      */
-    @Secured("ROLE_USER")
-    @RequestMapping(path = "/self", method = { RequestMethod.GET })
+    @Get
+    @UserOnly
+    @RequestMapping(path = "/self")
     public @ResponseBody User getSelfUser() {
         return getUser();
     }
@@ -50,8 +58,9 @@ public class UserController extends BaseController {
      * @param id The user id.
      * @return Serialized user.
      */
-    @Secured("ROLE_USER")
-    @RequestMapping(path = "/{id}", method = { RequestMethod.GET })
+    @Get
+    @UserOnly
+    @RequestMapping(path = "/{id}")
     public @ResponseBody User getUserById(@RequestParam(value = "id") final Long id) {
         return userPersistenceService.findOne(id);
     }
