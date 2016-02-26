@@ -2,6 +2,7 @@ package com.gvstave.mistergift.data.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -105,6 +106,7 @@ public class User {
      *
      * @param password The user password.
      */
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

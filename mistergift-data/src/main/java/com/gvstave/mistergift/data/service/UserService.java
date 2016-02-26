@@ -54,8 +54,21 @@ public class UserService {
         return null;
     }
 
-    public Long save(User rawUser) {
+    /**
+     * Saves a new user in database.
+     *
+     * @param user The new user.
+     * @return The created user id.
+     */
+    public User saveOrUpdate(User user) {
+        // encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        // set user role
+        user.setRole(User.Role.ROLE_USER);
+
+        // finally save
+        return userPersistenceService.save(user);
     }
 
 }

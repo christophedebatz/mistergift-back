@@ -2,39 +2,39 @@ package com.gvstave.mistergift.admin.handler;
 
 import com.gvstave.mistergift.admin.response.ErrorResponse;
 import com.gvstave.mistergift.admin.response.Response;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- *
+ * The main exception handler.
  */
 @ControllerAdvice
-class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+class GlobalExceptionHandler {
 
     /**
+     * The default handling exception.
      *
-     * @param exception
-     * @param request
-     * @return
+     * @param httpServletRequest The http servlet request.
+     * @param exception The exception.
+     * @return The serialized object.
+     * @throws Exception The given exception.
      */
-    @ExceptionHandler
-    protected ResponseEntity<Object> handleConflict(RuntimeException exception, WebRequest request) {
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Response> defaultErrorHandler(HttpServletRequest httpServletRequest, Exception exception) throws Exception {
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         Response response = Response.withError(
-            ErrorResponse.fromException(exception, HttpStatus.INTERNAL_SERVER_ERROR.value())
+            ErrorResponse.fromException(exception, status.value())
         );
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-        return handleExceptionInternal(exception, response,
-                headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return new ResponseEntity<>(response, status);
     }
 
 }

@@ -10,6 +10,6 @@ import org.springframework.security.access.annotation.Secured;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.TYPE, ElementType.METHOD })
 @Secured("ROLE_USER")
-public @interface UserOnly {
+public @interface UserRestricted {
 
 }
