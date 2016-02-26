@@ -9,6 +9,9 @@ import java.io.IOException;
 
 public class ContextInitializer implements ApplicationContextInitializer<ConfigurableWebApplicationContext> {
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize(ConfigurableWebApplicationContext ctx) {
         ResourcePropertySource ps = null;
         try {

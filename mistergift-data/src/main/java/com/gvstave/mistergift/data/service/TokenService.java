@@ -101,22 +101,12 @@ public class TokenService {
      * @param token The token.
      * @return The user.
      */
-    public UserDetails getUserFromToken(String token) {
+    public User getUserFromToken(String token) {
         Objects.requireNonNull(token);
         Token foundToken = tokenPersistenceService.findOne(token);
 
         if (foundToken != null) {
-            User user = foundToken.getUser();
-
-            if (user != null) {
-                return new org.springframework.security.core.userdetails.User(
-                        user.getEmail(),
-                        user.getPassword(),
-                        Collections.singletonList(
-                                new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
-                        )
-                );
-            }
+            return foundToken.getUser();
         }
 
         return null;

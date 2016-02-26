@@ -1,11 +1,15 @@
 package com.gvstave.mistergift.data.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(schema = "mistergift", name = "users")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     /**
      * The user id.
@@ -91,6 +95,7 @@ public class User {
      *
      * @return The user password.
      */
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -190,6 +195,7 @@ public class User {
      *
      * @return The user token.
      */
+    @JsonIgnore
     public Token getToken() {
         return token;
     }
@@ -217,6 +223,7 @@ public class User {
      *
      * @return The user groups.
      */
+    @JsonIgnore
     public List<Group> getGroups() {
         return groups;
     }

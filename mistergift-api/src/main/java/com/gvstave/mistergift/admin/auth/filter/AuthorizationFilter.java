@@ -39,9 +39,6 @@ public class AuthorizationFilter extends GenericFilterBean {
     @Inject
     private Environment environment;
 
-    /** The header auth token name. */
-    private static final String HEADER_NAME = "X-MG-AUTH";
-
     /**
      * Checks if the request contains a valid token for current user.
      *
@@ -55,8 +52,13 @@ public class AuthorizationFilter extends GenericFilterBean {
 
         // typecast the default given request
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        Optional<String> headerToken = Optional.ofNullable(httpRequest.getHeader(HEADER_NAME));
 
+        // get the header token
+        Optional<String> headerToken = Optional.ofNullable(
+                httpRequest.getHeader(environment.getProperty("token.header.name"))
+        );
+
+        // reset the current security context
         SecurityContextHolder.getContext().setAuthentication(null);
 
         // ensure that request contains a token

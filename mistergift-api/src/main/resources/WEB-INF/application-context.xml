@@ -16,6 +16,9 @@
     <import resource="classpath:WEB-INF/data-context.xml"/>
 
     <mvc:annotation-driven/>
+    <mvc:resources mapping="swagger-ui.html" location="classpath:META-INF/resources/" />
+    <mvc:resources mapping="/webjars/**" location="classpath:META-INF/resources/webjars/" />
+    
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
     <context:component-scan base-package="com.gvstave.mistergift.admin" />
@@ -41,6 +44,8 @@
             <security:password-encoder ref="bcryptEncoder" />
         </security:authentication-provider>
     </security:authentication-manager>
+
+    <bean class="com.gvstave.mistergift.config.doc.SwaggerConfig" />
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
