@@ -15,14 +15,13 @@
 
     <import resource="classpath:WEB-INF/data-context.xml"/>
 
-    <mvc:annotation-driven/>
-    <mvc:resources mapping="swagger-ui.html" location="classpath:META-INF/resources/" />
-    <mvc:resources mapping="/webjars/**" location="classpath:META-INF/resources/webjars/" />
-    
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
     <context:component-scan base-package="com.gvstave.mistergift.admin" />
     <context:component-scan base-package="com.gvstave.mistergift.data" />
+
+    <mvc:annotation-driven/>
+    <mvc:default-servlet-handler/>
 
     <security:http pattern="/authenticate" authentication-manager-ref="authenticationManager" use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
@@ -33,6 +32,7 @@
 
     <security:http pattern="/**" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
+        <security:intercept-url pattern="/v2/**" access="permitAll" />
         <security:custom-filter ref="authorizationFilter" after="BASIC_AUTH_FILTER" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
     </security:http>
@@ -44,10 +44,6 @@
             <security:password-encoder ref="bcryptEncoder" />
         </security:authentication-provider>
     </security:authentication-manager>
-
-    <bean class="com.gvstave.mistergift.config.doc.SwaggerConfig" />
-
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
     <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg name="strength" value="11" />
@@ -66,5 +62,9 @@
         <constructor-arg ref="bcryptEncoder" />
     </bean>
 
-    <bean id="userProvider" class="com.gvstave.mistergift.data.service.UserProvider"/>
+    <bean id="userProvider" class="com.gvstave.mistergift.data.service.UserProvider" />
+
+    <bean id="contextInitializer" class="com.gvstave.mistergift.config.ContextInitializer" />
+
+    <bean id="swaggerConfig" class="com.gvstave.mistergift.config.SwaggerConfig" />
 </beans>

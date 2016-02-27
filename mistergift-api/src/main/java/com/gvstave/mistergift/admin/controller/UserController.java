@@ -35,7 +35,8 @@ public class UserController extends BaseController {
      */
     @UserRestricted
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody PageResponse<User> getUsers(
+    public @ResponseBody
+    PageResponse<User> getUsers(
             @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page) {
         PageRequest pageRequest = getPageRequest(page);
         return new PageResponse<>(userPersistenceService.findAll(pageRequest));
@@ -49,7 +50,8 @@ public class UserController extends BaseController {
      */
     @UserRestricted
     @RequestMapping(method = RequestMethod.GET, path = "/self")
-    public @ResponseBody User getSelfUser() {
+    public @ResponseBody
+    User getSelfUser() {
         return getUser();
     }
 
