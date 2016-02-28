@@ -14,7 +14,7 @@ import java.util.Optional;
  * Base abstract controller that offers some sessions methods.
  */
 @RestController
-abstract class BaseController {
+abstract class AbstractController {
 
     /** The environment. */
     @Inject
