@@ -61,7 +61,7 @@ public class PageResponse<T> {
                     .replaceQueryParam("page", page.getNumber())
                     .toUriString();
 
-            paging.put("previous", previousPageUri);
+            paging.put("prev", previousPageUri);
         }
 
         if (page.hasNext()) {

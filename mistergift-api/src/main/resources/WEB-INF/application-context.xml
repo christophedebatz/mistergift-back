@@ -51,7 +51,9 @@
 
     <bean id="unauthorizedEntryPoint" class="com.gvstave.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
 
-    <bean id="authorizationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter" />
+    <bean id="authorizationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter">
+        <constructor-arg ref="unauthorizedEntryPoint" />
+    </bean>
 
     <bean id="authenticationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthenticationFilter">
         <constructor-arg type="java.lang.String" value="/authenticate"/>

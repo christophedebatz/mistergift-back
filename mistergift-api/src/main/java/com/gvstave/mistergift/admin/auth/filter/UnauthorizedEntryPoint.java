@@ -23,18 +23,19 @@ public class UnauthorizedEntryPoint implements AuthenticationEntryPoint {
     /**
      * {@inheritDoc}
      */
-    public void commence(HttpServletRequest request, HttpServletResponse httpResponse, AuthenticationException authException)
-            throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse httpResponse,
+                         AuthenticationException authException) throws IOException, ServletException {
 
-        int statusCode = HttpStatus.UNAUTHORIZED.value();
+        int status = HttpStatus.UNAUTHORIZED.value();
 
         Response response = Response.withError(
-                ErrorResponse.fromException(authException, statusCode)
+                ErrorResponse.fromException(authException, status)
         );
 
+        // write into json
         ObjectMapper mapper = new ObjectMapper();
         httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        httpResponse.setStatus(statusCode);
+        httpResponse.setStatus(status);
         httpResponse.getWriter().print(mapper.writeValueAsString(response));
     }
 }

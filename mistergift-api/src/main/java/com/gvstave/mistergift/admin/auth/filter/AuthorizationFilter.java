@@ -1,5 +1,7 @@
 package com.gvstave.mistergift.admin.auth.filter;
 
+import com.gvstave.mistergift.admin.auth.exception.InvalidTokenException;
+import com.gvstave.mistergift.admin.auth.exception.MissingTokenException;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
 import com.gvstave.mistergift.data.service.TokenService;
@@ -18,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -39,6 +42,18 @@ public class AuthorizationFilter extends GenericFilterBean {
     @Inject
     private Environment environment;
 
+    /** The unauthorized entry point. */
+    private UnauthorizedEntryPoint entryPoint;
+
+    /**
+     * Default constructor.
+     *
+     * @param unauthorizedEntryPoint The unauthorized entry point.
+     */
+    public AuthorizationFilter(UnauthorizedEntryPoint unauthorizedEntryPoint) {
+        this.entryPoint = unauthorizedEntryPoint;
+    }
+
     /**
      * Checks if the request contains a valid token for current user.
      *
@@ -50,16 +65,17 @@ public class AuthorizationFilter extends GenericFilterBean {
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        // typecast the default given request
+        // typecast both response and request
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         // get the header token
         Optional<String> headerToken = Optional.ofNullable(
                 httpRequest.getHeader(environment.getProperty("token.header.name"))
         );
 
-        // reset the current security context
-        SecurityContextHolder.getContext().setAuthentication(null);
+        // reset the security context
+        SecurityContextHolder.clearContext();
 
         // ensure that request contains a token
         if (headerToken.isPresent()) {
@@ -84,11 +100,25 @@ public class AuthorizationFilter extends GenericFilterBean {
                 authenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                // continue the filters chain
+                chain.doFilter(request, response);
+            }
+            else {
+                entryPoint.commence(
+                    httpRequest,
+                    httpResponse,
+                    new InvalidTokenException()
+                );
             }
         }
-
-        // continue the filters chain
-        chain.doFilter(request, response);
+        else {
+            entryPoint.commence(
+                httpRequest,
+                httpResponse,
+                new MissingTokenException()
+            );
+        }
 
     }
 }
