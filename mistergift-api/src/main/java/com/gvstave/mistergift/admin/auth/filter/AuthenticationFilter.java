@@ -89,8 +89,10 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
             throw new BadCredentialsException("Invalid credentials.");
         }
 
-        // if user already has a token, replace it
-        // todo
+        // if user has a token, delete it
+        if (user.getToken() != null) {
+            userService.removeToken(user);
+        }
 
         // create token
         int ttl = Integer.parseInt(environment.getProperty("token.ttl"));

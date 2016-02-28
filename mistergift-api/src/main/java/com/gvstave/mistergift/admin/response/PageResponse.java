@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.admin.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import java.util.Map;
  * @param <T> The serialized entity type.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PageResponse<T> {
 
     /** The current page. */
@@ -26,7 +28,7 @@ public class PageResponse<T> {
      *
      * @param page The current page.
      */
-    public PageResponse(Page page) {
+    public PageResponse(Page<T> page) {
         this.page = page;
     }
 
@@ -46,20 +48,28 @@ public class PageResponse<T> {
      * @return The links.
      */
     @JsonProperty("links")
-    public Map<String, Object> getLinks() {
+    public Map<String, String> getLinks() {
         if (page.getTotalPages() == 1) {
             return null;
         }
 
-        Map<String, Object> paging = new LinkedHashMap<>();
+        Map<String, String > paging = new LinkedHashMap<>();
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
 
         if (page.hasPrevious()) {
-            paging.put("previous", uriBuilder.queryParam("page", page.previousPageable().getPageNumber()));
+            String previousPageUri = uriBuilder
+                    .replaceQueryParam("page", page.getNumber())
+                    .toUriString();
+
+            paging.put("previous", previousPageUri);
         }
 
         if (page.hasNext()) {
-            paging.put("next", uriBuilder.replaceQueryParam("page", page.nextPageable().getPageNumber()));
+            String nextPageUri = uriBuilder
+                    .replaceQueryParam("page", page.nextPageable().next().getPageNumber())
+                    .toUriString();
+
+            paging.put("next", nextPageUri);
         }
 
         return paging;

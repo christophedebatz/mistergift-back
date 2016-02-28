@@ -12,34 +12,24 @@ import java.util.List;
 @Table(schema = "mistergift", name = "users")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
-    /**
-     * The user id.
-     */
+    /** The user id. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    /**
-     * The user first name.
-     */
+    /** The user first name. */
     @Column(name = "first_name", length = 255, nullable = false)
     private String firstName;
 
-    /**
-     * The user last name.
-     */
+    /** The user last name. */
     @Column(name = "last_name", length = 255, nullable = false)
     private String lastName;
 
-    /**
-     * The user email.
-     */
+    /** The user email. */
     @Column(name = "email", unique = true, length = 150, nullable = false)
     private String email;
 
-    /**
-     * The user password.
-     */
+    /** The user password. */
     @Column(name = "password", length = 255, nullable = false)
     private String password;
 
@@ -50,15 +40,17 @@ public class User {
 
     /** The user token. */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "token_id", referencedColumnName = "id")
+    @JoinColumn(name = "token_id", referencedColumnName = "id", nullable = true)
     private Token token;
 
-    /**
-     * The user picture.
-     */
+    /** The user picture. */
     @OneToOne
     @JoinColumn(name = "picture_id", nullable = true)
     private FileMetadata picture;
+
+    /** The user groups. */
+    @OneToMany
+    private List<Group> groups;
 
     /**
      *
@@ -66,12 +58,6 @@ public class User {
     public User() {
         this.groups = new ArrayList<>();
     }
-
-    /**
-     * The user groups.
-     */
-    @OneToMany
-    private List<Group> groups;
 
     /**
      * Returns the user id.

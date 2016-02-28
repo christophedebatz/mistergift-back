@@ -2,13 +2,16 @@ package com.gvstave.mistergift.data.service;
 
 
 import com.gvstave.mistergift.data.domain.QUser;
+import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Objects;
 
 /**
  *
@@ -19,6 +22,10 @@ public class UserService {
     /** The user persistence service. */
     @Inject
     private UserPersistenceService userPersistenceService;
+
+    /** The token persistence service. */
+    @Inject
+    private TokenPersistenceService tokenPersistenceService;
 
     /** The password encoder. */
     private PasswordEncoder passwordEncoder;
@@ -52,6 +59,18 @@ public class UserService {
         }
 
         return null;
+    }
+
+    /**
+     *
+     * @param user
+     */
+    public void removeToken(User user) {
+        Objects.requireNonNull(user);
+        Token token = user.getToken();
+        user.setToken(null);
+        userPersistenceService.save(user);
+        tokenPersistenceService.delete(token.getId());
     }
 
     /**

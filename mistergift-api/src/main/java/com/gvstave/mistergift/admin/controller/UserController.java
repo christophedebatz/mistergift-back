@@ -27,7 +27,6 @@ public class UserController extends BaseController {
     @Inject
     private UserService userService;
 
-
     /**
      * Returns the list of the users.
      *
@@ -36,8 +35,7 @@ public class UserController extends BaseController {
     @UserRestricted
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
-    PageResponse<User> getUsers(
-            @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page) {
+    PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         PageRequest pageRequest = getPageRequest(page);
         return new PageResponse<>(userPersistenceService.findAll(pageRequest));
     }
@@ -63,7 +61,7 @@ public class UserController extends BaseController {
      */
     @UserRestricted
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public @ResponseBody User getUserById(@RequestParam(value = "id") final Long id) {
+    public @ResponseBody User getUserById(@PathVariable(value = "id") Long id) {
         return userPersistenceService.findOne(id);
     }
 
