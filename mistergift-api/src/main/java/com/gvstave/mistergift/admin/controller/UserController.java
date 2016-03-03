@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
+@UserRestricted
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController extends AbstractController {
@@ -54,7 +55,6 @@ public class UserController extends AbstractController {
      *
      * @return Serialized users list.
      */
-    @UserRestricted
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
@@ -68,7 +68,6 @@ public class UserController extends AbstractController {
      *
      * @return Serialized user.
      */
-    @UserRestricted
     @RequestMapping(method = RequestMethod.GET, path = "/self")
     public @ResponseBody
     User getSelfUser() {
@@ -81,7 +80,6 @@ public class UserController extends AbstractController {
      * @param id The user id.
      * @return Serialized user.
      */
-    @UserRestricted
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public @ResponseBody User getUserById(@PathVariable(value = "id") Long id) {
         return userPersistenceService.findOne(id);
