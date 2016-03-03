@@ -7,21 +7,20 @@ import com.gvstave.mistergift.admin.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.FileMetadata;
 import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.UserService;
-import org.apache.commons.io.FilenameUtils;
+import com.gvstave.mistergift.service.CroppingService;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
-import java.io.BufferedOutputStream;
+import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,6 +36,14 @@ public class UserController extends AbstractController {
     /** The user service. */
     @Inject
     private UserService userService;
+
+    /** The file metadata persistence service. */
+    @Inject
+    private FileMetadataPersistenceService fileMetadataPersistenceService;
+
+    /** The picture cropping service. */
+    @Inject
+    private CroppingService croppingService;
 
     /** The Spring environment. */
     @Inject
@@ -91,7 +98,7 @@ public class UserController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public @ResponseBody User save(@RequestBody User user)
             throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureValidUser(user, false);
+        ensureUserValid(user, false);
         return userService.saveOrUpdate(user);
     }
 
@@ -106,7 +113,7 @@ public class UserController extends AbstractController {
     @RequestMapping(method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public void update(@RequestBody User user)
             throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureValidUser(user, true);
+        ensureUserValid(user, true);
         userService.saveOrUpdate(user);
     }
 
@@ -119,36 +126,43 @@ public class UserController extends AbstractController {
      * @throws FileUploadException when error occurs while uploading.
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST, path = "/self")
-    public @ResponseBody FileMetadata uploadProfilePicture(@RequestParam("file") MultipartFile file)
-            throws InvalidFieldValueException, FileUploadException {
+    @RequestMapping(method = RequestMethod.POST, path = "/self", consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public @ResponseBody FileMetadata uploadProfilePicture(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("cropCoords") Rectangle cropCoords) throws InvalidFieldValueException, FileUploadException {
 
         if (file == null || file.isEmpty()) {
             throw new InvalidFieldValueException("file");
         }
 
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String directory = environment.getProperty("upload.directory");
-        String name = String.format("%s/%s.%s", directory, UUID.randomUUID().toString(), extension);
+        String targetDirectory = environment.getProperty("upload.picture.directory");
+        String targetFileName = String.format("%s/%s", targetDirectory, UUID.randomUUID().toString());
 
         try {
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(name)));
-            FileCopyUtils.copy(file.getInputStream(), stream);
-            stream.close();
+            // convert to file
+            File pictureFile = new File(targetFileName);
+            file.transferTo(pictureFile);
 
+            // crop and save
+            croppingService.crop(pictureFile, cropCoords).save();
+
+            // create file-metadate
             User currentUser = getUser();
-            FileMetadata fileMetadata = new FileMetadata();
-            fileMetadata.setOwner(currentUser);
-            fileMetadata.setUrl(environment.getProperty("upload.domain") + name);
-            // save file meta data
+            FileMetadata profilePicture = new FileMetadata();
+            profilePicture.setOwner(currentUser);
+            profilePicture.setUrl(environment.getProperty("upload.domain") + targetFileName);
 
-            currentUser.setPicture(fileMetadata);
+            // save file meta data
+            fileMetadataPersistenceService.save(profilePicture);
+
+            // save user
+            currentUser.setPicture(profilePicture);
             userPersistenceService.save(currentUser);
 
-            return fileMetadata;
+            return profilePicture;
 
-        } catch (IOException e) {
-            throw new FileUploadException(file, e);
+        } catch (IOException exception) {
+            throw new FileUploadException(file, exception);
         }
     }
 
@@ -156,10 +170,11 @@ public class UserController extends AbstractController {
      * Ensures that given user is correctly hydrated.
      *
      * @param user The user.
-     * @throws UnauthorizedOperationException
-     * @throws InvalidFieldValueException
+     * @param isUpdate Whether we want to update user.
+     * @throws UnauthorizedOperationException if the user that asks for action has not enough right to proceed.
+     * @throws InvalidFieldValueException if a field to update is null or empty.
      */
-    private void ensureValidUser(User user, boolean isUpdate)
+    private void ensureUserValid(User user, boolean isUpdate)
             throws UnauthorizedOperationException, InvalidFieldValueException {
 
         Objects.requireNonNull(user);

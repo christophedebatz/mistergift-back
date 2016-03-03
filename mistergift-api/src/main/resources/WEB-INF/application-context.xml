@@ -18,6 +18,7 @@
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
     <context:component-scan base-package="com.gvstave.mistergift.admin" />
+    <context:component-scan base-package="com.gvstave.mistergift.service" />
     <context:component-scan base-package="com.gvstave.mistergift.data" />
 
     <mvc:annotation-driven/>

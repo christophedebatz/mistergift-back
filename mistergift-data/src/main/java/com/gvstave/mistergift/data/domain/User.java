@@ -48,6 +48,11 @@ public class User {
     @JoinColumn(name = "picture_id", nullable = true)
     private FileMetadata picture;
 
+    /** The user picture. */
+    @OneToOne
+    @JoinColumn(name = "thumnail_id", nullable = true)
+    private FileMetadata thumbnail;
+
     /** The user groups. */
     @OneToMany
     private List<Group> groups;
@@ -176,6 +181,24 @@ public class User {
      */
     public FileMetadata getPicture() {
         return picture;
+    }
+
+    /**
+     * Returns the user profile thumbnail picture.
+     *
+     * @return The thumbnail picture.
+     */
+    public FileMetadata getThumbnail() {
+        return thumbnail;
+    }
+
+    /**
+     * Sets the user profile thumbnail picture.
+     *
+     * @param thumbnail The user thumbnail picture.
+     */
+    public void setThumbnail(FileMetadata thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     /**

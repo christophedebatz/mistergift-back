@@ -5,20 +5,6 @@ mg-back is the back-end project of Mister Gifts version 2. It includes Rest API 
 
 ** Install **
 
-1) Install MySQL, create the schema "mistergift" and launch it
-
-2) Download Tomcat 8: http://tomcat.apache.org/download-80.cgi#8.0.30 (prefer the tar.gz)
-
-3) Start Tomcat server like this,
-```
-$ ./path/to/tomcat8/bin/startup.sh
-```
-
-4) Deploy web app (see bellow)
-
-** Deploy **
-```
-$ ./path/to/mg-back/deploynow.sh
-```
-
-Tendresse & chocolate.
+1) Go to your root directory (the location where "mg-back" will be created)
+2) Execute the script "setup.sh" (this script needs the other scripts of the folder where it is)
+3) 	

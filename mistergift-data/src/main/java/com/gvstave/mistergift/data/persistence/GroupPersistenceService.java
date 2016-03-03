@@ -1,13 +1,15 @@
 package com.gvstave.mistergift.data.persistence;
 
-import com.gvstave.mistergift.data.persistence.repository.GroupRepository;
 import com.gvstave.mistergift.data.domain.Group;
+import com.gvstave.mistergift.data.persistence.repository.GroupRepository;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class GroupPersistenceService implements GroupRepository {
 
     public <S extends Group> S save(S s) {
