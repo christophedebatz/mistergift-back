@@ -35,3 +35,4 @@ AUTHORIZATION
 
 Request:
 [GET|POST|PUT|DELETE] /resource
+So, you must pass a valid token in header named "X-MG-AUTH" to access to user-only resources.
