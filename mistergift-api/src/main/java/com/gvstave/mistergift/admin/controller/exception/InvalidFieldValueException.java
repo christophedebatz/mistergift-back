@@ -9,7 +9,7 @@ public class InvalidFieldValueException extends Exception {
      *
      */
     public InvalidFieldValueException() {
-        super("A field is null or empty.");
+        super("A field is invalid, null or empty.");
     }
 
     /**
@@ -17,7 +17,7 @@ public class InvalidFieldValueException extends Exception {
      * @param fieldName
      */
     public InvalidFieldValueException(String fieldName) {
-        super(String.format("The %s is null or empty.", fieldName));
+        super(String.format("The field %s is invalid, null or empty.", fieldName));
     }
 
 }

@@ -70,4 +70,7 @@
     <bean id="contextInitializer" class="com.gvstave.mistergift.config.ContextInitializer" />
 
     <bean id="swaggerConfig" class="com.gvstave.mistergift.config.SwaggerConfig" />
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 </beans>

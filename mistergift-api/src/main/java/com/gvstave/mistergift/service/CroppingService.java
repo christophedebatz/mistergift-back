@@ -29,7 +29,7 @@ public class CroppingService {
     private BufferedImage bufferedImage;
 
     /** The logger. */
-    private static Logger logger = Logger.getLogger(CroppingService.class);
+    private static Logger LOGGER = Logger.getLogger(CroppingService.class);
 
     /**
      * Crop picture.
@@ -55,7 +55,7 @@ public class CroppingService {
 
             return this;
         } catch (IOException exception) {
-            logger.error(exception);
+            LOGGER.error(exception);
             throw exception;
         }
     }
@@ -63,7 +63,7 @@ public class CroppingService {
     /**
      * Save current work on disk and returns the file.
      */
-    public void save() throws IOException {
+    public void save(String extension) throws IOException {
 
 //        String filePath = String.format(
 //                "%s/%s_%s",
@@ -73,9 +73,9 @@ public class CroppingService {
 //        );
 
         try {
-            ImageIO.write(bufferedImage, environment.getProperty("upload.picture.extension"), picture);
+            ImageIO.write(bufferedImage, extension, picture);
         } catch (IOException exception) {
-            logger.error(exception);
+            LOGGER.error(exception);
             throw exception;
         }
     }

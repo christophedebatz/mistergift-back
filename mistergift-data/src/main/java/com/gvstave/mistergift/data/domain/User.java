@@ -50,7 +50,7 @@ public class User {
 
     /** The user picture. */
     @OneToOne
-    @JoinColumn(name = "thumnail_id", nullable = true)
+    @JoinColumn(name = "thumbnail_id", nullable = true)
     private FileMetadata thumbnail;
 
     /** The user groups. */

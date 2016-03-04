@@ -1,15 +1,36 @@
 package com.gvstave.mistergift.data.persistence;
 
 import com.gvstave.mistergift.data.domain.FileMetadata;
+import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.FileMetadataRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Repository
-public class FileMetadataPersistenceService implements FileMetadataRepository {
+public class FileMetadataPersistenceService extends BaseQueryDslRepositorySupport<FileMetadata> implements FileMetadataRepository {
 
+    /**
+     * The default constructor for QueryDsl support.
+     */
+    public FileMetadataPersistenceService() {
+        super(FileMetadata.class);
+    }
+
+    /**
+     * Saves a file.
+     *
+     * @param file The user to persist.
+     * @return The hydrated file.
+     */
+    @Transactional
     @Override
-    public <S extends FileMetadata> S save(S s) {
-        return null;
+    public <S extends FileMetadata> S save(S file) {
+        Objects.requireNonNull(file);
+        S newFile = getEntityManager().merge(file);
+        getEntityManager().flush();
+        return newFile;
     }
 
     @Override
