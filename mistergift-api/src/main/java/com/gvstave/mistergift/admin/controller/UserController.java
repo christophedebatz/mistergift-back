@@ -11,7 +11,8 @@ import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.UserService;
 import com.gvstave.mistergift.service.CroppingService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 public class UserController extends AbstractController {
 
     /** The logger. */
-    private static Logger LOGGER = Logger.getLogger(UserController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     /** The user persistence service. */
     @Inject
@@ -64,7 +65,7 @@ public class UserController extends AbstractController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
-        LOGGER.debug(String.format("Retrieving users with page=%d", page));
+        LOGGER.debug("Retrieving users with page={}", page);
         PageRequest pageRequest = getPageRequest(page);
         return new PageResponse<>(userPersistenceService.findAll(pageRequest));
     }
@@ -78,7 +79,7 @@ public class UserController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, path = "/self")
     public @ResponseBody User getSelfUser() {
         User user = getUser();
-        LOGGER.debug(String.format("Retrieving current user with id=%d", user.getId()));
+        LOGGER.debug("Retrieving current user with id={}", user.getId());
         return user;
     }
 
@@ -90,7 +91,7 @@ public class UserController extends AbstractController {
      */
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public @ResponseBody User getUserById(@PathVariable(value = "id") Long id) {
-        LOGGER.debug(String.format("Retrieving user by id=%d", id));
+        LOGGER.debug("Retrieving user by id={}", id);
         return userPersistenceService.findOne(id);
     }
 
@@ -106,7 +107,7 @@ public class UserController extends AbstractController {
     public @ResponseBody User save(@RequestBody User user)
             throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, false);
-        LOGGER.debug(String.format("Saving user=%s", user));
+        LOGGER.debug("Saving user={}", user);
         return userService.saveOrUpdate(user);
     }
 
@@ -122,7 +123,7 @@ public class UserController extends AbstractController {
     public void update(@RequestBody User user)
             throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, true);
-        LOGGER.debug(String.format("Updating user=%s", user));
+        LOGGER.debug("Updating user={}", user);
         userService.saveOrUpdate(user);
     }
 
@@ -139,7 +140,7 @@ public class UserController extends AbstractController {
     public @ResponseBody FileMetadata uploadProfilePicture(
             @RequestParam("file") MultipartFile file,
             @RequestParam("coords") String coords) throws InvalidFieldValueException, FileUploadException {
-        LOGGER.debug(String.format("Uploading picture=%s and cropping=%s", file, coords));
+        LOGGER.debug("Uploading picture={} and cropping={}", file, coords);
 
         if (file == null || file.isEmpty()) {
             throw new InvalidFieldValueException("file");
@@ -190,6 +191,7 @@ public class UserController extends AbstractController {
      * @throws InvalidFieldValueException whether the coordinate string is invalid.
      */
     private Rectangle parseCroppingCoords(String stringCoords) throws InvalidFieldValueException {
+
         List<Integer> coords = Arrays.asList(stringCoords.split("\\s")).stream()
             .map(Integer::valueOf)
             .collect(Collectors.toList());

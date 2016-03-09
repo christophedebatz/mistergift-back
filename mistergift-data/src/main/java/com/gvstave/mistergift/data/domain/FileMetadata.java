@@ -1,9 +1,14 @@
 package com.gvstave.mistergift.data.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
 @Table(schema = "mistergift", name = "file_metadata")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileMetadata
 {
     @Id
@@ -58,6 +63,7 @@ public class FileMetadata
      *
      * @return The file owner.
      */
+    @JsonIgnore
     public User getOwner() {
         return owner;
     }
@@ -67,6 +73,7 @@ public class FileMetadata
      *
      * @param owner The file owner.
      */
+    @JsonProperty
     public void setOwner(User owner) {
         this.owner = owner;
     }

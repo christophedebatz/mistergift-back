@@ -54,7 +54,11 @@ public class User {
     private FileMetadata thumbnail;
 
     /** The user groups. */
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_group", joinColumns = {
+        @JoinColumn(name = "user_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+        @JoinColumn(name = "group_id", nullable = false, updatable = false) }
+    )
     private List<Group> groups;
 
     /**

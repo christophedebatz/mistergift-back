@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.service;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class CroppingService {
     private BufferedImage bufferedImage;
 
     /** The logger. */
-    private static Logger LOGGER = Logger.getLogger(CroppingService.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(CroppingService.class);
 
     /**
      * Crop picture.
@@ -55,7 +56,7 @@ public class CroppingService {
 
             return this;
         } catch (IOException exception) {
-            LOGGER.error(exception);
+            LOGGER.error("Error while cropping, error={}", exception);
             throw exception;
         }
     }
@@ -75,7 +76,7 @@ public class CroppingService {
         try {
             ImageIO.write(bufferedImage, extension, picture);
         } catch (IOException exception) {
-            LOGGER.error(exception);
+            LOGGER.error("Error while saving picture on disk, error={}", exception);
             throw exception;
         }
     }

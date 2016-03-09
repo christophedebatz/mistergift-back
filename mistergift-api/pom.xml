@@ -89,6 +89,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>4.2.4.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -132,18 +138,13 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.14</version>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.12</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.14</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
