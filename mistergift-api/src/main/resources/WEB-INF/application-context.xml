@@ -26,6 +26,7 @@
 
     <security:http pattern="/authenticate" authentication-manager-ref="authenticationManager" use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
+        <security:custom-filter ref="corsFilter" position="FIRST" />
         <security:intercept-url pattern="/authenticate" access="permitAll" />
         <security:custom-filter ref="authenticationFilter" after="LAST" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
@@ -33,6 +34,7 @@
 
     <security:http pattern="/**" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
+        <security:custom-filter ref="corsFilter" position="FIRST"/>
         <security:intercept-url pattern="/v2/**" access="permitAll" />
         <security:custom-filter ref="authorizationFilter" after="BASIC_AUTH_FILTER" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
@@ -45,6 +47,8 @@
             <security:password-encoder ref="bcryptEncoder" />
         </security:authentication-provider>
     </security:authentication-manager>
+
+    <bean id="corsFilter" class="com.gvstave.mistergift.admin.filter.CorsFilter" />
 
     <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg name="strength" value="11" />

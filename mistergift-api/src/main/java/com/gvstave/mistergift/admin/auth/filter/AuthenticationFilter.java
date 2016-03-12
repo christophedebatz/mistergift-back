@@ -9,7 +9,6 @@ import com.gvstave.mistergift.data.service.UserService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -70,12 +69,6 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        // ensure request method
-        if (!request.getMethod().equalsIgnoreCase("post")) {
-            throw new AuthenticationServiceException("Bad request method.");
-        }
-
-        // get credentials from request body
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
