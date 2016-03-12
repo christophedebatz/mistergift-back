@@ -3,6 +3,7 @@ package com.gvstave.mistergift.data.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.xml.internal.rngom.parse.host.Base;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ import java.util.List;
 @Entity
 @Table(schema = "mistergift", name = "users")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
+public class User implements BaseEntity<Long> {
     /** The user id. */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     /** The user first name. */
     @Column(name = "first_name", length = 255, nullable = false)
@@ -55,7 +56,7 @@ public class User {
 
     /** The user groups. */
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_group", joinColumns = {
+    @JoinTable(name = "user_groups", joinColumns = {
         @JoinColumn(name = "user_id", nullable = false, updatable = false) }, inverseJoinColumns = {
         @JoinColumn(name = "group_id", nullable = false, updatable = false) }
     )
@@ -69,20 +70,22 @@ public class User {
     }
 
     /**
-     * Returns the user id.
+     * Returns the entity id.
      *
-     * @return The user id.
+     * @return the id.
      */
-    public long getId() {
+    @Override
+    public Long getId() {
         return id;
     }
 
     /**
-     * Set the user id.
+     * Sets the entity id.
      *
-     * @param id The user id.
+     * @param id the id.
      */
-    public void setId(long id) {
+    @Override
+    public void setId(Long id) {
         this.id = id;
     }
 

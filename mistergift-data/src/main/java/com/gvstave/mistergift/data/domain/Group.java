@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(schema = "mistergift", name = "user_group")
-public class Group
+@Table(schema = "mistergift", name = "group")
+public class Group implements BaseEntity<Long>
 {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -25,7 +25,7 @@ public class Group
      *
      * @return The group id.
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -34,7 +34,7 @@ public class Group
      *
      * @param id The group id.
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
