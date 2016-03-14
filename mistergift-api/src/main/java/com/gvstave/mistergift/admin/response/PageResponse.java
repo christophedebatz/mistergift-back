@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,10 @@ public class PageResponse<T> {
      */
     @JsonProperty("content")
     public List getContent() {
+        if (page == null) {
+            return new ArrayList<>();
+        }
+
         return page.getContent();
     }
 
@@ -49,7 +54,7 @@ public class PageResponse<T> {
      */
     @JsonProperty("links")
     public Map<String, String> getLinks() {
-        if (page.getTotalPages() == 1) {
+        if (page == null || page.getTotalPages() == 1) {
             return null;
         }
 

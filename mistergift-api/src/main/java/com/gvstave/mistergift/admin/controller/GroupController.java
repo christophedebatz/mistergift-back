@@ -70,7 +70,8 @@ public class GroupController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
     public @ResponseBody Group save(@RequestBody Group group) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureGroupValid(group, false);
-        return groupPersistenceService.save(group);
+        LOGGER.debug("Creating group={}", group);
+        return groupService.createGroup(group, getUser());
     }
 
     /**
@@ -120,7 +121,7 @@ public class GroupController extends AbstractController {
             throw new UnauthorizedOperationException("update group");
         }
 
-        if (group.getId() == null || group.getId() <= 0) {
+        if (isUpdate && (group.getId() == null || group.getId() <= 0)) {
             throw new InvalidFieldValueException("id");
         }
 

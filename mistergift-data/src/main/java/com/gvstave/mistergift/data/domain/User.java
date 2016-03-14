@@ -55,8 +55,8 @@ public class User implements BaseEntity<Long> {
     private FileMetadata thumbnail;
 
     /** The user groups. */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_groups", joinColumns = {
+    @ManyToMany
+    @JoinTable(name = "group_users", joinColumns = {
         @JoinColumn(name = "user_id", nullable = false, updatable = false) }, inverseJoinColumns = {
         @JoinColumn(name = "group_id", nullable = false, updatable = false) }
     )

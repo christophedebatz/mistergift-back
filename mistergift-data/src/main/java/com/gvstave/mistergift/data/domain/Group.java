@@ -1,24 +1,50 @@
 package com.gvstave.mistergift.data.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(schema = "mistergift", name = "group")
-public class Group implements BaseEntity<Long>
-{
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Group implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private long id;
+    private Long id;
 
-    @Column(name = "name", length = 75, nullable = false)
+    @Column(name = "name", length = 75, unique = true, nullable = false)
     private String name;
 
     @Column(name = "description", length = 255, nullable = false)
     private String description;
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "group_users", joinColumns = {
+            @JoinColumn(name = "group_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+            @JoinColumn(name = "user_id", nullable = false, updatable = false) }
+    )
+    private List<User> members;
+
+    @ManyToMany
+    @JoinTable(name = "group_admins", joinColumns = {
+        @JoinColumn(name = "user_id", nullable = false, updatable = false) }, inverseJoinColumns = {
+        @JoinColumn(name = "group_id", nullable = false, updatable = false) }
+    )
     private List<User> administrators;
+
+    /**
+     * Constructor.
+     */
+    public Group() {
+        this.members = new ArrayList<>();
+        this.administrators = new ArrayList<>();
+    }
 
     /**
      * Returns the group id.
@@ -79,6 +105,7 @@ public class Group implements BaseEntity<Long>
      *
      * @return The group administrators.
      */
+    @JsonIgnore
     public List<User> getAdministrators() {
         return administrators;
     }
@@ -88,7 +115,26 @@ public class Group implements BaseEntity<Long>
      *
      * @param administrators The group administrators.
      */
+    @JsonSetter
     public void setAdministrators(List<User> administrators) {
         this.administrators = administrators;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @JsonIgnore
+    public List<User> getMembers() {
+        return members;
+    }
+
+    /**
+     *
+     * @param members
+     */
+    @JsonSetter
+    public void setMembers(List<User> members) {
+        this.members = members;
     }
 }

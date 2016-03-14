@@ -1,19 +1,45 @@
 package com.gvstave.mistergift.data.persistence;
 
 import com.gvstave.mistergift.data.domain.Group;
+import com.gvstave.mistergift.data.domain.QGroup;
+import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.GroupRepository;
+import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
+/**
+ * Repository for {@link Group}.
+ */
 @Repository
-public class GroupPersistenceService implements GroupRepository {
+public class GroupPersistenceService extends BaseQueryDslRepositorySupport<Group> implements GroupRepository {
 
-    public <S extends Group> S save(S s) {
-        return null;
+    /**
+     * The default constructor for QueryDsl support.
+     */
+    protected GroupPersistenceService() {
+        super(Group.class);
+    }
+
+    /**
+     * Saves a {@link Group}.
+     *
+     * @param group The group to persist.
+     * @return The hydrated user.
+     */
+    @Transactional
+    public <S extends Group> S save(S group) {
+        Objects.requireNonNull(group);
+        S newGroup = getEntityManager().merge(group);
+        getEntityManager().flush();
+        return newGroup;
     }
 
     public <S extends Group> Iterable<S> save(Iterable<S> iterable) {
@@ -28,6 +54,7 @@ public class GroupPersistenceService implements GroupRepository {
         return false;
     }
 
+    @Override
     public Iterable<Group> findAll() {
         return null;
     }
@@ -92,7 +119,14 @@ public class GroupPersistenceService implements GroupRepository {
         return null;
     }
 
+    /**
+     *
+     * @param pageable
+     * @return
+     */
     public Page<Group> findAll(Pageable pageable) {
-        return null;
+        JPQLQuery query = from(QGroup.group);
+        long resultsCount = query.count();
+        return buildPage(resultsCount, applyPagination(query, pageable).list(QGroup.group), pageable);
     }
 }
