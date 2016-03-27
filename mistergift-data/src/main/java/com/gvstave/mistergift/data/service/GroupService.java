@@ -49,7 +49,7 @@ public class GroupService {
     }
 
     /**
-     * Returns if the given user is an admin of the given group id.
+     * Returns if the given user is an api of the given group id.
      *
      * @param user The user.
      * @param groupId The group id.
@@ -61,7 +61,7 @@ public class GroupService {
         // if update operation
         Optional<Group> baseGroup = Optional.ofNullable(groupPersistenceService.findOne(groupId));
 
-        // current group must be an admin of the group
+        // current group must be an api of the group
         return baseGroup.isPresent() &&
                 baseGroup.get().getAdministrators().stream()
                         .filter(admin -> admin == user)

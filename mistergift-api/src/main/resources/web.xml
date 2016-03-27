@@ -33,7 +33,7 @@
 
     <filter>
         <filter-name>corsFilter</filter-name>
-        <filter-class>com.gvstave.mistergift.admin.filter.CorsFilter</filter-class>
+        <filter-class>com.gvstave.mistergift.api.filter.CorsFilter</filter-class>
     </filter>
 
     <filter-mapping>

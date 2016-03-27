@@ -28,7 +28,7 @@
 
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
-    <context:component-scan base-package="com.gvstave.mistergift.admin" />
+    <context:component-scan base-package="com.gvstave.mistergift.api" />
     <context:component-scan base-package="com.gvstave.mistergift.service" />
     <context:component-scan base-package="com.gvstave.mistergift.data" />
 
@@ -59,19 +59,19 @@
         </security:authentication-provider>
     </security:authentication-manager>
 
-    <bean id="corsFilter" class="com.gvstave.mistergift.admin.filter.CorsFilter" />
+    <bean id="corsFilter" class="com.gvstave.mistergift.api.filter.CorsFilter" />
 
     <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg name="strength" value="11" />
     </bean>
 
-    <bean id="unauthorizedEntryPoint" class="com.gvstave.mistergift.admin.auth.filter.UnauthorizedEntryPoint"/>
+    <bean id="unauthorizedEntryPoint" class="com.gvstave.mistergift.api.auth.filter.UnauthorizedEntryPoint"/>
 
-    <bean id="authorizationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthorizationFilter">
+    <bean id="authorizationFilter" class="com.gvstave.mistergift.api.auth.filter.AuthorizationFilter">
         <constructor-arg ref="unauthorizedEntryPoint" />
     </bean>
 
-    <bean id="authenticationFilter" class="com.gvstave.mistergift.admin.auth.filter.AuthenticationFilter">
+    <bean id="authenticationFilter" class="com.gvstave.mistergift.api.auth.filter.AuthenticationFilter">
         <constructor-arg type="java.lang.String" value="/authenticate"/>
         <property name="authenticationManager" ref="authenticationManager" />
     </bean>

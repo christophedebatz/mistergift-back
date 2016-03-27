@@ -42,7 +42,7 @@ public class ContextInitializer extends WebMvcConfigurerAdapter implements Appli
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("**/**")
-                .addResourceLocations("classpath:/META-INF/resources/");
+                .addResourceLocations("classpath:/WEB-INF/resources/");
 
     }
 
