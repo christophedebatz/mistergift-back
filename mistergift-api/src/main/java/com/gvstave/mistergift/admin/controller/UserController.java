@@ -1,14 +1,18 @@
 package com.gvstave.mistergift.admin.controller;
 
+import com.gvstave.mistergift.admin.access.PublicAccessGuardian;
+import com.gvstave.mistergift.admin.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.admin.controller.exception.FileUploadException;
 import com.gvstave.mistergift.admin.controller.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.admin.controller.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.admin.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.FileMetadata;
+import com.gvstave.mistergift.data.domain.Gift;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.service.GiftService;
 import com.gvstave.mistergift.data.service.UserService;
 import com.gvstave.mistergift.service.CroppingService;
 import org.slf4j.Logger;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +35,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@UserRestricted
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController extends AbstractController {
@@ -46,6 +50,10 @@ public class UserController extends AbstractController {
     @Inject
     private UserService userService;
 
+    /** The gift service. */
+    @Inject
+    private GiftService giftService;
+
     /** The file metadata persistence service. */
     @Inject
     private FileMetadataPersistenceService fileMetadataPersistenceService;
@@ -58,11 +66,17 @@ public class UserController extends AbstractController {
     @Inject
     private Environment environment;
 
+    /** The multiple access voter. */
+    @Inject
+    private PublicAccessGuardian publicAccessGuardian;
+
     /**
      * Returns the list of the users.
      *
      * @return Serialized users list.
      */
+    @UserRestricted
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         LOGGER.debug("Retrieving users with page={}", page);
@@ -76,6 +90,8 @@ public class UserController extends AbstractController {
      *
      * @return Serialized user.
      */
+    @UserRestricted
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/self")
     public @ResponseBody User getSelfUser() {
         User user = getUser();
@@ -89,6 +105,7 @@ public class UserController extends AbstractController {
      * @param id The user id.
      * @return Serialized user.
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public @ResponseBody User getUserById(@PathVariable(value = "id") Long id) {
         LOGGER.debug("Retrieving user by id={}", id);
@@ -104,9 +121,10 @@ public class UserController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody User save(@RequestBody User user)
-            throws UnauthorizedOperationException, InvalidFieldValueException {
+    public @ResponseBody User save(@RequestBody User user, HttpServletRequest httpRequest) throws
+            UnauthorizedOperationException, InvalidFieldValueException, TooManyRequestException {
         ensureUserValid(user, false);
+        publicAccessGuardian.check(httpRequest);
         LOGGER.debug("Saving user={}", user);
         return userService.saveOrUpdate(user);
     }
@@ -118,6 +136,7 @@ public class UserController extends AbstractController {
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
+    @UserRestricted
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public void update(@RequestBody User user)
@@ -135,6 +154,7 @@ public class UserController extends AbstractController {
      * @throws InvalidFieldValueException when file is null or empty.
      * @throws FileUploadException when error occurs while uploading.
      */
+    @UserRestricted
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, path = "/self", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public @ResponseBody FileMetadata uploadProfilePicture(
@@ -181,6 +201,22 @@ public class UserController extends AbstractController {
         } catch (IOException exception) {
             throw new FileUploadException(file, exception);
         }
+    }
+
+    /**
+     * Returns the user gifts.
+     *
+     * @param page The current page.
+     * @return The gifts page.
+     */
+    @UserRestricted
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/self/gifts")
+    public @ResponseBody PageResponse<Gift> getUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+        User user = getUser();
+        LOGGER.debug("Retrieving user={} viewable gifts with page={}", user, page);
+        PageRequest pageRequest = getPageRequest(page);
+        return new PageResponse<>(giftService.getUserGifts(user, pageRequest));
     }
 
     /**

@@ -3,7 +3,6 @@ package com.gvstave.mistergift.data.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.xml.internal.rngom.parse.host.Base;
 
 import javax.persistence.*;
 import java.util.ArrayList;

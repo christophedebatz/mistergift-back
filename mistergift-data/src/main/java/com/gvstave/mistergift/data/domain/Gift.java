@@ -32,6 +32,9 @@ public class Gift {
     @ManyToMany
     private List<Group> groups;
 
+    @OneToMany
+    private List<User> owners;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
@@ -41,10 +44,11 @@ public class Gift {
     private Date modificationDate;
 
     /**
-     *
+     * Constructor.
      */
     public Gift() {
-        groups = new ArrayList<Group>();
+        groups = new ArrayList<>();
+        owners = new ArrayList<>();
     }
 
 
@@ -172,6 +176,22 @@ public class Gift {
      */
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<User> getOwners() {
+        return owners;
+    }
+
+    /**
+     *
+     * @param owners
+     */
+    public void setOwners(List<User> owners) {
+        this.owners = owners;
     }
 
     /**

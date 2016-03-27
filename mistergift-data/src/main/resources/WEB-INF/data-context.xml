@@ -18,6 +18,14 @@
 
     <jpa:repositories base-package="com.gvstave.mistergift.data.persistence.repository" entity-manager-factory-ref="mg-em-default" />
 
+    <bean id="redisClient" class="com.lambdaworks.redis.support.RedisClientFactoryBean">
+        <property name="uri" value="redis://localhost:6379"/>
+    </bean>
+
+    <bean id="accessService" class="com.gvstave.mistergift.data.redis.Redis">
+        <constructor-arg ref="redisClient" />
+    </bean>
+
     <beans>
         <bean id="mg-ds-default" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
             <property name="driverClassName" value="${spring.datasource.driver}" />
