@@ -2,27 +2,51 @@ package com.gvstave.mistergift.provider.domain;
 
 import com.gvstave.mistergift.provider.service.Provider;
 
+/**
+ * Describes a product.
+ */
 public class Product {
 
+    /** The provider. */
     private Provider provider;
 
+    /** The product name. */
     private String name;
 
+    /** The api. */
+    private Api api;
+
+    /** The api id. */
     private String apiId;
 
+    /** The product brand. */
     private String brand;
 
+    /** The product description. */
     private String description;
 
+    /** The product price. */
     private double price;
 
+    /** The product rating. */
     private float rating;
 
+    /** The product picture url. */
     private String pictureUrl;
 
+    /** The product seller name. */
     private String seller;
 
+    /** The product shipping fees. */
     private double shippingFees;
+
+    public Api getApi() {
+        return api;
+    }
+
+    public void setApi(Api api) {
+        this.api = api;
+    }
 
     public Provider getProvider() {
         return provider;

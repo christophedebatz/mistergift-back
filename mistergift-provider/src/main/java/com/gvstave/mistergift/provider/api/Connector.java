@@ -1,9 +1,12 @@
 package com.gvstave.mistergift.provider.api;
 
-import java.util.Map;
+import com.gvstave.mistergift.provider.common.ParameterBag;
+import org.codehaus.jettison.json.JSONObject;
+
+import java.util.List;
 
 public interface Connector {
 
-    String fetch(Map<String, String> parameters);
+    List<JSONObject> fetch(QueryType queryType, ParameterBag parameterBag);
 
 }
