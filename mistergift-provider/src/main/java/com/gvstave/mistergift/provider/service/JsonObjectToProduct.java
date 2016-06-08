@@ -7,7 +7,7 @@ import org.codehaus.jettison.json.JSONObject;
 import java.util.function.Function;
 
 /**
- *
+ * Manages the transformation from a json object into a product.
  */
 public class JsonObjectToProduct implements Function<JSONObject, Product> {
 
@@ -35,6 +35,7 @@ public class JsonObjectToProduct implements Function<JSONObject, Product> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return product;
     }
 }

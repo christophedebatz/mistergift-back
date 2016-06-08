@@ -4,14 +4,12 @@ import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueExceptio
 import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.Gift;
 import com.gvstave.mistergift.data.domain.Group;
 import com.gvstave.mistergift.data.persistence.GroupPersistenceService;
 import com.gvstave.mistergift.data.service.GiftService;
 import com.gvstave.mistergift.data.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,6 +34,7 @@ public class GroupController extends AbstractController {
     @Inject
     private GroupService groupService;
 
+    /** The gift service. */
     @Inject
     private GiftService giftService;
 
@@ -111,16 +110,16 @@ public class GroupController extends AbstractController {
      *
      * @return
      */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public @ResponseBody PageResponse<Gift> getGroupGiftsForUser(@RequestParam("id") Long id) {
-        Group group = groupPersistenceService.findOne(id);
-        if (group != null) {
-            Page<Gift> gifts = giftService.getGroupGiftForUser(group, getUser());
-        }
-
-        return null;
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+//    public @ResponseBody PageResponse<Gift> getGroupGiftsForUser(@RequestParam("id") Long id) {
+//        Group group = groupPersistenceService.findOne(id);
+//        if (group != null) {
+//            //Page<Gift> gifts = giftService.getGroupGiftForUser(group, getUser());
+//        }
+//
+//        return null;
+//    }
 
     /**
      * Ensure that given group is correctly hydrated.

@@ -1,21 +1,27 @@
 package com.gvstave.mistergift.data.redis;
 
+import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.api.sync.RedisCommands;
-import com.lambdaworks.redis.support.RedisClientFactoryBean;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Redis {
 
     /** The redis client factory bean. */
-    private RedisClientFactoryBean redis;
+    private RedisClient redis;
+
+    /**
+     * Default constructor.
+     */
+    public Redis() {
+    }
 
     /**
      * Constructor with @Inject of redis.
      *
      * @param redis
      */
-    public Redis(RedisClientFactoryBean redis) {
+    public Redis(RedisClient redis) {
         this.redis = redis;
     }
 
@@ -25,9 +31,7 @@ public class Redis {
      * @throws Exception
      */
     public RedisCommands<String, Object> getCommander() throws Exception {
-        return redis.getObject()
-                .connect(new SerializedObjectCodec())
-                .sync();
+        return redis.connect(new SerializedObjectCodec()).sync();
     }
 
     /**
