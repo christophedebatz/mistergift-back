@@ -29,14 +29,14 @@
         <security:csrf disabled="true" />
         <security:custom-filter ref="corsFilter" position="FIRST" />
         <security:intercept-url pattern="/authenticate" access="permitAll" />
-        <security:custom-filter ref="authenticationFilter" after="LAST" />
+        <security:custom-filter ref="authenticationFilter" after="FIRST" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
     </security:http>
 
     <security:http pattern="/**" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
         <security:custom-filter ref="corsFilter" position="FIRST"/>
-        <security:intercept-url pattern="/v2/**" access="permitAll" />
+        <security:custom-filter ref="userAccessFilter" after="FIRST"/>
         <security:custom-filter ref="authorizationFilter" after="BASIC_AUTH_FILTER" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
     </security:http>
@@ -50,6 +50,14 @@
     </security:authentication-manager>
 
     <bean id="corsFilter" class="com.gvstave.mistergift.api.filter.CorsFilter" />
+
+    <bean id="userAccessFilter" class="com.gvstave.mistergift.api.filter.UserAccessFilter" />
+
+    <!--<bean id="userAccessGuardianService" class="com.gvstave.mistergift.api.access.UserAccessGuardianService" />
+
+    <bean id="userAccessService" class="com.gvstave.mistergift.api.access.UserAccessService" />
+
+    <bean id="redisCacheService" class="com.gvstave.mistergift.data.cache.redis.RedisCacheService" />-->
 
     <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg name="strength" value="11" />

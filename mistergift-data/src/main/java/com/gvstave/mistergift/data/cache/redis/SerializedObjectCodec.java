@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.data.redis;
+package com.gvstave.mistergift.data.cache.redis;
 
 import com.lambdaworks.redis.codec.RedisCodec;
 

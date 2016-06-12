@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.api.controller;
 
+import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.Gift;
 import com.gvstave.mistergift.data.persistence.GiftPersistenceService;
@@ -24,6 +25,13 @@ public class GiftController extends AbstractController {
     /** The gift persistence service. */
     @Inject
     private GiftPersistenceService giftPersistenceService;
+
+    /**
+     * Default constructor.
+     */
+    public GiftController() throws TooManyRequestException {
+        super();
+    }
 
     /**
      * Returns a {@link Gift}.

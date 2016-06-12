@@ -2,11 +2,9 @@ package com.gvstave.mistergift.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,10 +16,6 @@ import java.util.Objects;
  */
 @Service
 public class CroppingService {
-
-    /** The environment. */
-    @Inject
-    private Environment environment;
 
     /** The picture file. */
     private File picture;
@@ -48,10 +42,10 @@ public class CroppingService {
         try {
             bufferedImage = ImageIO.read(picture);
             bufferedImage = bufferedImage.getSubimage(
-                    (int) coords.getX(),
-                    (int) coords.getY(),
-                    (int) coords.getWidth(),
-                    (int) coords.getHeight()
+                (int) coords.getX(),
+                (int) coords.getY(),
+                (int) coords.getWidth(),
+                (int) coords.getHeight()
             );
 
             return this;

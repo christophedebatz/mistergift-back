@@ -1,6 +1,5 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.PublicAccessGuardian;
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.api.controller.exception.FileUploadException;
 import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
@@ -66,9 +65,12 @@ public class UserController extends AbstractController {
     @Inject
     private Environment environment;
 
-    /** The multiple access voter. */
-    @Inject
-    private PublicAccessGuardian publicAccessGuardian;
+    /**
+     * Default constructor.
+     */
+    public UserController() throws TooManyRequestException {
+        super();
+    }
 
     /**
      * Returns the list of the users.
@@ -124,7 +126,6 @@ public class UserController extends AbstractController {
     public @ResponseBody User save(@RequestBody User user, HttpServletRequest httpRequest) throws
             UnauthorizedOperationException, InvalidFieldValueException, TooManyRequestException {
         ensureUserValid(user, false);
-        publicAccessGuardian.check(httpRequest);
         LOGGER.debug("Saving user={}", user);
         return userService.saveOrUpdate(user);
     }

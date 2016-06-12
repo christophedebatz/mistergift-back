@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.api.handler;
 
+import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.api.response.ErrorResponse;
 import com.gvstave.mistergift.api.response.Response;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ class GlobalExceptionHandler {
      * @throws Exception The given exception.
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({ Exception.class, TooManyRequestException.class })
     public ResponseEntity<Response> defaultErrorHandler(HttpServletRequest httpServletRequest, Exception exception) throws Exception {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

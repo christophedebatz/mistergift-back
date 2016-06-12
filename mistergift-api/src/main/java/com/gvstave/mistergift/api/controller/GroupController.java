@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.api.controller;
 
+import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.PageResponse;
@@ -37,6 +38,13 @@ public class GroupController extends AbstractController {
     /** The gift service. */
     @Inject
     private GiftService giftService;
+
+    /**
+     * Default constructor.
+     */
+    public GroupController() throws TooManyRequestException {
+        super();
+    }
 
     /**
      * Returns the list of the groups.

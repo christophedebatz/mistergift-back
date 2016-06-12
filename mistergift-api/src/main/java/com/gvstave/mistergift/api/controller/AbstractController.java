@@ -4,17 +4,15 @@ import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.service.TokenService;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
- * Base abstract controller that offers some sessions methods.
+ * Base controller that offers some sessions methods.
  */
-@RestController
-abstract class AbstractController {
+class AbstractController {
 
     /** The environment. */
     @Inject
@@ -35,7 +33,7 @@ abstract class AbstractController {
      */
     protected User getUser() {
         String token = httpServletRequest.getHeader(
-                environment.getProperty("token.header.name")
+            environment.getProperty("token.header.name")
         );
 
         if (token != null) {
@@ -53,8 +51,8 @@ abstract class AbstractController {
      */
     protected PageRequest getPageRequest(int page) {
         return new PageRequest(
-                Optional.of(page).map(p -> p - 1 >= 0 ? p - 1 : 0).get(),
-                getResultsPageSize()
+            Optional.of(page).map(p -> p - 1 >= 0 ? p - 1 : 0).get(),
+            getResultsPageSize()
         );
 
     }
@@ -66,7 +64,7 @@ abstract class AbstractController {
      */
     private int getResultsPageSize() {
         return Integer.valueOf(
-                environment.getProperty("results.page.size")
+            environment.getProperty("results.page.size")
         );
     }
 

@@ -54,7 +54,6 @@ public class ErrorResponse {
      */
     public static ErrorResponse fromException(Exception exception, int status) {
         Objects.requireNonNull(exception);
-
         return new ErrorResponse(status, exception.getClass().getSimpleName(), exception.getMessage());
     }
 

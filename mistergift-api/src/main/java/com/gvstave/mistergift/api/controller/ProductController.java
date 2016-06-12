@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.api.controller;
 
+import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.provider.api.ProductSupplierService;
 import com.gvstave.mistergift.provider.api.SearchBuilder;
@@ -34,6 +35,13 @@ public class ProductController extends AbstractController {
     private Environment environment;
 
     /**
+     * Default constructor.
+     */
+    public ProductController() throws TooManyRequestException {
+        super();
+    }
+
+    /**
      * Returns the list of the users.
      *
      * @return Serialized users list.
@@ -41,11 +49,8 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody List<Product> searchProduct(
-            HttpServletRequest request,
-            @RequestParam(value = "query", required = true) String query) {
+    public @ResponseBody List<Product> searchProduct(HttpServletRequest request, @RequestParam(value = "query", required = true) String query) {
         LOGGER.debug("Searching products with query={}", query);
-
         SearchBuilder builder = SearchBuilder.create()
                 .withQuery(query);
 
