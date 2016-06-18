@@ -1,6 +1,5 @@
 package com.gvstave.mistergift.provider.api.cdiscount.connector;
 
-
 import com.gvstave.mistergift.provider.api.Connector;
 import com.gvstave.mistergift.provider.api.QueryType;
 import com.gvstave.mistergift.provider.common.ParameterBag;

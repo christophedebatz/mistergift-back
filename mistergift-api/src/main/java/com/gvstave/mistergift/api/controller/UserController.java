@@ -66,13 +66,6 @@ public class UserController extends AbstractController {
     private Environment environment;
 
     /**
-     * Default constructor.
-     */
-    public UserController() throws TooManyRequestException {
-        super();
-    }
-
-    /**
      * Returns the list of the users.
      *
      * @return Serialized users list.

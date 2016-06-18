@@ -27,15 +27,18 @@
 
     <security:http pattern="/authenticate" authentication-manager-ref="authenticationManager" use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
-        <security:custom-filter ref="corsFilter" position="FIRST" />
         <security:intercept-url pattern="/authenticate" access="permitAll" />
         <security:custom-filter ref="authenticationFilter" after="FIRST" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
     </security:http>
 
+    <security:http pattern="/users" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
+        <security:csrf disabled="true" />
+        <security:intercept-url pattern="/users" method="POST" access="permitAll" />
+    </security:http>
+
     <security:http pattern="/**" authentication-manager-ref="authenticationManager" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
-        <security:custom-filter ref="corsFilter" position="FIRST"/>
         <security:custom-filter ref="userAccessFilter" after="FIRST"/>
         <security:custom-filter ref="authorizationFilter" after="BASIC_AUTH_FILTER" />
         <security:intercept-url pattern="/**" access="isAuthenticated()" />
