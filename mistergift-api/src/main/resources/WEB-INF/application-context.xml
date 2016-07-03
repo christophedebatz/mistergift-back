@@ -25,6 +25,8 @@
     <mvc:annotation-driven/>
     <mvc:default-servlet-handler/>
 
+    <security:http pattern="/landing/**" security="none" />
+
     <security:http pattern="/authenticate" authentication-manager-ref="authenticationManager" use-expressions="true" auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint">
         <security:csrf disabled="true" />
         <security:intercept-url pattern="/authenticate" access="permitAll" />

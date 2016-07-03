@@ -39,7 +39,6 @@ abstract class AbstractTimestampableJpaEntity<T extends Serializable> extends Ab
         this.modificationDate = modificationDate;
     }
 
-
     /**
      * Returns the gift creation date.
      *

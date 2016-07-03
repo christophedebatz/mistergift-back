@@ -117,10 +117,6 @@ public class EventPersistenceService extends BaseQueryDslRepositorySupport<Event
         return null;
     }
 
-    public Page<Event> findAll(Predicate predicate, Pageable pageable) {
-        return null;
-    }
-
     public long count(Predicate predicate) {
         return 0;
     }
@@ -143,4 +139,18 @@ public class EventPersistenceService extends BaseQueryDslRepositorySupport<Event
         long resultsCount = query.count();
         return buildPage(resultsCount, applyPagination(query, pageable).list(QEvent.event), pageable);
     }
+
+    /**
+     *
+     * @param predicate
+     * @param pageable
+     * @return
+     */
+    public Page<Event> findAll(Predicate predicate, Pageable pageable) {
+        JPQLQuery query = from(QEvent.event).where(predicate);
+        long resultsCount = query.count();
+        return buildPage(resultsCount, applyPagination(query, pageable)
+                .list(QEvent.event), pageable);
+    }
+
 }
