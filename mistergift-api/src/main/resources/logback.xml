@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="DEV_HOME" value="~/Documents/logs/mg2"/>
+    <property name="DEV_HOME" value="/var/log/tomcat/mistergift"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -58,8 +58,7 @@
     </appender>
 
     <!-- Send logs to both console and file audit -->
-    <logger name="com.gvstave.mistergift.api.logger" level="debug"
-            additivity="false">
+    <logger name="com.gvstave.mistergift.api.logger" level="debug" additivity="false">
         <appender-ref ref="FILE-AUDIT"/>
         <appender-ref ref="STDOUT"/>
     </logger>

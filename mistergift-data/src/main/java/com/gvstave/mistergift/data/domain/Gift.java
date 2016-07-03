@@ -2,231 +2,72 @@ package com.gvstave.mistergift.data.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+/**
+ * Represents a gift.
+ */
 @Entity
-@Table(schema = "mistergift", name = "gift")
-public class Gift {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long id;
+@Table(schema = "mistergift", name = "gifts")
+public class Gift extends AbstractTimestampableJpaEntity<Long> {
 
-    @Column(name = "name", length = 75, nullable = false)
-    private String name;
-
-    @Column(name = "brand", length = 75, nullable = true)
-    private String brand;
-
-    @Column(name = "reference", length = 25, nullable = true)
-    private String reference;
-
-    @Lob
-    @Column(name = "description", length = 256, nullable = true)
-    private String description;
-
+    /** The gift event. */
     @OneToOne
-    @JoinColumn(name = "picture_id", nullable = false)
-    private FileMetadata picture;
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
 
-    @ManyToMany
-    private List<Group> groups;
+    /** The gift product. */
+    @OneToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @OneToMany
+    @JoinTable(name = "users_gifts",
+        joinColumns = { @JoinColumn(name = "gift_id", updatable = false) }
+    )
     private List<User> owners;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "creation_date", nullable = false)
-    private Date creationDate;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "modification_date", nullable = false)
-    private Date modificationDate;
 
     /**
      * Constructor.
      */
     public Gift() {
-        groups = new ArrayList<>();
         owners = new ArrayList<>();
     }
 
-
     /**
-     * Returns the gift id.
+     * Returns the attached event.
      *
-     * @return The gift id.
+     * @return The attached event.
      */
-    public long getId() {
-        return id;
+    public Event getEvent() {
+        return event;
     }
 
     /**
-     * Set the gift id.
+     * Sets the attached event.
      *
-     * @param id The gift id.
+     * @param event The attached event.
      */
-    public void setId(long id) {
-        this.id = id;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     /**
-     * Returns the gift name.
+     * Returns the gift oswners.
      *
-     * @return The gift name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set the gift name.
-     *
-     * @param name The gift name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Returns the gift brand.
-     *
-     * @return The gift brand.
-     */
-    public String getBrand() {
-        return brand;
-    }
-
-    /**
-     * Set the gift brand.
-     *
-     * @param brand The gift brand.
-     */
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    /**
-     * Returns the gift reference.
-     *
-     * @return The gift reference.
-     */
-    public String getReference() {
-        return reference;
-    }
-
-    /**
-     * Set the gift reference.
-     *
-     * @param reference The gift reference.
-     */
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    /**
-     * Returns the gift description.
-     *
-     * @return The gift description.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set the gift description.
-     *
-     * @param description The gift description.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Returns the gift picture.
-     *
-     * @return The gift picture.
-     */
-    public FileMetadata getPicture() {
-        return picture;
-    }
-
-    /**
-     * Set the gift picture.
-     *
-     * @param picture The gift picture.
-     */
-    public void setPicture(FileMetadata picture) {
-        this.picture = picture;
-    }
-
-    /**
-     * Get the gift groups.
-     *
-     * @return The gift groups.
-     */
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    /**
-     * Set the gift groups.
-     *
-     * @param groups The gift groups.
-     */
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
-
-    /**
-     *
-     * @return
+     * @return The gift owners.
      */
     public List<User> getOwners() {
         return owners;
     }
 
     /**
+     * Sets the gift owners.
      *
-     * @param owners
+     * @param owners The gift owners.
      */
     public void setOwners(List<User> owners) {
         this.owners = owners;
     }
 
-    /**
-     * Returns the gift creation date.
-     *
-     * @return The gift creation date.
-     */
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    /**
-     * Set the gift creation date.
-     *
-     * @param creationDate The gift creation date.
-     */
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    /**
-     * Returns the gift modification date.
-     *
-     * @return The gift modification date.
-     */
-    public Date getModificationDate() {
-        return modificationDate;
-    }
-
-    /**
-     * Set the gift modification date.
-     *
-     * @param modificationDate The gift modification date.
-     */
-    public void setModificationDate(Date modificationDate) {
-        this.modificationDate = modificationDate;
-    }
 }

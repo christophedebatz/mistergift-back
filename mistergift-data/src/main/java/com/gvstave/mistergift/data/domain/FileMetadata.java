@@ -7,38 +7,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "mistergift", name = "file_metadata")
+@Table(schema = "mistergift", name = "files")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FileMetadata
+public class FileMetadata extends AbstractJpaEntity<Long>
 {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long id;
 
+    /** The file url. */
     @Column(name = "url", length = 255, nullable = false)
     private String url;
 
+    /** The file owner. */
     @OneToOne
     @JoinColumn(name = "user_id")
     private User owner;
-
-    /**
-     * Returns the file id.
-     *
-     * @return The file id.
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Set the file id.
-     *
-     * @param id The file id.
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
 
     /**
      * Returns the file url.

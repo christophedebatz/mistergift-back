@@ -1,6 +1,5 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.api.controller.exception.FileUploadException;
 import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
@@ -8,15 +7,15 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.FileMetadata;
 import com.gvstave.mistergift.data.domain.Gift;
+import com.gvstave.mistergift.data.domain.Product;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import com.gvstave.mistergift.data.service.GiftService;
+import com.gvstave.mistergift.data.service.ProductService;
 import com.gvstave.mistergift.data.service.UserService;
 import com.gvstave.mistergift.service.CroppingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,25 +44,21 @@ public class UserController extends AbstractController {
     @Inject
     private UserPersistenceService userPersistenceService;
 
-    /** The user service. */
-    @Inject
-    private UserService userService;
-
-    /** The gift service. */
-    @Inject
-    private GiftService giftService;
-
     /** The file metadata persistence service. */
     @Inject
     private FileMetadataPersistenceService fileMetadataPersistenceService;
 
+    /** The user service. */
+    @Inject
+    private UserService userService;
+
+    /** The product service. */
+    @Inject
+    private ProductService productService;
+
     /** The picture cropping service. */
     @Inject
     private CroppingService croppingService;
-
-    /** The Spring environment. */
-    @Inject
-    private Environment environment;
 
     /**
      * Returns the list of the users.
@@ -116,8 +111,7 @@ public class UserController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody User save(@RequestBody User user, HttpServletRequest httpRequest) throws
-            UnauthorizedOperationException, InvalidFieldValueException, TooManyRequestException {
+    public @ResponseBody User save(@RequestBody User user, HttpServletRequest httpRequest) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, false);
         LOGGER.debug("Saving user={}", user);
         return userService.saveOrUpdate(user);
@@ -198,19 +192,19 @@ public class UserController extends AbstractController {
     }
 
     /**
-     * Returns the user gifts.
+     * Returns the user wish list
      *
      * @param page The current page.
-     * @return The gifts page.
+     * @return The {@link Product} page.
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/self/gifts")
-    public @ResponseBody PageResponse<Gift> getUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+    @RequestMapping(method = RequestMethod.GET, path = "/self/wishlist")
+    public @ResponseBody PageResponse<Gift> getUserWishList(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         User user = getUser();
-        LOGGER.debug("Retrieving user={} viewable gifts with page={}", user, page);
+        LOGGER.debug("Retrieving user={} viewable products with page={}", user, page);
         PageRequest pageRequest = getPageRequest(page);
-        return new PageResponse<>(giftService.getUserGifts(user, pageRequest));
+        return new PageResponse<>(productService.getUserWishList(user, pageRequest));
     }
 
     /**

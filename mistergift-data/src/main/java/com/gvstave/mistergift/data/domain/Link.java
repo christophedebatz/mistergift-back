@@ -4,53 +4,32 @@ import javax.persistence.*;
 
 @Entity
 @Table(schema = "mistergift", name = "links")
-public class Link
+public class Link extends AbstractJpaEntity<Long>
 {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private long id;
-
+    /** The associated product. */
     @OneToOne
-    @JoinColumn(name = "gift_id", nullable = false)
-    private Gift gift;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Column(name = "url", length = 255, nullable = false)
     private String url;
 
     /**
-     * Returns the link id.
+     * Returns the linked product.
      *
-     * @return The link id.
+     * @return The linked product.
      */
-    public long getId() {
-        return id;
+    public Product getProduct() {
+        return product;
     }
 
     /**
-     * Set the link id.
+     * Set the linked product.
      *
-     * @param id The link id.
+     * @param product The linked product.
      */
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    /**
-     * Returns the linked gift.
-     *
-     * @return The linked gift.
-     */
-    public Gift getGift() {
-        return gift;
-    }
-
-    /**
-     * Set the linked gift.
-     *
-     * @param gift The linked gift.
-     */
-    public void setGift(Gift gift) {
-        this.gift = gift;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     /**

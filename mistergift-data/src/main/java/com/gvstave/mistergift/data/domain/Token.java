@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(schema = "mistergift", name = "token")
+@Table(schema = "mistergift", name = "tokens")
 public class Token
 {
     @Id

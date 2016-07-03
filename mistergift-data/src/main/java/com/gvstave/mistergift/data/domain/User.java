@@ -11,11 +11,7 @@ import java.util.List;
 @Entity
 @Table(schema = "mistergift", name = "users")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User implements BaseEntity<Long> {
-    /** The user id. */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class User extends AbstractTimestampableJpaEntity<Long> {
 
     /** The user first name. */
     @Column(name = "first_name", length = 255, nullable = false)
@@ -53,40 +49,19 @@ public class User implements BaseEntity<Long> {
     @JoinColumn(name = "thumbnail_id", nullable = true)
     private FileMetadata thumbnail;
 
-    /** The user groups. */
-    @ManyToMany
-    @JoinTable(name = "group_users", joinColumns = {
-        @JoinColumn(name = "user_id", nullable = false, updatable = false) }, inverseJoinColumns = {
-        @JoinColumn(name = "group_id", nullable = false, updatable = false) }
+    /** The user events. */
+    @OneToMany
+    @JoinTable(name = "user_events",
+            joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
     )
-    private List<Group> groups;
+    private List<UserEvent> userEvents;
 
-    /**
-     *
-     */
-    public User() {
-        this.groups = new ArrayList<>();
-    }
-
-    /**
-     * Returns the entity id.
-     *
-     * @return the id.
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Sets the entity id.
-     *
-     * @param id the id.
-     */
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+    /** The user wish list. */
+    @OneToMany
+    @JoinTable(name = "user_products",
+        joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
+    )
+    private List<Product> wishList;
 
     /**
      * Returns the user password.
@@ -181,6 +156,22 @@ public class User implements BaseEntity<Long> {
     }
 
     /**
+     *
+     * @return
+     */
+    public List<Product> getWishList() {
+        return wishList;
+    }
+
+    /**
+     *
+     * @param wishList
+     */
+    public void setWishList(List<Product> wishList) {
+        this.wishList = wishList;
+    }
+
+    /**
      * Returns the user profile picture.
      *
      * @return The user profile picture.
@@ -236,27 +227,25 @@ public class User implements BaseEntity<Long> {
     }
 
     /**
-     * Returns the user groups.
      *
-     * @return The user groups.
+     * @return
      */
     @JsonIgnore
-    public List<Group> getGroups() {
-        return groups;
+    public List<UserEvent> getUserEvents() {
+        return userEvents;
     }
 
     /**
-     * Ste the user groups.
      *
-     * @param groups The user groups.
+     * @param userEvents
      */
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setUserEvents(List<UserEvent> userEvents) {
+        this.userEvents = userEvents;
     }
 
     /*
-     * Each user has a rank that defines its rights.
-     */
+         * Each user has a rank that defines its rights.
+         */
     public enum Role {
 
         /**

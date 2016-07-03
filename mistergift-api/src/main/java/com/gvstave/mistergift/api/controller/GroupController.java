@@ -5,10 +5,10 @@ import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueExceptio
 import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.Group;
-import com.gvstave.mistergift.data.persistence.GroupPersistenceService;
+import com.gvstave.mistergift.data.domain.Event;
+import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
 import com.gvstave.mistergift.data.service.GiftService;
-import com.gvstave.mistergift.data.service.GroupService;
+import com.gvstave.mistergift.data.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -27,13 +27,13 @@ public class GroupController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(GroupController.class);
 
-    /** The group persistence service. */
+    /** The event persistence service. */
     @Inject
-    private GroupPersistenceService groupPersistenceService;
+    private UserEventPersistenceService userEventPersistenceService;
 
-    /** The group service. */
+    /** The event service. */
     @Inject
-    private GroupService groupService;
+    private EventService eventService;
 
     /** The gift service. */
     @Inject
@@ -52,66 +52,69 @@ public class GroupController extends AbstractController {
      * @return Serialized groups list.
      */
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody PageResponse<Group> getGroups(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+    public @ResponseBody PageResponse<Event> getGroups(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         PageRequest pageRequest = getPageRequest(page);
-        return new PageResponse<>(groupPersistenceService.findAll(pageRequest));
+        //return new PageResponse<>(userEventPersistenceService.findAll(pageRequest));
+        return null;
     }
 
     /**
-     * Returns a group by its id.
+     * Returns a event by its id.
      *
-     * @param id The group id.
-     * @return a serialized {@link Group}.
+     * @param id The event id.
+     * @return a serialized {@link Event}.
      */
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public @ResponseBody Group getGroupById(@PathVariable(value = "id") Long id) {
-        return groupPersistenceService.findOne(id);
+    public @ResponseBody Event getGroupById(@PathVariable(value = "id") Long id) {
+        //return userEventPersistenceService.findOne(id);
+        return null;
     }
 
     /**
-     * Save new group in database.
+     * Save new event in database.
      *
-     * @param group The group.
+     * @param event The event.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody Group save(@RequestBody Group group) throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureGroupValid(group, false);
-        LOGGER.debug("Creating group={}", group);
-        return groupService.createGroup(group, getUser());
+    public @ResponseBody
+    Event save(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
+        ensureGroupValid(event, false);
+        LOGGER.debug("Creating event={}", event);
+        return eventService.createEvent(event, getUser());
     }
 
     /**
-     * Updates a group in database.
+     * Updates a event in database.
      *
-     * @param group The group.
+     * @param event The event.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public void update(@RequestBody Group group) throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureGroupValid(group, true);
-        LOGGER.debug("Updating group={}", group);
-        groupPersistenceService.save(group);
+    public void update(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
+        ensureGroupValid(event, true);
+        LOGGER.debug("Updating event={}", event);
+        //userEventPersistenceService.save(event);
     }
 
     /**
-     * Removes a group in database.
+     * Removes a event in database.
      *
-     * @param id The group id.
-     * @throws UnauthorizedOperationException if the user is not an api of the group.
+     * @param id The event id.
+     * @throws UnauthorizedOperationException if the user is not an api of the event.
      */
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
-    public void remove(@PathVariable(value = "id") Long id) throws UnauthorizedOperationException {
-        if (!groupService.isUserGroupAdmin(getUser(), id)) {
-            throw new UnauthorizedOperationException("remove group");
+    public void deleteGroupById(@PathVariable(value = "id") Long id) throws UnauthorizedOperationException {
+        if (!eventService.isEventAdmin(getUser(), id)) {
+            throw new UnauthorizedOperationException("remove event");
         }
         LOGGER.debug("Deleting user by id={}", id);
-        groupPersistenceService.delete(id);
+        userEventPersistenceService.delete(id);
     }
 
     /**
@@ -121,41 +124,38 @@ public class GroupController extends AbstractController {
 //    @ResponseStatus(HttpStatus.OK)
 //    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
 //    public @ResponseBody PageResponse<Gift> getGroupGiftsForUser(@RequestParam("id") Long id) {
-//        Group group = groupPersistenceService.findOne(id);
-//        if (group != null) {
-//            //Page<Gift> gifts = giftService.getGroupGiftForUser(group, getUser());
+//        Event event = groupPersistenceService.findOne(id);
+//        if (event != null) {
+//            //Page<Gift> gifts = giftService.getGroupGiftForUser(event, getUser());
 //        }
 //
 //        return null;
 //    }
 
     /**
-     * Ensure that given group is correctly hydrated.
+     * Ensure that given event is correctly hydrated.
      *
-     * @param group    The group.
-     * @param isUpdate Whether the action implies group-update.
-     * @throws UnauthorizedOperationException if operation is not permitted for this group.
+     * @param event    The event.
+     * @param isUpdate Whether the action implies event-update.
+     * @throws UnauthorizedOperationException if operation is not permitted for this event.
      * @throws InvalidFieldValueException     if a field value is invalid.
      */
-    private void ensureGroupValid(Group group, boolean isUpdate) throws UnauthorizedOperationException,
+    private void ensureGroupValid(Event event, boolean isUpdate) throws UnauthorizedOperationException,
             InvalidFieldValueException {
-        Objects.requireNonNull(group);
+        Objects.requireNonNull(event);
 
-        if (isUpdate && !groupService.isUserGroupAdmin(getUser(), group.getId())) {
-            throw new UnauthorizedOperationException("update group");
+        if (isUpdate && !eventService.isEventAdmin(getUser(), event.getId())) {
+            throw new UnauthorizedOperationException("update event");
         }
 
-        if (isUpdate && (group.getId() == null || group.getId() <= 0)) {
+        if (isUpdate && (event.getId() == null || event.getId() <= 0)) {
             throw new InvalidFieldValueException("id");
         }
 
-        if (group.getName() == null || group.getName().isEmpty()) {
+        if (event.getName() == null || event.getName().isEmpty()) {
             throw new InvalidFieldValueException("name");
         }
 
-        if (group.getAdministrators() == null || group.getAdministrators().isEmpty()) {
-            throw new InvalidFieldValueException("administrators");
-        }
     }
 
 }

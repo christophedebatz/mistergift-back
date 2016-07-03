@@ -1,13 +1,13 @@
 package com.gvstave.mistergift.provider.common;
 
-import com.gvstave.mistergift.provider.domain.Product;
+import com.gvstave.mistergift.provider.domain.RemoteProduct;
 
 import java.util.Comparator;
 
 /**
  *
  */
-public class ProductComparator implements Comparator<Product> {
+public class ProductComparator implements Comparator<RemoteProduct> {
 
     /**
      * The sort item.
@@ -86,7 +86,7 @@ public class ProductComparator implements Comparator<Product> {
      * {@inheritDoc}
      */
     @Override
-    public int compare(Product first, Product second) {
+    public int compare(RemoteProduct first, RemoteProduct second) {
         int result = 0;
 
         // by rating

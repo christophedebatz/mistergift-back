@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.provider.service;
 
-import com.gvstave.mistergift.provider.domain.Product;
+import com.gvstave.mistergift.provider.domain.RemoteProduct;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -9,33 +9,33 @@ import java.util.function.Function;
 /**
  * Manages the transformation from a json object into a product.
  */
-public class JsonObjectToProduct implements Function<JSONObject, Product> {
+public class JsonObjectToProduct implements Function<JSONObject, RemoteProduct> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Product apply(JSONObject object) {
-        Product product = new Product();
+    public RemoteProduct apply(JSONObject object) {
+        RemoteProduct remoteProduct = new RemoteProduct();
 
         try {
             if (object.has("name")) {
-                product.setName(object.get("value").toString());
+                remoteProduct.setName(object.get("value").toString());
             }
             if (object.has("description")) {
-                product.setDescription(object.get("description").toString());
+                remoteProduct.setDescription(object.get("description").toString());
             }
             if (object.has("price")) {
-                product.setPrice(Double.valueOf(object.get("price").toString()));
+                remoteProduct.setPrice(Double.valueOf(object.get("price").toString()));
             }
             if (object.has("pictureUrl")) {
-                product.setPictureUrl(object.get("pictureUrl").toString());
+                remoteProduct.setPictureUrl(object.get("pictureUrl").toString());
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return product;
+        return remoteProduct;
     }
 }

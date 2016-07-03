@@ -1,8 +1,8 @@
 package com.gvstave.mistergift.data.persistence;
 
-import com.gvstave.mistergift.data.domain.Link;
+import com.gvstave.mistergift.data.domain.Product;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
-import com.gvstave.mistergift.data.persistence.repository.LinkRepository;
+import com.gvstave.mistergift.data.persistence.repository.ProductRepository;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -11,32 +11,32 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class LinkPersistenceService extends BaseQueryDslRepositorySupport<Link> implements LinkRepository {
+public class ProductPersistenceService extends BaseQueryDslRepositorySupport<Product> implements ProductRepository {
 
     /**
      * The default constructor for QueryDsl support.
      */
-    public LinkPersistenceService() {
-        super(Link.class);
+    public ProductPersistenceService() {
+        super(Product.class);
     }
 
-    public Iterable<Link> findAll(Sort sort) {
+    public Iterable<Product> findAll(Sort sort) {
         return null;
     }
 
-    public Page<Link> findAll(Pageable pageable) {
+    public Page<Product> findAll(Pageable pageable) {
         return null;
     }
 
-    public <S extends Link> S save(S s) {
+    public <S extends Product> S save(S s) {
         return null;
     }
 
-    public <S extends Link> Iterable<S> save(Iterable<S> iterable) {
+    public <S extends Product> Iterable<S> save(Iterable<S> iterable) {
         return null;
     }
 
-    public Link findOne(Long aLong) {
+    public Product findOne(Long aLong) {
         return null;
     }
 
@@ -44,11 +44,11 @@ public class LinkPersistenceService extends BaseQueryDslRepositorySupport<Link> 
         return false;
     }
 
-    public Iterable<Link> findAll() {
+    public Iterable<Product> findAll() {
         return null;
     }
 
-    public Iterable<Link> findAll(Iterable<Long> iterable) {
+    public Iterable<Product> findAll(Iterable<Long> iterable) {
         return null;
     }
 
@@ -60,11 +60,11 @@ public class LinkPersistenceService extends BaseQueryDslRepositorySupport<Link> 
 
     }
 
-    public void delete(Link link) {
+    public void delete(Product link) {
 
     }
 
-    public void delete(Iterable<? extends Link> iterable) {
+    public void delete(Iterable<? extends Product> iterable) {
 
     }
 
@@ -72,27 +72,27 @@ public class LinkPersistenceService extends BaseQueryDslRepositorySupport<Link> 
 
     }
 
-    public Link findOne(Predicate predicate) {
+    public Product findOne(Predicate predicate) {
         return null;
     }
 
-    public Iterable<Link> findAll(Predicate predicate) {
+    public Iterable<Product> findAll(Predicate predicate) {
         return null;
     }
 
-    public Iterable<Link> findAll(Predicate predicate, Sort sort) {
+    public Iterable<Product> findAll(Predicate predicate, Sort sort) {
         return null;
     }
 
-    public Iterable<Link> findAll(Predicate predicate, OrderSpecifier<?>... orderSpecifiers) {
+    public Iterable<Product> findAll(Predicate predicate, OrderSpecifier<?>... orderSpecifiers) {
         return null;
     }
 
-    public Iterable<Link> findAll(OrderSpecifier<?>... orderSpecifiers) {
+    public Iterable<Product> findAll(OrderSpecifier<?>... orderSpecifiers) {
         return null;
     }
 
-    public Page<Link> findAll(Predicate predicate, Pageable pageable) {
+    public Page<Product> findAll(Predicate predicate, Pageable pageable) {
         return null;
     }
 

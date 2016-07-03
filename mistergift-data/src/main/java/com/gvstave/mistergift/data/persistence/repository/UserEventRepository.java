@@ -1,8 +1,8 @@
 package com.gvstave.mistergift.data.persistence.repository;
 
-import com.gvstave.mistergift.data.domain.Group;
+import com.gvstave.mistergift.data.domain.UserEvent;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface GroupRepository extends PagingAndSortingRepository<Group, Long>, QueryDslPredicateExecutor<Group> {
+public interface UserEventRepository extends PagingAndSortingRepository<UserEvent, Long>, QueryDslPredicateExecutor<UserEvent> {
 }

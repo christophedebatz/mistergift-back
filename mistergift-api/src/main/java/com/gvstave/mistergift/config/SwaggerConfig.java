@@ -33,7 +33,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Mistergift API")
                 .description("Back API to serve mistergift front-end.")
-                .license("Gvstave Group.")
+                .license("Gvstave Event.")
                 .version("1.0")
                 .contact("christophe.db@gmail.com")
                 .build();

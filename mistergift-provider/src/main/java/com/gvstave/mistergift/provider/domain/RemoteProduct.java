@@ -5,7 +5,7 @@ import com.gvstave.mistergift.provider.service.Provider;
 /**
  * Describes a product.
  */
-public class Product {
+public class RemoteProduct {
 
     /** The provider. */
     private Provider provider;

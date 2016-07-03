@@ -44,6 +44,15 @@ class AbstractController {
     }
 
     /**
+     * Returns the environment.
+     *
+     * @return The environment.
+     */
+    protected Environment getEnv() {
+        return environment;
+    }
+
+    /**
      * Returns a page request for pagination.
      *
      * @param page The requested page number.
