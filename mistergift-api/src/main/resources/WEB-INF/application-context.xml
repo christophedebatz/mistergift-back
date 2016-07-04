@@ -57,13 +57,7 @@
     <bean id="corsFilter" class="com.gvstave.mistergift.api.filter.CorsFilter" />
 
     <bean id="userAccessFilter" class="com.gvstave.mistergift.api.filter.UserAccessFilter" />
-
-    <!--<bean id="userAccessGuardianService" class="com.gvstave.mistergift.api.access.UserAccessGuardianService" />
-
-    <bean id="userAccessService" class="com.gvstave.mistergift.api.access.UserAccessService" />
-
-    <bean id="redisCacheService" class="com.gvstave.mistergift.data.cache.redis.RedisCacheService" />-->
-
+    
     <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <constructor-arg name="strength" value="11" />
     </bean>
