@@ -1,25 +1,36 @@
 package com.gvstave.mistergift.service.mailing;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import java.util.Properties;
 
 /**
  *
  */
-@Component
+@Service
 public class DefaultEmailingFactory {
 
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(DefaultEmailingFactory.class);
 
+    /** The environment. */
+    @Inject
+    private Environment environment;
+
     /** The Java mail service. */
-    private JavaMailSender mailer;
+    private JavaMailSenderImpl mailer;
 
     /** The Velocity engine. */
     private VelocityEngine templater;
@@ -31,6 +42,33 @@ public class DefaultEmailingFactory {
     public JavaMailSender getMailer() {
         if (mailer == null) {
             mailer = new JavaMailSenderImpl();
+
+            Properties props = System.getProperties();
+            props.setProperty("mail.smtp.port", "587");
+            props.setProperty("mail.smtp.socketFactory.port", "587");
+            props.setProperty("mail.smtp.host", "smtp.gmail.com");
+            props.setProperty("mail.smtp.starttls.enable", "true");
+            props.setProperty("mail.smtp.auth", "true");
+
+            Authenticator auth = new Authenticator() {
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(
+                        environment.getProperty("mail.username"),
+                        environment.getProperty("mail.password")
+                    );
+                }
+
+            };
+            Session smtpSession = Session.getInstance(props, auth);
+            smtpSession.setDebug(false);
+
+            mailer.setDefaultEncoding(environment.getProperty("mail.encoding", "utf-8"));
+            mailer.setSession(smtpSession);
         }
 
         return mailer;
@@ -42,13 +80,13 @@ public class DefaultEmailingFactory {
      */
     public VelocityEngine getTemplater() {
         if (templater == null) {
+            templater = new VelocityEngine();
+
             try {
+                templater.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+                templater.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+                templater.init();
 
-                Properties props = new Properties();
-                props.put("resource.loader", "class");
-                props.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-
-                templater = new VelocityEngine(props);
             } catch (Exception ex) {
                 LOGGER.error("Unable to instanciate Velocity templace engine.", ex);
             }

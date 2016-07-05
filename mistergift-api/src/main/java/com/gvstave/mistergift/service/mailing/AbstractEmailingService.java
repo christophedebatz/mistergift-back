@@ -5,7 +5,6 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,7 +65,7 @@ abstract class AbstractEmailingService implements Mailable {
      * @param message The message.
      * @param data The data.
      */
-    protected abstract void prepare(MimeMessageHelper message, final Map<String, Object> data) throws MessagingException;
+    protected abstract void prepare(MimeMessageHelper message, final Map<String, Object> data) throws Exception;
 
     /**
      * Controls the integrity of given data.

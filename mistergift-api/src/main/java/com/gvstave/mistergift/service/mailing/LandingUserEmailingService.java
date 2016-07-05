@@ -1,10 +1,12 @@
 package com.gvstave.mistergift.service.mailing;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.context.Context;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
-import javax.mail.MessagingException;
+import java.io.StringWriter;
 import java.util.Map;
 
 /**
@@ -17,9 +19,16 @@ public class LandingUserEmailingService extends AbstractEmailingService {
      * {@inheritDoc}
      */
     @Override
-    protected void prepare(MimeMessageHelper message, Map<String, Object> data) throws MessagingException {
-        String text = VelocityEngineUtils.mergeTemplateIntoString(getDefaultEmailingFactory().getTemplater(), "utf-8", getTemplatePath(), data);
-        message.setText(text, true);
+    protected void prepare(MimeMessageHelper message, Map<String, Object> data) throws Exception {
+        Template template = getDefaultEmailingFactory().getTemplater().getTemplate(getTemplatePath());
+        Context context = new VelocityContext(data);
+
+        StringWriter sw = new StringWriter();
+        template.merge(context, sw);
+
+        message.setText(sw.toString(), true);
+
+
     }
 
     /**
@@ -35,7 +44,7 @@ public class LandingUserEmailingService extends AbstractEmailingService {
      */
     @Override
     protected String getTemplatePath() {
-        return "com/gvstave/mistergift/resource/bisou.vm";
+        return "/WEB-INF/templates/landing-email-en.vm";
     }
 
 }

@@ -1,8 +1,15 @@
 package com.gvstave.mistergift.data.persistence;
 
 import com.gvstave.mistergift.data.domain.LandingUser;
+import com.gvstave.mistergift.data.domain.QLandingUser;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.LandingUserRepository;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.OrderSpecifier;
+import com.mysema.query.types.Predicate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,4 +90,46 @@ public class LandingUserPersistenceService extends BaseQueryDslRepositorySupport
 
     }
 
+    @Override
+    public LandingUser findOne(Predicate predicate) {
+        QLandingUser qUser = QLandingUser.landingUser;
+        JPAQuery query = new JPAQuery(getEntityManager());
+        return query.from(qUser).where(predicate).uniqueResult(qUser);
+    }
+
+    @Override
+    public Iterable<LandingUser> findAll(Predicate predicate) {
+        return null;
+    }
+
+    @Override
+    public Iterable<LandingUser> findAll(Predicate predicate, Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Iterable<LandingUser> findAll(Predicate predicate, OrderSpecifier<?>... orderSpecifiers) {
+        return null;
+    }
+
+    @Override
+    public Iterable<LandingUser> findAll(OrderSpecifier<?>... orderSpecifiers) {
+        return null;
+    }
+
+    @Override
+    public Page<LandingUser> findAll(Predicate predicate, Pageable pageable
+    ) {
+        return null;
+    }
+
+    @Override
+    public long count(Predicate predicate) {
+        return 0;
+    }
+
+    @Override
+    public boolean exists(Predicate predicate) {
+        return false;
+    }
 }

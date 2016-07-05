@@ -1,8 +1,10 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
+import com.gvstave.mistergift.api.controller.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.domain.LandingUser;
+import com.gvstave.mistergift.data.domain.QLandingUser;
 import com.gvstave.mistergift.data.persistence.LandingUserPersistenceService;
 import com.gvstave.mistergift.service.mailing.LandingUserEmailingService;
 import org.slf4j.Logger;
@@ -49,6 +51,21 @@ public class LandingUserController extends AbstractController {
     public @ResponseBody LandingUser save(@RequestBody LandingUser landingUser) throws InvalidFieldValueException {
         LOGGER.debug("Creating landingUser={}", landingUser);
 
+        if (landingUser.getEmail() == null) {
+            throw new InvalidFieldValueException("email");
+        }
+
+        // checks if same email already exists
+        landingUser.setEmail(landingUser.getEmail().toLowerCase());
+        Optional<LandingUser> optUser = Optional.ofNullable(
+            landingUserPersistenceService.findOne(QLandingUser.landingUser.email.eq(landingUser.getEmail()))
+        );
+
+        if (optUser.isPresent()) {
+            throw new DuplicatedEntityException(LandingUser.class.getSimpleName(), "email");
+        }
+
+        // prepare and send email
         Map<String, Object> variables = new HashMap<>();
         variables.put("email", landingUser.getEmail());
 
@@ -60,6 +77,7 @@ public class LandingUserController extends AbstractController {
         );
 
         return Optional.of(landingUser).map(landingUserPersistenceService::save).get();
+
     }
 
 }
