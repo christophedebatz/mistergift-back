@@ -1,8 +1,10 @@
 package com.gvstave.mistergift.data.persistence;
 
 import com.gvstave.mistergift.data.domain.Product;
+import com.gvstave.mistergift.data.domain.QProduct;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.ProductRepository;
+import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import org.springframework.data.domain.Page;
@@ -92,8 +94,17 @@ public class ProductPersistenceService extends BaseQueryDslRepositorySupport<Pro
         return null;
     }
 
+    /**
+     *
+     * @param predicate
+     * @param pageable
+     * @return
+     */
     public Page<Product> findAll(Predicate predicate, Pageable pageable) {
-        return null;
+        JPQLQuery query = from(QProduct.product).where(predicate);
+        long resultsCount = query.count();
+        return buildPage(resultsCount, applyPagination(query, pageable)
+                .list(QProduct.product), pageable);
     }
 
     public long count(Predicate predicate) {

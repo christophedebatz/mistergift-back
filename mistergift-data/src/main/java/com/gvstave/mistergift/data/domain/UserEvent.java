@@ -8,6 +8,36 @@ import javax.persistence.*;
 @Table(schema = "mistergift", name = "users_events")
 public class UserEvent implements BaseEntity<UserEventId> {
 
+    public enum UserEvenFilter {
+
+        IS_ADMIN("admin"),
+
+        IS_INVITATION("invitation"),
+
+        CAN_SEE_MINES("can_see_mine"),
+
+        CAN_SEE_OTHERS("can_see_others");
+
+        String name;
+
+        /**
+         * Constructor.
+         *
+         * @param name The filter.
+         */
+        UserEvenFilter(String name) {
+            this.name = name;
+        }
+
+        /**
+         *
+         */
+        public String getName() {
+            return name;
+        }
+
+    }
+
     /** The id. */
     @QueryInit({"event", "user"})
     @EmbeddedId
@@ -17,11 +47,14 @@ public class UserEvent implements BaseEntity<UserEventId> {
     @Column(name = "can_see_others")
     private boolean canSeeOthers;
 
-    @Column(name = "can_see_mine")
-    private boolean canSeeMine;
+    @Column(name = "can_see_mines")
+    private boolean canSeeMines;
 
     @Column(name = "is_admin")
     private boolean isAdmin;
+
+    @Column(name = "is_invitation")
+    private boolean isInvitation;
 
     /**
      * Hibernate constructor.
@@ -79,16 +112,16 @@ public class UserEvent implements BaseEntity<UserEventId> {
      *
      * @return
      */
-    public boolean isCanSeeMine() {
-        return canSeeMine;
+    public boolean isCanSeeMines() {
+        return canSeeMines;
     }
 
     /**
      *
-     * @param canSeeMine
+     * @param canSeeMines
      */
-    public void setCanSeeMine(boolean canSeeMine) {
-        this.canSeeMine = canSeeMine;
+    public void setCanSeeMines(boolean canSeeMines) {
+        this.canSeeMines = canSeeMines;
     }
 
     /**
@@ -105,6 +138,22 @@ public class UserEvent implements BaseEntity<UserEventId> {
      */
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isInvitation() {
+        return isInvitation;
+    }
+
+    /**
+     *
+     * @param invitation
+     */
+    public void setInvitation(boolean invitation) {
+        isInvitation = invitation;
     }
 
 }
