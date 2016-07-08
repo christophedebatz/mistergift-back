@@ -58,9 +58,9 @@ public class EventController extends AbstractController {
      *
      * @return Serialized events list.
      */
-    @RequestMapping(method = RequestMethod.GET, path = "/user/events")
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/users/self/events")
     public @ResponseBody PageResponse<Event> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "filters") String filters) {
-
         User user = getUser();
         List<Event> events = new ArrayList<>();
         List<String> stringTypes = Arrays.asList(filters.replaceAll("\\s+","").split(","));
@@ -77,6 +77,46 @@ public class EventController extends AbstractController {
 
         Page<Event> content = new PageImpl<>(events, getPageRequest(page), events.size());
         return new PageResponse<>(content);
+    }
+
+    /**
+     * Returns the event users.
+     *
+     * @param page The current page.
+     * @param id The event id.
+     * @return The event users.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/events/{id}/users")
+    public @ResponseBody PageResponse<User> getEventUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "id") Long id) {
+        Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(id));
+
+        if (event.isPresent()) {
+            return new PageResponse<>(eventService.getEventUsers(event.get(), getPageRequest(page)));
+        }
+
+        throw new EntityNotFoundException("Unable to retrieve given event");
+    }
+
+    /**
+     * Returns the list of administrators for the given event.
+     *
+     * @param page The current page.
+     * @param id The event id.
+     * @return The administrators.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/events/{id}/admins")
+    public @ResponseBody PageResponse<User> getEventAdmins(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "id") Long id) {
+        Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(id));
+
+        if (event.isPresent()) {
+            return new PageResponse<>(
+                eventService.getEventAdmins(event.get(), getPageRequest(page))
+            );
+        }
+
+        throw new EntityNotFoundException("Unable to retrieve given event");
     }
 
     /**

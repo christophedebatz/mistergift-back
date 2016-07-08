@@ -3,9 +3,12 @@ package com.gvstave.mistergift.data.service;
 import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
+import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.utils.Streams;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,10 @@ public class EventService {
     /** The user event persistence service. */
     @Inject
     private UserEventPersistenceService userEventPersistenceService;
+
+    /** The user persistence service. */
+    @Inject
+    private UserPersistenceService userPersistenceService;
 
     /** The event persistence service. */
     @Inject
@@ -60,14 +67,33 @@ public class EventService {
         QUserEvent anyEvent = QEvent.event.userEvents.any();
         Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isInvitation.isTrue());
 
-        return Streams.streamOf(eventPersistenceService.findAll(predicate))
+        return Streams.of(eventPersistenceService.findAll(predicate))
                 .collect(Collectors.toList());
     }
 
     /**
+     * Returns the event pending invited users.
      *
-     * @param user
-     * @return
+     * @param event The event.
+     * @return The pending invited user to the event.
+     */
+    public List<User> getEventPendingUsers(Event event) {
+        Objects.requireNonNull(event);
+
+        Predicate predicate = QUserEvent.userEvent.id.event.eq(event)
+                .and(QUserEvent.userEvent.isInvitation.isTrue());
+
+        return Streams.of(userEventPersistenceService.findAll(predicate))
+                .map(UserEvent::getId)
+                .map(UserEventId::getUser)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the events that a user is the administrator.
+     *
+     * @param user The administrator.
+     * @return The list of administrated events.
      */
     public List<Event> getUserAdminEvents(User user) {
         Objects.requireNonNull(user);
@@ -75,8 +101,42 @@ public class EventService {
         QUserEvent anyEvent = QEvent.event.userEvents.any();
         Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isAdmin.isTrue());
 
-        return Streams.streamOf(eventPersistenceService.findAll(predicate))
+        return Streams.of(eventPersistenceService.findAll(predicate))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the event administrators.
+     *
+     * @param event The event.
+     * @param pageable The pageable.
+     * @return The event administrators.
+     */
+    public Page<User> getEventAdmins(Event event, Pageable pageable) {
+        Objects.requireNonNull(event);
+        Objects.requireNonNull(pageable);
+
+        QUserEvent qUserEvent = QUser.user.userEvents.any();
+        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.isAdmin.isTrue());
+
+        return userPersistenceService.findAll(predicate, pageable);
+    }
+
+    /**
+     * Returns the event users.
+     *
+     * @param event The event.
+     * @param pageable The pageable.
+     * @return The event users.
+     */
+    public Page<User> getEventUsers(Event event, Pageable pageable) {
+        Objects.requireNonNull(event);
+        Objects.requireNonNull(pageable);
+
+        QUserEvent qUserEvent = QUserEvent.userEvent;
+        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.isInvitation.isFalse());
+
+        return userPersistenceService.findAll(predicate, pageable);
     }
 
     /**

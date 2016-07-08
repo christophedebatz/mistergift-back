@@ -8,7 +8,7 @@ public class Streams {
     /**
      * Converts Iterable to stream
      */
-    public static <T> Stream<T> streamOf(final Iterable<T> iterable) {
+    public static <T> Stream<T> of(final Iterable<T> iterable) {
         return toStream(iterable, false);
     }
 
