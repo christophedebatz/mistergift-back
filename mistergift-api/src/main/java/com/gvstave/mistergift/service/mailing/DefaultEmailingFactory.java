@@ -44,9 +44,9 @@ public class DefaultEmailingFactory {
             mailer = new JavaMailSenderImpl();
 
             Properties props = System.getProperties();
-            props.setProperty("mail.smtp.port", "587");
-            props.setProperty("mail.smtp.socketFactory.port", "587");
-            props.setProperty("mail.smtp.host", "smtp.gmail.com");
+            props.setProperty("mail.smtp.port", environment.getProperty("mail.port"));
+            props.setProperty("mail.smtp.socketFactory.port", environment.getProperty("mail.port"));
+            props.setProperty("mail.smtp.host", environment.getProperty("host"));
             props.setProperty("mail.smtp.starttls.enable", "true");
             props.setProperty("mail.smtp.auth", "true");
 
