@@ -42,8 +42,8 @@ public class LandingUserEmailingService extends AbstractEmailingService {
      * {@inheritDoc}
      */
     @Override
-    protected String getTemplatePath() {
-        return "/WEB-INF/templates/landing-email-en.vm";
+    public String getTemplatePath() {
+        return getTemplateDirectory() +  "/landing-email-en.vm";
     }
 
 }

@@ -15,8 +15,20 @@ public class LandingUser extends AbstractJpaEntity<Long>
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
+    @Column(name = "country", nullable = true)
+    private String country;
+
+    @Column(name = "region", nullable = true)
+    private String region;
+
+    @Column(name = "city", nullable = true)
+    private String city;
+
+    @Column(name = "ip", nullable = true)
+    private String ip;
+
     /** The create date. */
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 
@@ -36,6 +48,72 @@ public class LandingUser extends AbstractJpaEntity<Long>
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Returns the city.
+     *
+     * @return The city
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Sets the city.
+     *
+     * @param city The city.
+     */
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     *
+     * @param country
+     */
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getRegion() {
+        return region;
+    }
+
+    /**
+     *
+     * @param region
+     */
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     *
+     * @param ip
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     /**

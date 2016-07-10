@@ -36,8 +36,9 @@ public class DefaultEmailingFactory {
     private VelocityEngine templater;
 
     /**
+     * Returns the mailer.
      *
-     * @return
+     * @return The mailer.
      */
     public JavaMailSender getMailer() {
         if (mailer == null) {
@@ -46,7 +47,7 @@ public class DefaultEmailingFactory {
             Properties props = System.getProperties();
             props.setProperty("mail.smtp.port", environment.getProperty("mail.port"));
             props.setProperty("mail.smtp.socketFactory.port", environment.getProperty("mail.port"));
-            props.setProperty("mail.smtp.host", environment.getProperty("host"));
+            props.setProperty("mail.smtp.host", environment.getProperty("mail.host"));
             props.setProperty("mail.smtp.starttls.enable", "true");
             props.setProperty("mail.smtp.auth", "true");
 
@@ -75,8 +76,9 @@ public class DefaultEmailingFactory {
     }
 
     /**
+     * Returns the templater.
      *
-     * @return
+     * @return The templater.
      */
     public VelocityEngine getTemplater() {
         if (templater == null) {
@@ -88,7 +90,7 @@ public class DefaultEmailingFactory {
                 templater.init();
 
             } catch (Exception ex) {
-                LOGGER.error("Unable to instanciate Velocity templace engine.", ex);
+                LOGGER.error("Unable to instanciate Velocity template engine.", ex);
             }
         }
 
