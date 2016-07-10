@@ -66,14 +66,14 @@ public class LandingUserController extends AbstractController {
         }
 
         // prepare and send email
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("email", landingUser.getEmail());
+        Map<String, Object> model = new HashMap<>();
+        model.put("email", landingUser.getEmail());
 
         // send email
         landingUserEmailingService.send(
-            getEnv().getProperty("website.email"),
+            getEnv().getProperty("mail.from"),
             new String[] { landingUser.getEmail() },
-            variables
+            model
         );
 
         return Optional.of(landingUser).map(landingUserPersistenceService::save).get();

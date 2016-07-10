@@ -6,14 +6,16 @@ package com.gvstave.mistergift.api.controller.exception;
 public class DuplicatedEntityException extends RuntimeException {
 
     /**
-     * {@inheritDoc}
+     *
+     * @param entityName
+     * @param field
      */
     public DuplicatedEntityException(String entityName, String field) {
-        super("The entity " + entityName + " already exists for field " + field);
+        super("The entity " + entityName.toLowerCase() + " already exists for field " + field.toLowerCase());
     }
 
     /**
-     * {@inheritDoc}
+     *
      */
     public DuplicatedEntityException() {
         super("The given entity already exist.");

@@ -27,8 +27,7 @@ public class LandingUserEmailingService extends AbstractEmailingService {
         template.merge(context, sw);
 
         message.setText(sw.toString(), true);
-
-
+        message.setSubject("Welcome on board!");
     }
 
     /**
