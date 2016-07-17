@@ -84,7 +84,7 @@ public class LandingUserController extends AbstractController {
 
         // geolocalize client from its ip address
         String ip = geolocationService.requestClientIp(request);
-        Optional<GeolocationResult> geo = geolocationService.requestClientCity(ip);
+        Optional<GeolocationResult> geo = geolocationService.requestClientGeolocation(ip);
         landingUser.setIp(ip);
 
         if (geo.isPresent()) {

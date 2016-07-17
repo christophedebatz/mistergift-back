@@ -2,6 +2,8 @@ package com.gvstave.mistergift.service.geoip;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,9 @@ import java.util.Optional;
 @Service
 public class GeolocationService {
 
+    /** The logger. */
+    private static Logger LOGGER = LoggerFactory.getLogger(GeolocationService.class);
+
     /** The geolocation externa API endpoint service. */
     private static final String SERVICE_SERVER_URL = "http://api.ipinfodb.com/v3/ip-city/?key=%s&ip=%s&format=json";
 
@@ -35,7 +40,13 @@ public class GeolocationService {
      * @return The client IP.
      */
     public String requestClientIp(HttpServletRequest request) {
+        System.setProperty("java.net.preferIPv4Stack" , "true");
         String ipAddress = request.getHeader("X-FORWARDED-FOR");
+
+        // try getting header from nging proxy pass
+        if (ipAddress == null) {
+            ipAddress = request.getHeader("X-Real-IP");
+        }
 
         if (ipAddress == null) {
             ipAddress = request.getRemoteAddr();
@@ -51,10 +62,10 @@ public class GeolocationService {
      * @return The city.
      * @throws IOException If output stream is corrupted.
      */
-    public Optional<GeolocationResult> requestClientCity(String ip) throws IOException {
+    public Optional<GeolocationResult> requestClientGeolocation(String ip) throws IOException {
         Objects.requireNonNull(ip);
+        LOGGER.debug("Ip Address is " + ip);
 
-        ip="176.179.205.82";
         URL url = new URL(String.format(SERVICE_SERVER_URL, environment.getProperty("service.ipinfodb.key"), ip));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

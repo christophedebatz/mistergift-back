@@ -15,15 +15,19 @@ public class LandingUser extends AbstractJpaEntity<Long>
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
+    /** The landing user country (gelocated by its ip). */
     @Column(name = "country", nullable = true)
     private String country;
 
+    /** The landing user region (gelocated by its ip). */
     @Column(name = "region", nullable = true)
     private String region;
 
+    /** The landing user city (gelocated by its ip). */
     @Column(name = "city", nullable = true)
     private String city;
 
+    /** The landing user IP address. */
     @Column(name = "ip", nullable = true)
     private String ip;
 
