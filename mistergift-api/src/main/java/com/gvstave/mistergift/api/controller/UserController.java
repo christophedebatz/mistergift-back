@@ -1,14 +1,12 @@
 package com.gvstave.mistergift.api.controller;
 
+import com.gvstave.mistergift.api.controller.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.api.controller.exception.FileUploadException;
 import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.FileMetadata;
-import com.gvstave.mistergift.data.domain.Gift;
-import com.gvstave.mistergift.data.domain.Product;
-import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.ProductService;
@@ -23,14 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -111,9 +106,18 @@ public class UserController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody User save(@RequestBody User user, HttpServletRequest httpRequest) throws UnauthorizedOperationException, InvalidFieldValueException {
+    public @ResponseBody User save(@RequestBody User user) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, false);
         LOGGER.debug("Saving user={}", user);
+
+        Optional<User> existentUser = Optional.ofNullable(
+            userPersistenceService.findOne(QUser.user.email.eq(user.getEmail()))
+        );
+
+        if (existentUser.isPresent()) {
+            throw new DuplicatedEntityException("user", "email");
+        }
+
         return userService.saveOrUpdate(user);
     }
 
