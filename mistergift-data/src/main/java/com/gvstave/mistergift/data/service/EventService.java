@@ -64,7 +64,7 @@ public class EventService {
     public List<Event> getUserInvitationEvents(User user) {
         Objects.requireNonNull(user);
 
-        QUserEvent anyEvent = QEvent.event.userEvents.any();
+        QUserEvent anyEvent = QEvent.event.participants.any();
         Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isInvitation.isTrue());
 
         return Streams.of(eventPersistenceService.findAll(predicate))
@@ -98,7 +98,7 @@ public class EventService {
     public List<Event> getUserAdminEvents(User user) {
         Objects.requireNonNull(user);
 
-        QUserEvent anyEvent = QEvent.event.userEvents.any();
+        QUserEvent anyEvent = QEvent.event.participants.any();
         Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isAdmin.isTrue());
 
         return Streams.of(eventPersistenceService.findAll(predicate))

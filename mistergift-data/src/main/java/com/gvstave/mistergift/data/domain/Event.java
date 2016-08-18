@@ -2,7 +2,7 @@ package com.gvstave.mistergift.data.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,17 +28,18 @@ public class Event extends AbstractTimestampableJpaEntity<Long> {
     private Date date;
 
     /** The group members. */
+    @JsonProperty("participants")
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_events",
-            joinColumns = { @JoinColumn(name = "event_id", nullable = false, updatable = false) }
+    @JoinTable(name = "event_participants",
+        joinColumns = { @JoinColumn(name = "event_id", nullable = false, updatable = false) }
     )
-    private List<UserEvent> userEvents;
+    private List<UserEvent> participants;
 
     /**
      * Constructor.
      */
     public Event() {
-        this.userEvents = new ArrayList<>();
+        this.participants = new ArrayList<>();
     }
 
     /**
@@ -98,16 +99,16 @@ public class Event extends AbstractTimestampableJpaEntity<Long> {
      * @return
      */
     @JsonIgnore
-    public List<UserEvent> getUserEvents() {
-        return userEvents;
+    public List<UserEvent> getParticipants () {
+        return participants;
     }
 
     /**
      *
-     * @param userEvents
+     * @param participants
      */
-    public void setUserEvents(List<UserEvent> userEvents) {
-        this.userEvents = userEvents;
+    public void setParticipants (List<UserEvent> participants) {
+        this.participants = participants;
     }
 
 }

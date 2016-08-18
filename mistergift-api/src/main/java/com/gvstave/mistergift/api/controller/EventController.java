@@ -60,7 +60,7 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/users/self/events")
-    public @ResponseBody PageResponse<Event> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "filters") String filters) {
+    public @ResponseBody PageResponse<Event> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam  (value = "filters") String filters) {
         User user = getUser();
         List<Event> events = new ArrayList<>();
         List<String> stringTypes = Arrays.asList(filters.replaceAll("\\s+","").split(","));
@@ -131,7 +131,7 @@ public class EventController extends AbstractController {
     }
 
     /**
-     * Save new event in database.
+     * Create and save a new event.
      *
      * @param event The event.
      * @throws UnauthorizedOperationException
@@ -146,7 +146,7 @@ public class EventController extends AbstractController {
     }
 
     /**
-     * Updates a event in database.
+     * Updates a event.
      *
      * @param event The event.
      * @throws UnauthorizedOperationException
@@ -161,7 +161,7 @@ public class EventController extends AbstractController {
     }
 
     /**
-     * Removes a event in database.
+     * Removes a event.
      *
      * @param id The event id.
      * @throws UnauthorizedOperationException if the user is not an api of the event.
@@ -177,10 +177,11 @@ public class EventController extends AbstractController {
     }
 
     /**
-     *
-     * @param event
-     * @param userId
-     * @throws InvalidFieldValueException
+     * Invites user to join an event.
+	 *
+     * @param event The event (only id is required).
+     * @param userId The user id.
+     * @throws InvalidFieldValueException If event have no id.
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.POST, path = "/users/{id}/events")
@@ -197,7 +198,7 @@ public class EventController extends AbstractController {
         Optional<Event> targetEvent = Optional.ofNullable(eventPersistenceService.findOne(QEvent.event.eq(event)));
 
         if (targetEvent.isPresent()) {
-            boolean userCanInvit = targetEvent.get().getUserEvents().stream()
+            boolean userCanInvit = targetEvent.get().getParticipants().stream()
                 .filter(UserEvent::isAdmin)
                 .map(UserEvent::getId)
                 .map(UserEventId::getUser)

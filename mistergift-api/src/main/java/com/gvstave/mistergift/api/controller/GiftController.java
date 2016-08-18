@@ -38,7 +38,7 @@ public class GiftController extends AbstractController {
      *
      * @return Serialized gift.
      */
-    @RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public @ResponseBody Gift getGiftDetails(@RequestParam("id") Long id) {
         return giftPersistenceService.findOne(id);
     }

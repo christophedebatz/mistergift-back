@@ -19,6 +19,13 @@ public class Streams {
         return toStream(iterable, true);
     }
 
+	/**
+     *
+     * @param iterable
+     * @param isParallel
+     * @param <T>
+     * @return
+     */
     private static <T> Stream<T> toStream(final Iterable<T> iterable, final boolean isParallel) {
         return StreamSupport.stream(iterable.spliterator(), isParallel);
     }
