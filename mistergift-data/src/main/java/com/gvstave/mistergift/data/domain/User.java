@@ -13,13 +13,9 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends AbstractTimestampableJpaEntity<Long> {
 
-    /** The user first name. */
-    @Column(name = "first_name", length = 255, nullable = false)
-    private String firstName;
-
-    /** The user last name. */
-    @Column(name = "last_name", length = 255, nullable = false)
-    private String lastName;
+    /** The user name. */
+    @Column(name = "name", length = 255, nullable = false)
+    private String name;
 
     /** The user email. */
     @Column(name = "email", unique = true, length = 150, nullable = false)
@@ -84,39 +80,21 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
     }
 
     /**
-     * Returns the user first name.
+     * Returns the user name.
      *
-     * @return The user first name.
+     * @return The user name.
      */
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Set the user first name.
+     * Set the user name.
      *
-     * @param firstName The user first name.
+     * @param name The user name.
      */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * Returns the user last name.
-     *
-     * @return The user last name.
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * Set the user last name.
-     *
-     * @param lastName The user last name.
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

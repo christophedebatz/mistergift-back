@@ -39,8 +39,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
         Map<String, Object> general = new LinkedHashMap<>();
         general.put("id", user.getId());
         general.put("email", user.getEmail());
-        general.put("firstName", user.getFirstName());
-        general.put("lastName", user.getLastName());
+        general.put("name", user.getName());
         general.put("session", session);
 
         Map<String, Object> response = new LinkedHashMap<>();

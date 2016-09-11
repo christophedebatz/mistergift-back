@@ -12,11 +12,10 @@
           http://www.springframework.org/schema/security/spring-security-4.0.xsd
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-
-    <import resource="classpath:WEB-INF/data-context.xml"/>
+    <import resource="classpath:WEB-INF/data-context-${env}.xml"/>
 
     <context:annotation-config />
-    <context:property-placeholder location="classpath:WEB-INF/mg-admin.properties" />
+    <context:property-placeholder location="classpath:WEB-INF/mg-admin-${env}.properties" />
     <context:component-scan base-package="com.gvstave.mistergift.api" />
     <context:component-scan base-package="com.gvstave.mistergift.service" />
     <context:component-scan base-package="com.gvstave.mistergift.data" />

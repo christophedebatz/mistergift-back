@@ -256,13 +256,10 @@ public class UserController extends AbstractController {
             throw new InvalidFieldValueException("password");
         }
 
-        if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
-            throw new InvalidFieldValueException("first name");
+        if (user.getName() == null || user.getName().isEmpty()) {
+            throw new InvalidFieldValueException("name");
         }
 
-        if (user.getLastName() == null || user.getLastName().isEmpty()) {
-            throw new InvalidFieldValueException("last name");
-        }
     }
 
 }
