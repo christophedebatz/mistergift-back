@@ -1,9 +1,9 @@
 package com.gvstave.mistergift.api.handler;
 
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
-import com.gvstave.mistergift.api.controller.exception.DuplicatedEntityException;
-import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
+import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
+import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.ErrorResponse;
 import com.gvstave.mistergift.api.response.Response;
 import org.springframework.http.HttpStatus;

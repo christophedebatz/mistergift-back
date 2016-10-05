@@ -1,9 +1,9 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.controller.exception.DuplicatedEntityException;
-import com.gvstave.mistergift.api.controller.exception.FileUploadException;
-import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
+import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
+import com.gvstave.mistergift.data.exception.FileUploadException;
+import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.*;
@@ -149,9 +149,7 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, path = "/self", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public @ResponseBody FileMetadata uploadProfilePicture(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("coords") String coords) throws InvalidFieldValueException, FileUploadException {
+    public @ResponseBody FileMetadata uploadProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam("coords") String coords) throws InvalidFieldValueException, FileUploadException {
         LOGGER.debug("Uploading picture={} and cropping={}", file, coords);
 
         if (file == null || file.isEmpty()) {
@@ -209,6 +207,19 @@ public class UserController extends AbstractController {
         LOGGER.debug("Retrieving user={} viewable products with page={}", user, page);
         PageRequest pageRequest = getPageRequest(page);
         return new PageResponse<>(productService.getUserWishList(user, pageRequest));
+    }
+
+	/**
+     *
+     * @return
+     */
+    @UserRestricted
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/self/timeline")
+    public @ResponseBody String getUserTimeline() {
+        User user = getUser();
+        LOGGER.debug("Retrieving user={} timeline", user);
+        return userService.getTimeline(user);
     }
 
     /**

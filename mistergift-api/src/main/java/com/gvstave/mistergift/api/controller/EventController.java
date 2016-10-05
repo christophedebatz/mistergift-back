@@ -1,11 +1,15 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
-import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.api.controller.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.*;
+import com.gvstave.mistergift.data.domain.Event;
+import com.gvstave.mistergift.data.domain.QEvent;
+import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.domain.UserEvent;
+import com.gvstave.mistergift.data.domain.UserEventId;
+import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
@@ -14,13 +18,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @UserRestricted
 @RestController
@@ -29,6 +47,51 @@ public class EventController extends AbstractController {
 
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(EventController.class);
+
+    /**
+     * The user event filter.
+     */
+    enum UserEvenFilter {
+
+        /** The relation describes that the user is an admin of the event. */
+        ADMIN("admin"),
+
+        /** The relation describes that the user has been invited to join the event. */
+        INVITATION("invite"),
+
+        /**
+         * The relation describes that the user participates to the event
+         * and that all participants can see its gifts.
+         */
+        CAN_SEE_MINES("can-see-mine"),
+
+        /** The relation describes that the user participates to the event
+         * and that he can see the gifts of other participants.
+         */
+        CAN_SEE_OTHERS("can-see-others");
+
+        /** The filter. */
+        String filter;
+
+        /**
+         * Constructor.
+         *
+         * @param filter The filter.
+         */
+        UserEvenFilter(String filter) {
+            this.filter = filter;
+        }
+
+        /**
+         * Returns the filter.
+         *
+         * @return The filter.
+         */
+        public String getFilter () {
+            return filter;
+        }
+
+    }
 
     /** The event persistence service. */
     @Inject
@@ -54,29 +117,59 @@ public class EventController extends AbstractController {
     }
 
     /**
-     * Returns the lists of user events.
+     * Returns the lists of events that current user is participant.
      *
-     * @return Serialized events list.
+     * @param page
+     * @param filters
+     * @return
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/users/self/events")
-    public @ResponseBody PageResponse<Event> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam  (value = "filters") String filters) {
+    public @ResponseBody
+    PageResponse<Map.Entry<String, List<Event>>> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "filters") String filters) {
         User user = getUser();
-        List<Event> events = new ArrayList<>();
-        List<String> stringTypes = Arrays.asList(filters.replaceAll("\\s+","").split(","));
+        PageRequest pageable = getPageRequest(page);
 
-        if (stringTypes.contains(UserEvent.UserEvenFilter.IS_INVITATION.getName())) {
-            events.addAll(eventService.getUserInvitationEvents(user));
+        List<Map.Entry<String, List<Event>>> events = new ArrayList<>();
+        List<String> eventStatus = Arrays.asList(filters.replaceAll("\\s+","").split(","));
+
+        // user-event relation types
+        // pending event / invitation from other participants
+        String pendingFlag = UserEvenFilter.INVITATION.getFilter();
+        if (eventStatus.contains(pendingFlag)) {
+            List<Event> inviteEvents = eventService.getUserInvitationEvents(user, pageable);
+            events.add(new AbstractMap.SimpleEntry<>(pendingFlag, inviteEvents));
         }
 
-        if (stringTypes.contains(UserEvent.UserEvenFilter.IS_ADMIN.getName())) {
-            events.addAll(eventService.getUserAdminEvents(user));
+        // event where i'm admin
+        String adminFlag = UserEvenFilter.ADMIN.getFilter();
+        if (eventStatus.contains(adminFlag)) {
+            events.add(new AbstractMap.SimpleEntry<>(adminFlag, eventService.getUserAdminEvents(user, pageable)));
         }
 
-        // to do can see me and co.
+        // event status type
+        // cancelled events
+        String cancelledFlag = Event.EventStatus.CANCELLED.getStatus();
+        if (eventStatus.contains(cancelledFlag)) {
+            List<Event> cancelled = eventService.getUserEventsByStatus(user, Event.EventStatus.CANCELLED, pageable);
+            events.add(new AbstractMap.SimpleEntry<>(cancelledFlag, cancelled));
+        }
 
-        Page<Event> content = new PageImpl<>(events, getPageRequest(page), events.size());
-        return new PageResponse<>(content);
+        // my unpublished events
+        String unpublishedFlag = Event.EventStatus.UNPUBLISHED.getStatus();
+        if (eventStatus.contains(unpublishedFlag)) {
+            List<Event> unpublished = eventService.getUserEventsByStatus(user, Event.EventStatus.UNPUBLISHED, pageable);
+            events.add(new AbstractMap.SimpleEntry<>(unpublishedFlag, unpublished));
+        }
+
+        // the published events
+        String publishedFlag = Event.EventStatus.PUBLISHED.getStatus();
+        if (eventStatus.contains(publishedFlag)) {
+            List<Event> published = eventService.getUserEventsByStatus(user, Event.EventStatus.PUBLISHED, pageable);
+            events.add(new AbstractMap.SimpleEntry<>(publishedFlag, published));
+        }
+
+        return new PageResponse<>(new PageImpl<>(events, pageable, events.size()));
     }
 
     /**
@@ -84,6 +177,7 @@ public class EventController extends AbstractController {
      *
      * @param page The current page.
      * @param id The event id.
+     * @throws EntityNotFoundException
      * @return The event users.
      */
     @ResponseStatus(HttpStatus.OK)
@@ -92,10 +186,11 @@ public class EventController extends AbstractController {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(id));
 
         if (event.isPresent()) {
-            return new PageResponse<>(eventService.getEventUsers(event.get(), getPageRequest(page)));
+            Page<User> users = eventService.getEventUsers(event.get(), getPageRequest(page));
+            return new PageResponse<>(users);
         }
 
-        throw new EntityNotFoundException("Unable to retrieve given event");
+        throw new EntityNotFoundException("Unable to retrieve event with id=" + id);
     }
 
     /**
@@ -103,6 +198,7 @@ public class EventController extends AbstractController {
      *
      * @param page The current page.
      * @param id The event id.
+     * @throws EntityNotFoundException
      * @return The administrators.
      */
     @ResponseStatus(HttpStatus.OK)
@@ -111,12 +207,10 @@ public class EventController extends AbstractController {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(id));
 
         if (event.isPresent()) {
-            return new PageResponse<>(
-                eventService.getEventAdmins(event.get(), getPageRequest(page))
-            );
+            return new PageResponse<>(eventService.getEventAdmins(event.get(), getPageRequest(page)));
         }
 
-        throw new EntityNotFoundException("Unable to retrieve given event");
+        throw new EntityNotFoundException("Unable to retrieve event with id=" + id);
     }
 
     /**
@@ -151,13 +245,43 @@ public class EventController extends AbstractController {
      * @param event The event.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
+     * @return The updated event.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.PUT, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public @ResponseBody Event update(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
+        ensureEventIsValid(event, true);
+        if (!eventService.isUserEventAdmin(getUser(), event.getId())) {
+            throw new UnauthorizedOperationException("remove event");
+        }
+        LOGGER.debug("Updating event id={}", event);
+        return eventPersistenceService.save(event);
+    }
+
+    /**
+     * Updates the event status.
+     *
+     * @param status
+     * @param id
+     * @throws UnauthorizedOperationException
+     * @throws InvalidFieldValueException
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(method = RequestMethod.PUT, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public void update(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureEventIsValid(event, true);
-        LOGGER.debug("Updating event={}", event);
-        eventPersistenceService.save(event);
+    @RequestMapping(method = RequestMethod.PUT, path = "/events/{id}/status", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public void updateStatus(@RequestBody String status, @PathVariable(value = "id") Long id) throws UnauthorizedOperationException, InvalidFieldValueException {
+        if (!eventService.isUserEventAdmin(getUser(), id)) {
+            throw new UnauthorizedOperationException("update event status");
+        }
+        LOGGER.debug("Updating event id={} status");
+        Optional<Event> event = Optional.of(eventPersistenceService.findOne(id));
+
+        // not using ifPresent because non
+        if (event.isPresent()) {
+            event.get().setStatus(Event.EventStatus.fromString(status));
+            eventPersistenceService.save(event.get());
+        } else {
+            throw new EntityNotFoundException("Unable to retrieve event with id=" + id);
+        }
     }
 
     /**
@@ -172,7 +296,7 @@ public class EventController extends AbstractController {
         if (!eventService.isUserEventAdmin(getUser(), id)) {
             throw new UnauthorizedOperationException("remove event");
         }
-        LOGGER.debug("Deleting event by id={}", id);
+        LOGGER.debug("Deleting event id={}", id);
         eventPersistenceService.delete(id);
     }
 
@@ -185,9 +309,10 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.POST, path = "/users/{id}/events")
-    public void inviteUser(@RequestBody Event event, @PathVariable(value = "id") Long userId) throws InvalidFieldValueException {
-        Objects.requireNonNull(userId);
+    public void inviteUser(@RequestBody Event event, @PathVariable(value = "id") Long userId) throws
+        InvalidFieldValueException, UnauthorizedOperationException {
         Objects.requireNonNull(event);
+        Objects.requireNonNull(userId);
 
         if (event.getId() == null) {
             throw new InvalidFieldValueException("event id");
@@ -197,23 +322,24 @@ public class EventController extends AbstractController {
         Optional<User> targetUser = Optional.ofNullable(userPersistenceService.findOne(userId));
         Optional<Event> targetEvent = Optional.ofNullable(eventPersistenceService.findOne(QEvent.event.eq(event)));
 
-        if (targetEvent.isPresent()) {
+        if (targetEvent.isPresent() && targetUser.isPresent()) {
             boolean userCanInvit = targetEvent.get().getParticipants().stream()
                 .filter(UserEvent::isAdmin)
                 .map(UserEvent::getId)
                 .map(UserEventId::getUser)
                 .anyMatch(user -> getUser().equals(user));
 
-            if (userCanInvit && targetUser.isPresent()) {
+            if (userCanInvit) {
                 UserEvent userEvent = new UserEvent();
                 userEvent.setInvitation(true);
                 userEvent.setId(new UserEventId(targetEvent.get(), targetUser.get()));
                 userEventPersistenceService.save(userEvent);
+            } else {
+                throw new UnauthorizedOperationException("invite user as a non-admin user");
             }
         } else {
-            throw new EntityNotFoundException("Target user not found");
+            throw new EntityNotFoundException("Target user or target event has been not found");
         }
-
     }
 
     /**

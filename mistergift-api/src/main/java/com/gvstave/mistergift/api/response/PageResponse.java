@@ -58,21 +58,21 @@ public class PageResponse<T> {
             return null;
         }
 
-        Map<String, String > paging = new LinkedHashMap<>();
+        Map<String, String> paging = new LinkedHashMap<>();
         UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
 
         if (page.hasPrevious()) {
             String previousPageUri = uriBuilder
-                    .replaceQueryParam("page", page.getNumber())
-                    .toUriString();
+                .replaceQueryParam("page", page.getNumber())
+                .toUriString();
 
             paging.put("prev", previousPageUri);
         }
 
         if (page.hasNext()) {
             String nextPageUri = uriBuilder
-                    .replaceQueryParam("page", page.nextPageable().next().getPageNumber())
-                    .toUriString();
+                .replaceQueryParam("page", page.nextPageable().next().getPageNumber())
+                .toUriString();
 
             paging.put("next", nextPageUri);
         }

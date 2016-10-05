@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.api.controller.exception;
+package com.gvstave.mistergift.data.exception;
 
 /**
  * When there is an entity duplicate attempt.

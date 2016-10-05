@@ -90,4 +90,14 @@ public class UserService {
         return userPersistenceService.save(user);
     }
 
+	/**
+     *
+     * @param user
+     * @return
+     */
+    public String getTimeline(User user) {
+        Objects.requireNonNull(user);
+        return null;
+    }
+
 }

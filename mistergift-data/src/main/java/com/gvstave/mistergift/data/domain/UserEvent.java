@@ -1,42 +1,17 @@
 package com.gvstave.mistergift.data.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mysema.query.annotations.QueryInit;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(schema = "mistergift", name = "users_events")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEvent implements BaseEntity<UserEventId> {
-
-    public enum UserEvenFilter {
-
-        IS_ADMIN("admin"),
-
-        IS_INVITATION("invitation"),
-
-        CAN_SEE_MINES("can_see_mine"),
-
-        CAN_SEE_OTHERS("can_see_others");
-
-        String name;
-
-        /**
-         * Constructor.
-         *
-         * @param name The filter.
-         */
-        UserEvenFilter(String name) {
-            this.name = name;
-        }
-
-        /**
-         *
-         */
-        public String getName() {
-            return name;
-        }
-
-    }
 
     /** The id. */
     @QueryInit({"event", "user"})

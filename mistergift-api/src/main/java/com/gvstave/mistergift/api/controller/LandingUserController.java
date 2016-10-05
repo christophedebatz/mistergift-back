@@ -1,8 +1,8 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
-import com.gvstave.mistergift.api.controller.exception.DuplicatedEntityException;
-import com.gvstave.mistergift.api.controller.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
+import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.domain.LandingUser;
 import com.gvstave.mistergift.data.domain.QLandingUser;
 import com.gvstave.mistergift.data.persistence.LandingUserPersistenceService;

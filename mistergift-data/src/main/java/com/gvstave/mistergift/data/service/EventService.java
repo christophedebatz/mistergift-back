@@ -56,16 +56,50 @@ public class EventService {
     }
 
     /**
+     * Returns the event according to their {@link com.gvstave.mistergift.data.domain.Event.EventStatus}.
+     * Note: the unpublished events can be see only by event admins.
+     *
+     * @param user The user.
+     * @param status The event status.
+     * @param pageable The pageable if necessary.
+     * @return The events.
+     */
+    public List<Event> getUserEventsByStatus(User user, Event.EventStatus status, Pageable pageable) {
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(status);
+
+        BooleanExpression bUser = QEvent.event.participants.any().id.user.eq(user);
+
+        // if unpublished events requested, only admin user can see them
+        if (Event.EventStatus.UNPUBLISHED == status) {
+            bUser = bUser.and(QEvent.event.participants.any().isAdmin.isTrue());
+        }
+
+        BooleanExpression bTotal = bUser.and(QEvent.event.status.eq(status));
+
+        if (pageable != null) {
+            return eventPersistenceService.findAll(bTotal, pageable).getContent();
+        }
+
+        return Streams.of(eventPersistenceService.findAll())
+            .collect(Collectors.toList());
+    }
+
+    /**
      * Returns the user events.
      *
      * @param user The user.
      * @return The user events.
      */
-    public List<Event> getUserInvitationEvents(User user) {
+    public List<Event> getUserInvitationEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
         QUserEvent anyEvent = QEvent.event.participants.any();
         Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isInvitation.isTrue());
+
+        if (pageable != null) {
+            return eventPersistenceService.findAll(predicate, pageable).getContent();
+        }
 
         return Streams.of(eventPersistenceService.findAll(predicate))
                 .collect(Collectors.toList());
@@ -95,11 +129,15 @@ public class EventService {
      * @param user The administrator.
      * @return The list of administrated events.
      */
-    public List<Event> getUserAdminEvents(User user) {
+    public List<Event> getUserAdminEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
         QUserEvent anyEvent = QEvent.event.participants.any();
         Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isAdmin.isTrue());
+
+        if (pageable != null) {
+            return eventPersistenceService.findAll(predicate, pageable).getContent();
+        }
 
         return Streams.of(eventPersistenceService.findAll(predicate))
                 .collect(Collectors.toList());
