@@ -52,13 +52,6 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
     )
     private List<UserEvent> userEvents;
 
-    /** The user wish list. */
-    @OneToMany
-    @JoinTable(name = "user_products",
-        joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
-    )
-    private List<Product> wishList;
-
     /**
      * Returns the user password.
      *
@@ -131,22 +124,6 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
      */
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<Product> getWishList() {
-        return wishList;
-    }
-
-    /**
-     *
-     * @param wishList
-     */
-    public void setWishList(List<Product> wishList) {
-        this.wishList = wishList;
     }
 
     /**

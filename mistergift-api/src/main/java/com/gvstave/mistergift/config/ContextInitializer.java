@@ -25,7 +25,7 @@ public class ContextInitializer extends WebMvcConfigurerAdapter implements Appli
         ResourcePropertySource ps = null;
 
         try {
-            ps = new ResourcePropertySource(new ClassPathResource("WEB-INF/mg-admin-" + ctx.getEnvironment().getProperty("env", "dev") + " .properties"));
+            ps = new ResourcePropertySource(new ClassPathResource("WEB-INF/mg-admin-" + ctx.getEnvironment().getProperty("env", "dev") + ".properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }

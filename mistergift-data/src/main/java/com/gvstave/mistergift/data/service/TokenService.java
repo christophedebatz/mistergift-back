@@ -18,15 +18,11 @@ import java.util.Objects;
 @Service
 public class TokenService {
 
-    /**
-     * The user persistence service.
-     */
+    /** The user persistence service. */
     @Inject
     private UserPersistenceService userPersistenceService;
 
-    /**
-     * The token persistence service.
-     */
+    /** The token persistence service. */
     @Inject
     private TokenPersistenceService tokenPersistenceService;
 
