@@ -1,8 +1,10 @@
 package com.gvstave.mistergift.data.persistence.repository;
 
 import com.gvstave.mistergift.data.domain.Product;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ProductRepository extends CrudRepository<Product, Long>, QueryDslPredicateExecutor<Product> {
+@Repository
+public interface ProductRepository extends ElasticsearchRepository<Product, Long> {
+
 }

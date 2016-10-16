@@ -1,40 +1,32 @@
 package com.gvstave.mistergift.data.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(schema = "mistergift", name = "products")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Product extends AbstractTimestampableJpaEntity<Long> {
+@Document(indexName = "products")
+public class Product extends AbstractElasticsearchEntity<Long> {
 
     /** The product name. */
-    @Column(name = "name", length = 75, nullable = false)
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String name;
 
     /** The product brand. */
-    @Column(name = "brand", length = 75, nullable = false)
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String brand;
 
     /** The product reference code. */
-    @Column(name = "reference", length = 25)
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String reference;
 
     /** The product description. */
-    @Lob
-    @Column(name = "description")
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String description;
 
     /** The product picture. */
-    @OneToOne
-    @JoinColumn(name = "picture_id")
-    private FileMetadata picture;
+    @Field(type = FieldType.Long, index = FieldIndex.not_analyzed)
+    private Long pictureId;
 
     /**
      * Hibernate constructor.
@@ -120,17 +112,17 @@ public class Product extends AbstractTimestampableJpaEntity<Long> {
      *
      * @return The gift picture.
      */
-    public FileMetadata getPicture() {
-        return picture;
+    public Long getPicture() {
+        return pictureId;
     }
 
     /**
-     * Set the gift picture.
+     * Set the gift picture id.
      *
-     * @param picture The gift picture.
+     * @param pictureId The gift picture id.
      */
-    public void setPicture(FileMetadata picture) {
-        this.picture = picture;
+    public void setPicture(Long pictureId) {
+        this.pictureId = pictureId;
     }
 
 }

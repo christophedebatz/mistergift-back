@@ -188,7 +188,7 @@ public class EventController extends AbstractController {
      * @param page The page.
      * @param eventId The {@link Event} id.
      * @param userId The {@link User} id.
-     * @return The whislist.
+     * @return The whislist.T
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users/{userId}/whishlist")
