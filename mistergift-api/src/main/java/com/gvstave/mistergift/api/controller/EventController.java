@@ -3,17 +3,15 @@ package com.gvstave.mistergift.api.controller;
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.Event;
-import com.gvstave.mistergift.data.domain.QEvent;
-import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.domain.UserEvent;
-import com.gvstave.mistergift.data.domain.UserEventId;
+import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.persistence.WhishlistPersistenceService;
 import com.gvstave.mistergift.data.service.EventService;
+import com.mysema.query.types.expr.BooleanExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,24 +19,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @UserRestricted
 @RestController
@@ -105,6 +90,10 @@ public class EventController extends AbstractController {
     @Inject
     private UserEventPersistenceService userEventPersistenceService;
 
+    /** The whishlist persistence service. */
+    @Inject
+    private WhishlistPersistenceService whishlistPersistenceService;
+
     /** The event service. */
     @Inject
     private EventService eventService;
@@ -119,9 +108,9 @@ public class EventController extends AbstractController {
     /**
      * Returns the lists of events that current user is participant.
      *
-     * @param page
-     * @param filters
-     * @return
+     * @param page The page.
+     * @param filters The filters.
+     * @return The events.
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/users/self/events")
@@ -194,6 +183,35 @@ public class EventController extends AbstractController {
     }
 
     /**
+     * Returns the whishlist of an event user according to the current user.
+     *
+     * @param page The page.
+     * @param eventId The {@link Event} id.
+     * @param userId The {@link User} id.
+     * @return The whislist.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users/{userId}/whishlist")
+    public @ResponseBody PageResponse<Whishlist> getEventUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "eventId") Long eventId, @PathVariable(value = "userId") Long userId) {
+        BooleanExpression qUserEvent = QUserEvent.userEvent.id.event.id.eq(eventId)
+            .and(QUserEvent.userEvent.id.user.id.eq(userId));
+        Optional<UserEvent> userEventOpt = Optional.ofNullable(userEventPersistenceService.findOne(qUserEvent));
+
+        if (userEventOpt.isPresent()) {
+            UserEvent userEvent = userEventOpt.get();
+
+            if (userEvent.canSeeMines()) {
+                BooleanExpression qWhishlist = QWhishlist.whishlist.id.user.id.eq(userId);
+                return new PageResponse<>(
+                    whishlistPersistenceService.findAll(qWhishlist, getPageRequest(page))
+                );
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the list of administrators for the given event.
      *
      * @param page The current page.
@@ -261,8 +279,8 @@ public class EventController extends AbstractController {
     /**
      * Updates the event status.
      *
-     * @param status
-     * @param id
+     * @param status The event status.
+     * @param id The event id.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
@@ -285,7 +303,7 @@ public class EventController extends AbstractController {
     }
 
     /**
-     * Removes a event.
+     * Removes an event.
      *
      * @param id The event id.
      * @throws UnauthorizedOperationException if the user is not an api of the event.

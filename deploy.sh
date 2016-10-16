@@ -6,11 +6,11 @@ mvn clean install
 echo "[INFO] Uploading ROOT.war..."
 rsync -P -vrltD mistergift-api/target/ROOT.war mgadmin@163.172.25.140:/opt/tomcat8/webapps/
 
-if [[ $1 -neq "dev" or $1 -neq "stg" or $1 -neq "prd" ]]; then
+if [[ $1 -ne "dev" || $1 -ne "stg" || $1 -ne "prd" ]]; then
     echo "[ERROR] No environment config has been defined..."
 else
 
-    echo "[INFO] Set Catalina options as $env"
+    echo "[INFO] Set Catalina options as $1"
     ssh mgadmin@163.172.25.140 "export CATALINA_OPTS=\"-Xms512M -Xmx1024M -Denv=$1\""
 
     #echo [INFO] Computing SQL deltas..."

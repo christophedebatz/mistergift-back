@@ -71,7 +71,7 @@ public class UserEvent implements BaseEntity<UserEventId> {
      *
      * @return
      */
-    public boolean isCanSeeOthers() {
+    public boolean canSeeOthers() {
         return canSeeOthers;
     }
 
@@ -87,7 +87,7 @@ public class UserEvent implements BaseEntity<UserEventId> {
      *
      * @return
      */
-    public boolean isCanSeeMines() {
+    public boolean canSeeMines() {
         return canSeeMines;
     }
 
