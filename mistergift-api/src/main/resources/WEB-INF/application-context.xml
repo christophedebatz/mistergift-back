@@ -53,6 +53,11 @@
         </security:authentication-provider>
     </security:authentication-manager>
 
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="i18n.message"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
     <bean id="corsFilter" class="com.gvstave.mistergift.api.filter.CorsFilter" />
 
     <bean id="userAccessFilter" class="com.gvstave.mistergift.api.filter.UserAccessFilter" />

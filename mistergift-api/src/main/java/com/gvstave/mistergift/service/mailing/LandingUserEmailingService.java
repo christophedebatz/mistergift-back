@@ -1,12 +1,11 @@
 package com.gvstave.mistergift.service.mailing;
 
+import com.gvstave.mistergift.service.i18n.Translator;
 import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.context.Context;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.StringWriter;
+import javax.inject.Inject;
 import java.util.Map;
 
 /**
@@ -15,19 +14,16 @@ import java.util.Map;
 @Service
 public class LandingUserEmailingService extends AbstractEmailingService {
 
+    /** The message source. */
+    @Inject
+    private Translator translator;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void prepare(MimeMessageHelper message, Map<String, Object> data) throws Exception {
-        Template template = getDefaultEmailingFactory().getTemplater().getTemplate(getTemplatePath());
-        Context context = new VelocityContext(data);
-
-        StringWriter sw = new StringWriter();
-        template.merge(context, sw);
-
-        message.setText(sw.toString(), true);
-        message.setSubject("Welcome on board!");
+    protected void prepare(Template template, MimeMessageHelper message, Map<String, Object> data) throws Exception {
+        message.setSubject(translator.translate("landing.mail.subject"));
     }
 
     /**
@@ -42,8 +38,8 @@ public class LandingUserEmailingService extends AbstractEmailingService {
      * {@inheritDoc}
      */
     @Override
-    public String getTemplatePath() {
-        return getTemplateDirectory() +  "/landing-email-en.vm";
+    public String getTemplateName() {
+        return "landing-email";
     }
 
 }

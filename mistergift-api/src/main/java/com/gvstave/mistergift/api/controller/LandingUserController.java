@@ -1,12 +1,11 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
-import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.domain.LandingUser;
 import com.gvstave.mistergift.data.domain.QLandingUser;
+import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
+import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.persistence.LandingUserPersistenceService;
-import com.gvstave.mistergift.service.geoip.GeolocationResult;
 import com.gvstave.mistergift.service.geoip.GeolocationService;
 import com.gvstave.mistergift.service.mailing.LandingUserEmailingService;
 import org.slf4j.Logger;
@@ -83,15 +82,14 @@ public class LandingUserController extends AbstractController {
         landingUserEmailingService.send(landingUser.getEmail(), model);
 
         // geolocalize client from its ip address
-        String ip = geolocationService.requestClientIp(request);
-        Optional<GeolocationResult> geo = geolocationService.requestClientGeolocation(ip);
-        landingUser.setIp(ip);
-
-        if (geo.isPresent()) {
-            landingUser.setCountry(geo.get().getCountry());
-            landingUser.setRegion(geo.get().getRegion());
-            landingUser.setCity(geo.get().getCity());
-        }
+        Optional.ofNullable(geolocationService.requestClientIp(request))
+            .map(ip -> { landingUser.setIp(ip); return ip; })
+            .flatMap(geolocationService::requestClientGeolocation)
+            .ifPresent(result -> {
+                landingUser.setCountry(result.getCountry());
+                landingUser.setRegion(result.getRegion());
+                landingUser.setCity(result.getCity());
+            });
 
         // save
         return Optional.of(landingUser)

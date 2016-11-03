@@ -5,13 +5,40 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(schema = "mistergift", name = "users")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends AbstractTimestampableJpaEntity<Long> {
+
+    /**
+     * Each user has a rank that defines its rights.
+     */
+    public enum Role {
+
+        /**
+         * An administrator.
+         */
+        ROLE_ADMIN("ROLE_ADMIN"),
+
+        /**
+         * A user.
+         */
+        ROLE_USER("ROLE_USER");
+
+        private final String name;
+
+        Role(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+    }
 
     /** The user name. */
     @Column(name = "name", length = 255, nullable = false)
@@ -51,6 +78,9 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
             joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
     )
     private List<UserEvent> userEvents;
+
+    @Column(name = "locale")
+    private String locale;
 
     /**
      * Returns the user password.
@@ -182,8 +212,27 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
     }
 
     /**
+     * Returns the user locale.
      *
-     * @return
+     * @return The user locale.
+     */
+    public Locale getLocale () {
+        return new Locale(locale);
+    }
+
+    /**
+     * Sets the user locale.
+     *
+     * @param locale The user locale.
+     */
+    public void setLocale (Locale locale) {
+        this.locale = locale.toString();
+    }
+
+    /**
+     * Returns the user events.
+     *
+     * @return The user events.
      */
     @JsonIgnore
     public List<UserEvent> getUserEvents() {
@@ -191,37 +240,12 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
     }
 
     /**
+     * Sets the user events.
      *
-     * @param userEvents
+     * @param userEvents The user events.
      */
     public void setUserEvents(List<UserEvent> userEvents) {
         this.userEvents = userEvents;
-    }
-
-    /*
-         * Each user has a rank that defines its rights.
-         */
-    public enum Role {
-
-        /**
-         * An administrator.
-         */
-        ROLE_ADMIN("ROLE_ADMIN"),
-
-        /**
-         * A user.
-         */
-        ROLE_USER("ROLE_USER");
-
-        private final String name;
-
-        Role(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 
 }

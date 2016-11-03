@@ -5,6 +5,9 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+/**
+ *
+ */
 @Document(indexName = "products")
 public class Product extends AbstractElasticsearchEntity<Long> {
 

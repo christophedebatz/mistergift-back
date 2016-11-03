@@ -7,6 +7,7 @@ import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.UserService;
 import org.joda.time.DateTime;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -104,6 +105,9 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         // set user details by the request
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        // set the user locale
+        LocaleContextHolder.setLocale(user.getLocale());
 
         return authenticationToken;
     }
