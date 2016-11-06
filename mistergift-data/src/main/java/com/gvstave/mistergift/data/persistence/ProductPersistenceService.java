@@ -1,16 +1,19 @@
 package com.gvstave.mistergift.data.persistence;
 
 import com.gvstave.mistergift.data.domain.Product;
-import com.gvstave.mistergift.data.domain.QProduct;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.ProductRepository;
-import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
 
 @Repository
 public class ProductPersistenceService extends BaseQueryDslRepositorySupport<Product> implements ProductRepository {
@@ -101,10 +104,7 @@ public class ProductPersistenceService extends BaseQueryDslRepositorySupport<Pro
      * @return
      */
     public Page<Product> findAll(Predicate predicate, Pageable pageable) {
-        JPQLQuery query = from(QProduct.product).where(predicate);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable)
-                .list(QProduct.product), pageable);
+        return new PageImpl<Product>(new ArrayList<>());
     }
 
     public long count(Predicate predicate) {
@@ -113,5 +113,36 @@ public class ProductPersistenceService extends BaseQueryDslRepositorySupport<Pro
 
     public boolean exists(Predicate predicate) {
         return false;
+    }
+
+    @Override
+    public <S extends Product> S index (S s) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Product> search (QueryBuilder queryBuilder) {
+        return null;
+    }
+
+    @Override
+    public Page<Product> search (QueryBuilder queryBuilder, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<Product> search (SearchQuery searchQuery) {
+        return null;
+    }
+
+    @Override
+    public Page<Product> searchSimilar (Product product, String[] strings, Pageable pageable
+    ) {
+        return null;
+    }
+
+    @Override
+    public void refresh () {
+
     }
 }

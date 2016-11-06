@@ -16,10 +16,9 @@ public class Gift extends AbstractTimestampableJpaEntity<Long> {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    /** The gift product. */
-    @OneToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    /** The gift product id. */
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @OneToMany
     @JoinTable(name = "users_gifts",
@@ -70,4 +69,21 @@ public class Gift extends AbstractTimestampableJpaEntity<Long> {
         this.owners = owners;
     }
 
+    /**
+     * Returns the product id.
+     *
+     * @return The product id.
+     */
+    public Long getProductId () {
+        return productId;
+    }
+
+    /**
+     * Sets the product id.
+     *
+     * @param productId The product id.
+     */
+    public void setProductId (Long productId) {
+        this.productId = productId;
+    }
 }

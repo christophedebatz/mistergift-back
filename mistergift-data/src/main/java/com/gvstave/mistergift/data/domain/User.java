@@ -1,8 +1,6 @@
 package com.gvstave.mistergift.data.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +9,7 @@ import java.util.Locale;
 @Entity
 @Table(schema = "mistergift", name = "users")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonAutoDetect
 public class User extends AbstractTimestampableJpaEntity<Long> {
 
     /**
@@ -28,12 +27,23 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
          */
         ROLE_USER("ROLE_USER");
 
+        /** The name. */
         private final String name;
 
+        /**
+         * Constructor.
+         *
+         * @param name The name.
+         */
         Role(String name) {
             this.name = name;
         }
 
+        /**
+         * Returns the name.
+         *
+         * @return The name.
+         */
         public String getName() {
             return name;
         }
@@ -97,7 +107,7 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
      *
      * @param password The user password.
      */
-    @JsonProperty
+    @JsonSetter
     public void setPassword(String password) {
         this.password = password;
     }

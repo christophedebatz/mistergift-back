@@ -7,10 +7,10 @@ import javax.persistence.*;
 public class Link extends AbstractJpaEntity<Long>
 {
     /** The associated product. */
-    @OneToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
+    /** The buying url. */
     @Column(name = "url", length = 255, nullable = false)
     private String url;
 
@@ -19,17 +19,17 @@ public class Link extends AbstractJpaEntity<Long>
      *
      * @return The linked product.
      */
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     /**
      * Set the linked product.
      *
-     * @param product The linked product.
+     * @param productId The linked product.
      */
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProduct(Long productId) {
+        this.productId = productId;
     }
 
     /**

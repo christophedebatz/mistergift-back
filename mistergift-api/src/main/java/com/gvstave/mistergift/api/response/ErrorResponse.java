@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * Represents an response in failure.
+ * Represents a response in failure.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {

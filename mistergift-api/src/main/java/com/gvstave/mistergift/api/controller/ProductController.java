@@ -5,18 +5,17 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.Gift;
 import com.gvstave.mistergift.data.domain.Product;
-import com.gvstave.mistergift.data.domain.QProduct;
 import com.gvstave.mistergift.data.persistence.ProductPersistenceService;
-import com.mysema.query.types.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -65,10 +64,10 @@ public class ProductController extends AbstractController {
         LOGGER.debug("Searching products with query={} and page={}", query, page);
         PageRequest pageRequest = getPageRequest(page);
 
-        Predicate predicate = QProduct.product.name.containsIgnoreCase(query)
-                .or(QProduct.product.description.containsIgnoreCase(query));
+//        Predicate predicate = QProduct.product.name.containsIgnoreCase(query)
+//                .or(QProduct.product.description.containsIgnoreCase(query));
 
-        return new PageResponse<>(productPersistenceService.findAll(predicate, pageRequest));
+        return new PageResponse<>(new PageImpl<>(new ArrayList<>()));
     }
 
     /**
@@ -85,8 +84,8 @@ public class ProductController extends AbstractController {
         PageRequest pageRequest = getPageRequest(page);
         LOGGER.debug("Retrieving last created products, since={} and page={}", since, pageRequest);
 
-        Predicate predicate = QProduct.product.creationDate.after(new Date(since));
-        return new PageResponse<>(productPersistenceService.findAll(predicate, pageRequest));
+//        Predicate predicate = QProduct.product.creationDate.after(new Date(since));
+        return new PageResponse<>(new PageImpl<>(new ArrayList<>()));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.domain;
 
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
