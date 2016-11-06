@@ -1,6 +1,9 @@
 package com.gvstave.mistergift.api.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gvstave.mistergift.api.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -23,16 +26,13 @@ public class GlobalFilterExceptionHandler extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             int status = HttpStatus.UNAUTHORIZED.value();
-            response.getWriter().print(exception);
+            ErrorResponse errorResponse = ErrorResponse.fromException(exception, status);
 
-//            ErrorResponse errorResponse = ErrorResponse.fromException(exception, status);
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-//            response.setStatus(status);
-//            response.getWriter().print(mapper.writeValueAsString(errorResponse));
+            ObjectMapper mapper = new ObjectMapper();
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setStatus(status);
+            response.getWriter().print(mapper.writeValueAsString(errorResponse));
         }
-
     }
 
 }

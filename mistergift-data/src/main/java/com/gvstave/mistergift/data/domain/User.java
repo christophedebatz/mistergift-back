@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.*;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Entity
 @Table(schema = "mistergift", name = "users")
@@ -227,7 +228,7 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
      * @return The user locale.
      */
     public Locale getLocale () {
-        return new Locale(locale);
+        return Optional.ofNullable(locale).map(Locale::new).orElse(Locale.ENGLISH);
     }
 
     /**
