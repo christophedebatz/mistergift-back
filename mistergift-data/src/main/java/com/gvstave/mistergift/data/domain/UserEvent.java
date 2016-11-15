@@ -3,10 +3,7 @@ package com.gvstave.mistergift.data.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mysema.query.annotations.QueryInit;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(schema = "mistergift", name = "users_events")
@@ -18,18 +15,22 @@ public class UserEvent implements BaseEntity<UserEventId> {
     @EmbeddedId
     private UserEventId id;
 
-    /** The user event type. */
+    /** Whether other event users can see other event users whislist. */
     @Column(name = "can_see_others")
     private boolean canSeeOthers;
 
+    /** Whether other event users can see my whislist. */
     @Column(name = "can_see_mines")
     private boolean canSeeMines;
 
+    /** Whether event user is the event admin. */
     @Column(name = "is_admin")
     private boolean isAdmin;
 
-    @Column(name = "is_invitation")
-    private boolean isInvitation;
+    /** The user associated invitation */
+    @OneToOne
+    @JoinColumn(name = "invitation_id", referencedColumnName = "id", nullable = true)
+    private EventInvitation invitation;
 
     /**
      * Hibernate constructor.
@@ -120,15 +121,25 @@ public class UserEvent implements BaseEntity<UserEventId> {
      * @return
      */
     public boolean isInvitation() {
-        return isInvitation;
+        return invitation == null;
     }
 
     /**
+     * Returns the invitation.
      *
-     * @param invitation
+     * @return The invitation.
      */
-    public void setInvitation(boolean invitation) {
-        isInvitation = invitation;
+    public EventInvitation getInvitation () {
+        return invitation;
+    }
+
+    /**
+     * Sets the invitation.
+     *
+     * @param invitation The invitation.
+     */
+    public void setInvitation (EventInvitation invitation) {
+        this.invitation = invitation;
     }
 
 }

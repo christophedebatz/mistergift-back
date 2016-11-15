@@ -6,7 +6,7 @@ import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
- *
+ * Represents a global product (such as Sony Ps4 or Canapé Cuir :-) )
  */
 @Document(indexName = "products")
 public class Product extends AbstractElasticsearchEntity<Long> {

@@ -43,7 +43,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
     @Inject
     private UserPersistenceService userPersistenceService;
 
-    /** The environment/ */
+    /** The environment. */
     @Inject
     private Environment environment;
 

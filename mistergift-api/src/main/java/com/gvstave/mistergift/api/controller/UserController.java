@@ -77,7 +77,7 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/self")
+    @RequestMapping(method = RequestMethod.GET, path = "/me")
     public @ResponseBody User getSelfUser() {
         User user = getUser();
         LOGGER.debug("Retrieving current user with id={}", user.getId());

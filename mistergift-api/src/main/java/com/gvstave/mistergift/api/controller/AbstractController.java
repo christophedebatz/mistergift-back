@@ -26,6 +26,9 @@ class AbstractController {
     @Inject
     private TokenService tokenService;
 
+    /** The current user. */
+    private User user;
+
     /**
      * Returns the current stateless-request user.
      *
@@ -37,7 +40,7 @@ class AbstractController {
         );
 
         if (token != null) {
-            return tokenService.getUserFromToken(token);
+            return user == null ? tokenService.getUserFromToken(token) : user;
         }
 
         return null;

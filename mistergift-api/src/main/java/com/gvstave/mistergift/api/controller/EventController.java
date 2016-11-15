@@ -6,10 +6,7 @@ import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.EventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import com.gvstave.mistergift.data.persistence.WhishlistPersistenceService;
+import com.gvstave.mistergift.data.persistence.*;
 import com.gvstave.mistergift.data.service.EventService;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.slf4j.Logger;
@@ -82,17 +79,13 @@ public class EventController extends AbstractController {
     @Inject
     private EventPersistenceService eventPersistenceService;
 
-    /** The user persistence service. */
-    @Inject
-    private UserPersistenceService userPersistenceService;
-
     /** The user events persistence service. */
     @Inject
     private UserEventPersistenceService userEventPersistenceService;
 
     /** The whishlist persistence service. */
     @Inject
-    private WhishlistPersistenceService whishlistPersistenceService;
+    private UserGiftPersistenceService userGiftPersistenceService;
 
     /** The event service. */
     @Inject
@@ -106,7 +99,7 @@ public class EventController extends AbstractController {
     }
 
     /**
-     * Returns the lists of events that current user is participant.
+     * Returns the list of events where current user is involved in.
      *
      * @param page The page.
      * @param filters The filters.
@@ -185,14 +178,14 @@ public class EventController extends AbstractController {
     /**
      * Returns the whishlist of an event user according to the current user.
      *
-     * @param page The page.
+     * @param page    The page.
      * @param eventId The {@link Event} id.
-     * @param userId The {@link User} id.
+     * @param userId  The {@link User} id.
      * @return The whislist.
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users/{userId}/whishlist")
-    public @ResponseBody PageResponse<Whishlist> getEventUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "eventId") Long eventId, @PathVariable(value = "userId") Long userId) {
+    @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users/{userId}/gifts")
+    public @ResponseBody PageResponse<UserGift> getEventUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "eventId") Long eventId, @PathVariable(value = "userId") Long userId) {
         BooleanExpression qUserEvent = QUserEvent.userEvent.id.event.id.eq(eventId)
             .and(QUserEvent.userEvent.id.user.id.eq(userId));
         Optional<UserEvent> userEventOpt = Optional.ofNullable(userEventPersistenceService.findOne(qUserEvent));
@@ -201,9 +194,9 @@ public class EventController extends AbstractController {
             UserEvent userEvent = userEventOpt.get();
 
             if (userEvent.canSeeMines()) {
-                BooleanExpression qWhishlist = QWhishlist.whishlist.id.user.id.eq(userId);
+                BooleanExpression qWhishlist = QUserGift.userGift.id.user.id.eq(userId);
                 return new PageResponse<>(
-                    whishlistPersistenceService.findAll(qWhishlist, getPageRequest(page))
+                    userGiftPersistenceService.findAll(qWhishlist, getPageRequest(page))
                 );
             }
         }
@@ -215,7 +208,7 @@ public class EventController extends AbstractController {
      * Returns the list of administrators for the given event.
      *
      * @param page The current page.
-     * @param id The event id.
+     * @param id   The event id.
      * @throws EntityNotFoundException
      * @return The administrators.
      */
@@ -316,48 +309,6 @@ public class EventController extends AbstractController {
         }
         LOGGER.debug("Deleting event id={}", id);
         eventPersistenceService.delete(id);
-    }
-
-    /**
-     * Invites user to join an event.
-	 *
-     * @param event The event (only id is required).
-     * @param userId The user id.
-     * @throws InvalidFieldValueException If event have no id.
-     */
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(method = RequestMethod.POST, path = "/users/{id}/events")
-    public void inviteUser(@RequestBody Event event, @PathVariable(value = "id") Long userId) throws
-        InvalidFieldValueException, UnauthorizedOperationException {
-        Objects.requireNonNull(event);
-        Objects.requireNonNull(userId);
-
-        if (event.getId() == null) {
-            throw new InvalidFieldValueException("event id");
-        }
-
-        LOGGER.debug("Invite user:id={} to event:id={}", userId, event.getId());
-        Optional<User> targetUser = Optional.ofNullable(userPersistenceService.findOne(userId));
-        Optional<Event> targetEvent = Optional.ofNullable(eventPersistenceService.findOne(QEvent.event.eq(event)));
-
-        if (targetEvent.isPresent() && targetUser.isPresent()) {
-            boolean userCanInvit = targetEvent.get().getParticipants().stream()
-                .filter(UserEvent::isAdmin)
-                .map(UserEvent::getId)
-                .map(UserEventId::getUser)
-                .anyMatch(user -> getUser().equals(user));
-
-            if (userCanInvit) {
-                UserEvent userEvent = new UserEvent();
-                userEvent.setInvitation(true);
-                userEvent.setId(new UserEventId(targetEvent.get(), targetUser.get()));
-                userEventPersistenceService.save(userEvent);
-            } else {
-                throw new UnauthorizedOperationException("invite user as a non-admin user");
-            }
-        } else {
-            throw new EntityNotFoundException("Target user or target event has been not found");
-        }
     }
 
     /**

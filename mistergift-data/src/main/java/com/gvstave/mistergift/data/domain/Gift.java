@@ -20,8 +20,10 @@ public class Gift extends AbstractTimestampableJpaEntity<Long> {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
+    /** The users who have booked the gift. */
     @OneToMany
-    @JoinTable(name = "users_gifts",
+    @JoinTable(
+        name = "users_gifts",
         joinColumns = { @JoinColumn(name = "gift_id", updatable = false) }
     )
     private List<User> owners;

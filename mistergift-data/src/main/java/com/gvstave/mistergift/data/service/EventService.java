@@ -95,7 +95,7 @@ public class EventService {
         Objects.requireNonNull(user);
 
         QUserEvent anyEvent = QEvent.event.participants.any();
-        Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isInvitation.isTrue());
+        Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.invitation.isNotNull());
 
         if (pageable != null) {
             return eventPersistenceService.findAll(predicate, pageable).getContent();
@@ -115,7 +115,7 @@ public class EventService {
         Objects.requireNonNull(event);
 
         Predicate predicate = QUserEvent.userEvent.id.event.eq(event)
-                .and(QUserEvent.userEvent.isInvitation.isTrue());
+                .and(QUserEvent.userEvent.invitation.isNotNull());
 
         return Streams.of(userEventPersistenceService.findAll(predicate))
                 .map(UserEvent::getId)
@@ -172,7 +172,7 @@ public class EventService {
         Objects.requireNonNull(pageable);
 
         QUserEvent qUserEvent = QUserEvent.userEvent;
-        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.isInvitation.isFalse());
+        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.invitation.isNull());
 
         return userPersistenceService.findAll(predicate, pageable);
     }

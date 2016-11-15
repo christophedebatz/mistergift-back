@@ -9,13 +9,13 @@ import javax.persistence.OneToOne;
 import java.io.Serializable;
 
 /**
- * The embedded id for {@link Whishlist}.
+ * The embedded id for {@link UserGift}.
  */
 @Embeddable
 @QueryEmbeddable
-public class WhishlistId implements Serializable {
+public class UserGiftId implements Serializable {
 
-    /** The whishlist owner. */
+    /** The gift owner. */
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -27,7 +27,7 @@ public class WhishlistId implements Serializable {
     /**
      * Constructor
      */
-    public WhishlistId() {
+    public UserGiftId () {
         // Hibernate constructor
     }
 
@@ -37,7 +37,7 @@ public class WhishlistId implements Serializable {
      * @param user The user.
      * @param productId The product id.
      */
-    public WhishlistId (User user, Long productId) {
+    public UserGiftId (User user, Long productId) {
         this.user = user;
         this.productId = productId;
     }

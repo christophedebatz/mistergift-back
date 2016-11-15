@@ -7,16 +7,23 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * The user gift (gift that belongs to a user).
+ */
 @Entity
-@Table(schema = "mistergift", name = "whishlists")
+@Table(schema = "mistergift", name = "user_gift")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Whishlist implements BaseEntity<WhishlistId> {
+public class UserGift implements BaseEntity<UserGiftId> {
 
+    /** The user gift id. */
     @QueryInit({"user", "product"})
     @EmbeddedId
-    private WhishlistId id;
+    private UserGiftId id;
 
-    public Whishlist() {
+    /**
+     * Constructor.
+     */
+    public UserGift () {
         // nothing here
     }
 
@@ -26,7 +33,7 @@ public class Whishlist implements BaseEntity<WhishlistId> {
      * @return the id.
      */
     @Override
-    public WhishlistId getId () {
+    public UserGiftId getId () {
         return id;
     }
 
@@ -36,7 +43,7 @@ public class Whishlist implements BaseEntity<WhishlistId> {
      * @param id the id.
      */
     @Override
-    public void setId (WhishlistId id) {
+    public void setId (UserGiftId id) {
         this.id = id;
     }
 }

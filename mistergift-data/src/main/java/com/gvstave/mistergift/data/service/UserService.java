@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  *
@@ -62,8 +63,9 @@ public class UserService {
     }
 
     /**
+     * Removes user token.
      *
-     * @param user
+     * @param user The user.
      */
     public void removeToken(User user) {
         Objects.requireNonNull(user);
@@ -88,6 +90,16 @@ public class UserService {
 
         // finally save
         return userPersistenceService.save(user);
+    }
+
+    /**
+     * Returns the user from its id.
+     *
+     * @param id The user id.
+     * @return The user.
+     */
+    public Optional<User> fromId(Long id) {
+        return Optional.ofNullable(userPersistenceService.findOne(id));
     }
 
 	/**
