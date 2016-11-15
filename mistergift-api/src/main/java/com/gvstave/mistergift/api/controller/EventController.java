@@ -106,7 +106,7 @@ public class EventController extends AbstractController {
      * @return The events.
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/users/self/events")
+    @RequestMapping(method = RequestMethod.GET, path = "/me/events")
     public @ResponseBody
     PageResponse<Map.Entry<String, List<Event>>> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "filters") String filters) {
         User user = getUser();

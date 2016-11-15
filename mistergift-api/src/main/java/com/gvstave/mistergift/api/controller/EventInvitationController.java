@@ -27,7 +27,7 @@ public class EventInvitationController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(EventInvitationController.class);
 
-    /** The event invitation peristence service. */
+    /** The event invitation persistence service. */
     @Inject
     private EventInvitationPersistenceService eventInvitationPersistenceService;
 

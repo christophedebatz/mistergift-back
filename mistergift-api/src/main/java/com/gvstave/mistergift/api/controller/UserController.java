@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController extends AbstractController {
 
     /** The logger. */
@@ -62,7 +62,7 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
     public @ResponseBody PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         LOGGER.debug("Retrieving users with page={}", page);
         PageRequest pageRequest = getPageRequest(page);
@@ -91,7 +91,7 @@ public class UserController extends AbstractController {
      * @return Serialized user.
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
+    @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
     public @ResponseBody User getUserById(@PathVariable(value = "id") Long id) {
         LOGGER.debug("Retrieving user by id={}", id);
         return userPersistenceService.findOne(id);
@@ -105,7 +105,7 @@ public class UserController extends AbstractController {
      * @throws InvalidFieldValueException
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(path = "/users", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public @ResponseBody User save(@RequestBody User user) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, false);
         LOGGER.debug("Saving user={}", user);
@@ -130,7 +130,7 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(path = "/me", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public void update(@RequestBody User user)
             throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, true);
@@ -148,7 +148,7 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST, path = "/self", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @RequestMapping(method = RequestMethod.POST, path = "/me/picture", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public @ResponseBody FileMetadata uploadProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam("coords") String coords) throws InvalidFieldValueException, FileUploadException {
         LOGGER.debug("Uploading picture={} and cropping={}", file, coords);
 
@@ -201,12 +201,13 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/self/wishlist")
+    @RequestMapping(method = RequestMethod.GET, path = "/me/wishlist")
     public @ResponseBody PageResponse<Gift> getUserWishList(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         User user = getUser();
         LOGGER.debug("Retrieving user={} viewable products with page={}", user, page);
-        PageRequest pageRequest = getPageRequest(page);
-        return new PageResponse<>(productService.getUserWishList(user, pageRequest));
+
+        // todo
+        return null;
     }
 
 	/**
@@ -215,7 +216,7 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/self/timeline")
+    @RequestMapping(method = RequestMethod.GET, path = "/me/timeline")
     public @ResponseBody String getUserTimeline() {
         User user = getUser();
         LOGGER.debug("Retrieving user={} timeline", user);

@@ -28,7 +28,7 @@ import java.util.List;
 public class Event extends AbstractTimestampableJpaEntity<Long> {
 
     /**
-     * Describe the event status.
+     * Describes the event status.
      */
     public enum EventStatus {
 
