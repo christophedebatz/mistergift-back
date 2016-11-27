@@ -29,8 +29,8 @@ public class DataElasticsearchConfiguration {
         Settings.Builder elasticsearchSettings =
             Settings.settingsBuilder()
                 .put("http.enabled", "false") // 1
-                .put("path.data", "") // 2
-                .put("path.home", "PATH_TO_YOUR_ELASTICSEARCH_DIRECTORY"); // 3
+                .put("path.data", "/usr/local/var/elasticsearch/") // 2
+                .put("path.home", "/usr/local/Cellar/elasticsearch"); // 3
 
         return new ElasticsearchTemplate(nodeBuilder()
             .local(true)

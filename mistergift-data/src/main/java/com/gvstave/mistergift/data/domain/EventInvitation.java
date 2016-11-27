@@ -8,7 +8,7 @@ import javax.persistence.*;
  * .
  */
 @Entity
-@Table(schema = "mistergift", name = "users_events")
+@Table(schema = "mistergift", name = "event_invitations")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventInvitation extends AbstractTimestampableJpaEntity<Long> {
 
