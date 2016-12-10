@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -31,6 +32,16 @@ public class PageResponse<T> {
      */
     public PageResponse(Page<T> page) {
         this.page = page;
+    }
+
+    /**
+     * Returns an empty paged response.
+     *
+     * @param <T> The type of the response.
+     * @return The response with an empty list inside.
+     */
+    public static <T> PageResponse<T> empty() {
+        return new PageResponse<>(new PageImpl<>(new ArrayList<>()));
     }
 
     /**

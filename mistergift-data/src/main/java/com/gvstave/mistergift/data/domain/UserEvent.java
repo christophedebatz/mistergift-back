@@ -10,6 +10,51 @@ import javax.persistence.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEvent implements BaseEntity<UserEventId> {
 
+    /**
+     * The user event filter.
+     */
+    public enum UserEvenFilter {
+
+        /** The relation describes that the user is an admin of the event. */
+        ADMIN("admin"),
+
+        /** The relation describes that the user has been invited to join the event. */
+        INVITATION("invitation"),
+
+        /**
+         * The relation describes that the user participates to the event
+         * and that all participants can see its gifts.
+         */
+        CAN_SEE_MINES("can-see-mine"),
+
+        /** The relation describes that the user participates to the event
+         * and that he can see the gifts of other participants.
+         */
+        CAN_SEE_OTHERS("can-see-others");
+
+        /** The filter. */
+        String filter;
+
+        /**
+         * Constructor.
+         *
+         * @param filter The filter.
+         */
+        UserEvenFilter(String filter) {
+            this.filter = filter;
+        }
+
+        /**
+         * Returns the filter.
+         *
+         * @return The filter.
+         */
+        public String getFilter () {
+            return filter;
+        }
+
+    }
+
     /** The id. */
     @QueryInit({"event", "user"})
     @EmbeddedId

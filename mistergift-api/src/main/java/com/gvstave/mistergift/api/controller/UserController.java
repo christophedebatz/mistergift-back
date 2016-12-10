@@ -7,12 +7,9 @@ import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import com.gvstave.mistergift.data.service.query.ProductService;
-import com.gvstave.mistergift.data.service.query.UserService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
-import com.gvstave.mistergift.service.CroppingService;
+import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -36,10 +33,6 @@ public class UserController extends AbstractController {
     @Inject
     private UserPersistenceService userPersistenceService;
 
-    /** The file metadata persistence service. */
-    @Inject
-    private FileMetadataPersistenceService fileMetadataPersistenceService;
-
     /** The user service. */
     @Inject
     private UserService userService;
@@ -47,14 +40,6 @@ public class UserController extends AbstractController {
     /** The user writer service. */
     @Inject
     private UserWriterService userWriterService;
-
-    /** The product service. */
-    @Inject
-    private ProductService productService;
-
-    /** The picture cropping service. */
-    @Inject
-    private CroppingService croppingService;
 
     /**
      * Returns the list of the users.
@@ -193,7 +178,6 @@ public class UserController extends AbstractController {
      */
     private void ensureUserValid(User user, boolean isUpdate)
             throws UnauthorizedOperationException, InvalidFieldValueException {
-
         Objects.requireNonNull(user);
 
         if (isUpdate && (user.getId() != null || user.getId() != getUser().getId())) {

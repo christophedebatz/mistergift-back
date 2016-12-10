@@ -226,7 +226,7 @@ public class SearchBuilder {
 
         PRICE_ASC,
 
-        PRICE_DESC;
+        PRICE_DESC
 
     }
 }

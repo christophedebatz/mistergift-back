@@ -9,6 +9,7 @@ import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
 import com.gvstave.mistergift.data.service.query.EventService;
+import com.gvstave.mistergift.data.service.query.UserEventService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,10 @@ public class EventWriterService {
     /** The event persistence service. */
     @Inject
     private EventPersistenceService eventPersistenceService;
+
+    /** The user event service. */
+    @Inject
+    private UserEventService userEventService;
 
     /** The event service. */
     @Inject
@@ -70,7 +75,7 @@ public class EventWriterService {
         Objects.requireNonNull(eventId);
         Objects.requireNonNull(user);
 
-        if (!eventService.isUserEventAdmin(user, eventId)) {
+        if (!userEventService.isUserEventAdmin(user, eventId)) {
             throw new UnauthorizedOperationException("remove event");
         }
         eventPersistenceService.delete(eventId);
@@ -92,7 +97,7 @@ public class EventWriterService {
         Objects.requireNonNull(status);
         Objects.requireNonNull(user);
 
-        if (!eventService.isUserEventAdmin(user, eventId)) {
+        if (!userEventService.isUserEventAdmin(user, eventId)) {
             throw new UnauthorizedOperationException("update event status");
         }
         Optional<Event> event = Optional.of(eventPersistenceService.findOne(eventId));
@@ -119,7 +124,7 @@ public class EventWriterService {
         Objects.requireNonNull(user);
         ensureUserCanUpdateEvent(event, true);
 
-        if (!eventService.isUserEventAdmin(user, event.getId())) {
+        if (!userEventService.isUserEventAdmin(user, event.getId())) {
             throw new UnauthorizedOperationException("update event status");
         }
 
@@ -135,7 +140,6 @@ public class EventWriterService {
      * @throws InvalidFieldValueException     if a field value is invalid.
      */
     private void ensureUserCanUpdateEvent (Event event, boolean isUpdate) throws UnauthorizedOperationException, InvalidFieldValueException {
-
         if (isUpdate && (event.getId() == null || event.getId() <= 0)) {
             throw new InvalidFieldValueException("id");
         }
