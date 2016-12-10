@@ -28,7 +28,7 @@ public class GeolocationService {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(GeolocationService.class);
 
-    /** The environment. */
+    /** The env. */
     @Inject
     private Environment environment;
 

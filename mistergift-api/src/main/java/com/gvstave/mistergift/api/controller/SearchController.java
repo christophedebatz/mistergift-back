@@ -30,7 +30,7 @@ public class SearchController extends AbstractController {
     @Inject
     private List<ProductSupplierService> productSuppliers;
 
-    /** The environment. */
+    /** The env. */
     @Inject
     private Environment environment;
 

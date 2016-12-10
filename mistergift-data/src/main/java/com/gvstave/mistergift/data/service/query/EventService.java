@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.data.service;
+package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
@@ -10,7 +10,6 @@ import com.mysema.query.types.expr.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -35,25 +34,6 @@ public class EventService {
     /** The event persistence service. */
     @Inject
     private EventPersistenceService eventPersistenceService;
-
-    /**
-     * Creates new event and add it to the given user.
-     *
-     * @param event The event to create.
-     * @param user  The event user.
-     * @return The created event.
-     */
-    @Transactional
-    public Event createEvent(Event event, User user) {
-        Objects.requireNonNull(event);
-        Objects.requireNonNull(user);
-
-        UserEventId userEventId = new UserEventId(null, user);
-        UserEvent userEvent = new UserEvent(userEventId, true);
-        userEvent = userEventPersistenceService.save(userEvent);
-
-        return userEvent.getId().getEvent();
-    }
 
     /**
      * Returns the event according to their {@link com.gvstave.mistergift.data.domain.Event.EventStatus}.

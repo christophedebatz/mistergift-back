@@ -25,7 +25,7 @@ public class DefaultEmailingFactory {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(DefaultEmailingFactory.class);
 
-    /** The environment. */
+    /** The env. */
     @Inject
     private Environment environment;
 

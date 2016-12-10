@@ -7,7 +7,8 @@ import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.persistence.*;
-import com.gvstave.mistergift.data.service.EventService;
+import com.gvstave.mistergift.data.service.query.EventService;
+import com.gvstave.mistergift.data.service.command.EventWriterService;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class EventController extends AbstractController {
         ADMIN("admin"),
 
         /** The relation describes that the user has been invited to join the event. */
-        INVITATION("invite"),
+        INVITATION("inviteUserToEvent"),
 
         /**
          * The relation describes that the user participates to the event
@@ -91,6 +92,10 @@ public class EventController extends AbstractController {
     @Inject
     private EventService eventService;
 
+    /** The event writer service. */
+    @Inject
+    private EventWriterService eventWriterService;
+
     /**
      * Default constructor.
      */
@@ -107,8 +112,9 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me/events")
-    public @ResponseBody
-    PageResponse<Map.Entry<String, List<Event>>> getUserEvents(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "filters") String filters) {
+    public PageResponse<Map.Entry<String, List<Event>>> getUserEvents(
+        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(value = "filters") String filters) {
         User user = getUser();
         PageRequest pageable = getPageRequest(page);
 
@@ -164,7 +170,7 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/events/{id}/users")
-    public @ResponseBody PageResponse<User> getEventUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "id") Long id) {
+    public PageResponse<User> getEventUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "id") Long id) {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(id));
 
         if (event.isPresent()) {
@@ -185,7 +191,7 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users/{userId}/gifts")
-    public @ResponseBody PageResponse<UserGift> getEventUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "eventId") Long eventId, @PathVariable(value = "userId") Long userId) {
+    public PageResponse<UserGift> getEventUserGifts(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "eventId") Long eventId, @PathVariable(value = "userId") Long userId) {
         BooleanExpression qUserEvent = QUserEvent.userEvent.id.event.id.eq(eventId)
             .and(QUserEvent.userEvent.id.user.id.eq(userId));
         Optional<UserEvent> userEventOpt = Optional.ofNullable(userEventPersistenceService.findOne(qUserEvent));
@@ -214,7 +220,7 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/events/{id}/admins")
-    public @ResponseBody PageResponse<User> getEventAdmins(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "id") Long id) {
+    public PageResponse<User> getEventAdmins(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @PathVariable(value = "id") Long id) {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(id));
 
         if (event.isPresent()) {
@@ -231,7 +237,7 @@ public class EventController extends AbstractController {
      * @return a serialized {@link Event}.
      */
     @RequestMapping(method = RequestMethod.GET, path = "/events/{id}")
-    public @ResponseBody Event getEventById(@PathVariable(value = "id") Long id) {
+    public Event getEventById(@PathVariable(value = "id") Long id) {
         return eventPersistenceService.findOne(id);
     }
 
@@ -244,10 +250,9 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody Event save(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureEventIsValid(event, false);
+    public Event save(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         LOGGER.debug("Creating event={}", event);
-        return eventService.createEvent(event, getUser());
+        return eventWriterService.createEvent(event, getUser());
     }
 
     /**
@@ -260,13 +265,9 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.PUT, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody Event update(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureEventIsValid(event, true);
-        if (!eventService.isUserEventAdmin(getUser(), event.getId())) {
-            throw new UnauthorizedOperationException("remove event");
-        }
+    public Event update(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         LOGGER.debug("Updating event id={}", event);
-        return eventPersistenceService.save(event);
+        return eventWriterService.updateEvent(event, getUser());
     }
 
     /**
@@ -280,19 +281,8 @@ public class EventController extends AbstractController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.PUT, path = "/events/{id}/status", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public void updateStatus(@RequestBody String status, @PathVariable(value = "id") Long id) throws UnauthorizedOperationException, InvalidFieldValueException {
-        if (!eventService.isUserEventAdmin(getUser(), id)) {
-            throw new UnauthorizedOperationException("update event status");
-        }
         LOGGER.debug("Updating event id={} status");
-        Optional<Event> event = Optional.of(eventPersistenceService.findOne(id));
-
-        // not using ifPresent because non
-        if (event.isPresent()) {
-            event.get().setStatus(Event.EventStatus.fromString(status));
-            eventPersistenceService.save(event.get());
-        } else {
-            throw new EntityNotFoundException("Unable to retrieve event with id=" + id);
-        }
+        eventWriterService.updateStatus(id, status, getUser());
     }
 
     /**
@@ -304,36 +294,8 @@ public class EventController extends AbstractController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.DELETE, path = "/events/{id}")
     public void deleteEvent(@PathVariable(value = "id") Long id) throws UnauthorizedOperationException {
-        if (!eventService.isUserEventAdmin(getUser(), id)) {
-            throw new UnauthorizedOperationException("remove event");
-        }
         LOGGER.debug("Deleting event id={}", id);
-        eventPersistenceService.delete(id);
-    }
-
-    /**
-     * Ensure that given event is correctly hydrated.
-     *
-     * @param event    The event.
-     * @param isUpdate Whether the action implies event-update.
-     * @throws UnauthorizedOperationException if operation is not permitted for this event.
-     * @throws InvalidFieldValueException     if a field value is invalid.
-     */
-    private void ensureEventIsValid(Event event, boolean isUpdate) throws UnauthorizedOperationException, InvalidFieldValueException {
-        Objects.requireNonNull(event);
-
-        if (isUpdate && !eventService.isUserEventAdmin(getUser(), event.getId())) {
-            throw new UnauthorizedOperationException("update event");
-        }
-
-        if (isUpdate && (event.getId() == null || event.getId() <= 0)) {
-            throw new InvalidFieldValueException("id");
-        }
-
-        if (event.getName() == null || event.getName().isEmpty()) {
-            throw new InvalidFieldValueException("name");
-        }
-
+        eventWriterService.deleteEvent(id, getUser());
     }
 
 }

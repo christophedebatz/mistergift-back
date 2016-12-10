@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.data.service;
+package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;

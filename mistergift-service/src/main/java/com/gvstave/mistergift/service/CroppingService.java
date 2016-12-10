@@ -17,14 +17,14 @@ import java.util.Objects;
 @Service
 public class CroppingService {
 
+    /** The logger. */
+    private static Logger LOGGER = LoggerFactory.getLogger(CroppingService.class);
+
     /** The picture file. */
     private File picture;
 
     /** The buffered image. */
     private BufferedImage bufferedImage;
-
-    /** The logger. */
-    private static Logger LOGGER = LoggerFactory.getLogger(CroppingService.class);
 
     /**
      * Crop picture.
@@ -62,9 +62,9 @@ public class CroppingService {
 
 //        String filePath = String.format(
 //                "%s/%s_%s",
-//                environment.getProperty("upload.picture.thumbnail.directory"),
+//                env.getProperty("upload.picture.thumbnail.directory"),
 //                picture.getName(),
-//                environment.getProperty("cropping.filename.suffix")
+//                env.getProperty("cropping.filename.suffix")
 //        );
 
         try {

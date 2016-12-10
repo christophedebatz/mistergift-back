@@ -18,6 +18,21 @@
 
     <jpa:repositories base-package="com.gvstave.mistergift.data.persistence.repository" entity-manager-factory-ref="mg-em-default" />
 
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+    <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg name="strength" value="11" />
+    </bean>
+
+    <bean id="userWriterService" class="com.gvstave.mistergift.data.service.command.UserWriterService">
+        <constructor-arg ref="bcryptEncoder" />
+    </bean>
+
+    <bean id="userService" class="com.gvstave.mistergift.data.service.query.UserService">
+        <constructor-arg ref="bcryptEncoder" />
+    </bean>
+
     <bean id="redisClient" class="com.lambdaworks.redis.support.RedisClientFactoryBean">
         <property name="uri" value="redis://localhost:6379"/>
     </bean>

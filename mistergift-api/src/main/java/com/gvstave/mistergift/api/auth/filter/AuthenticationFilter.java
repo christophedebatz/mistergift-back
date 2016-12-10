@@ -5,7 +5,8 @@ import com.gvstave.mistergift.api.auth.handler.AuthenticationSuccessHandler;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import com.gvstave.mistergift.data.service.UserService;
+import com.gvstave.mistergift.data.service.query.UserService;
+import com.gvstave.mistergift.data.service.command.UserWriterService;
 import org.joda.time.DateTime;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -39,11 +41,15 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
     @Inject
     private UserService userService;
 
+    /** The user writer service. */
+    @Inject
+    private UserWriterService userWriterService;
+
     /** The user persistence service. */
     @Inject
     private UserPersistenceService userPersistenceService;
 
-    /** The environment. */
+    /** The env. */
     @Inject
     private Environment environment;
 
@@ -69,6 +75,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
      * @throws ServletException
      */
     @Override
+    @Transactional
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -85,7 +92,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
 
         // if user has a token, delete it
         if (user.getToken() != null) {
-            userService.removeToken(user);
+            userWriterService.removeToken(user);
         }
 
         // create token

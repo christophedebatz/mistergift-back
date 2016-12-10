@@ -2,6 +2,7 @@ package com.gvstave.mistergift.data.persistence;
 
 import com.gvstave.mistergift.data.domain.EventInvitation;
 import com.gvstave.mistergift.data.domain.QEvent;
+import com.gvstave.mistergift.data.domain.QEventInvitation;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.EventInvitationRepository;
 import com.mysema.query.jpa.JPQLQuery;
@@ -148,11 +149,10 @@ public class EventInvitationPersistenceService extends BaseQueryDslRepositorySup
      * @return
      */
     public Page<EventInvitation> findAll(Predicate predicate, Pageable pageable) {
-        //JPQLQuery query = from(QEvent.event).where(predicate);
-        //long resultsCount = query.count();
-        //return buildPage(resultsCount, applyPagination(query, pageable)
-        //        .list(QEvent.event), pageable);
-        return null;
+        JPQLQuery query = from(QEventInvitation.eventInvitation).where(predicate);
+        long resultsCount = query.count();
+        return buildPage(resultsCount, applyPagination(query, pageable)
+            .list(QEventInvitation.eventInvitation), pageable);
     }
 
 }

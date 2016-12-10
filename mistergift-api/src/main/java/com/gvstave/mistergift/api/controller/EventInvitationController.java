@@ -1,23 +1,21 @@
 package com.gvstave.mistergift.api.controller;
 
+import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.*;
+import com.gvstave.mistergift.data.domain.Event;
+import com.gvstave.mistergift.data.domain.EventInvitation;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.EventInvitationPersistenceService;
-import com.gvstave.mistergift.data.persistence.EventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.service.command.EventInvitationWriterService;
+import com.gvstave.mistergift.data.service.query.EventInvitationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.Objects;
 
 @UserRestricted
 @RestController
@@ -27,70 +25,40 @@ public class EventInvitationController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(EventInvitationController.class);
 
-    /** The event invitation persistence service. */
+    /** The event invitation writer service. */
     @Inject
-    private EventInvitationPersistenceService eventInvitationPersistenceService;
+    private EventInvitationWriterService eventInvitationWriterService;
 
-    /** The event persistence service. */
+    /** The event invitation writer service. */
     @Inject
-    private EventPersistenceService eventPersistenceService;
+    private EventInvitationService eventInvitationService;
 
-    /** The user event persistence service. */
-    @Inject
-    private UserEventPersistenceService userEventPersistenceService;
-
-    /** The user persistence service. */
-    @Inject
-    private UserPersistenceService userPersistenceService;
+    /**
+     *
+     * @param page
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/me/invitations")
+    public PageResponse<EventInvitation> getUserEventInvitations(
+        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+        LOGGER.debug("Retrieving user event invitations for current user");
+        return new PageResponse<>(eventInvitationService.getUserEventInvitations(getUser(), getPageRequest(page)));
+    }
 
     /**
      * Invites user to join an event.
 	 *
-     * @param event The event (only id is required).
+     * @param event  The event (only id is required).
      * @param userId The user id.
      * @throws InvalidFieldValueException If event have no id.
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(method = RequestMethod.POST, path = "/users/{id}/invitations")
-    public @ResponseBody ResponseEntity<EventInvitation> invite(@RequestBody Event event, @PathVariable(value = "id") Long userId) throws
+    public EventInvitation invite(@RequestBody Event event, @PathVariable(value = "id") Long userId) throws
         InvalidFieldValueException, UnauthorizedOperationException {
-        Objects.requireNonNull(event);
-        Objects.requireNonNull(userId);
-
-        if (event.getId() == null) {
-            throw new InvalidFieldValueException("event id");
-        }
-
         LOGGER.debug("Invite user:id={} to event:id={}", userId, event.getId());
-        Optional<User> targetUser = Optional.ofNullable(userPersistenceService.findOne(userId));
-        Optional<Event> targetEvent = Optional.ofNullable(eventPersistenceService.findOne(QEvent.event.eq(event)));
-
-        if (targetEvent.isPresent() && targetUser.isPresent()) {
-            boolean userCanInvit = targetEvent.get().getParticipants().stream()
-                .filter(UserEvent::isAdmin)
-                .map(UserEvent::getId)
-                .map(UserEventId::getUser)
-                .anyMatch(user -> getUser().equals(user));
-
-            if (userCanInvit) {
-                EventInvitation invitation = new EventInvitation();
-                invitation.setSenderUser(getUser());
-                invitation.setTargetUser(targetUser.get());
-                invitation.setEvent(targetEvent.get());
-                invitation = eventInvitationPersistenceService.save(invitation);
-
-                UserEvent userEvent = new UserEvent();
-                userEvent.setInvitation(invitation);
-                userEvent.setId(new UserEventId(targetEvent.get(), targetUser.get()));
-                userEventPersistenceService.save(userEvent);
-
-                return ResponseEntity.ok(invitation);
-            } else {
-                throw new UnauthorizedOperationException("invite user as a non-admin user");
-            }
-        } else {
-            throw new EntityNotFoundException("Target user or target event has been not found");
-        }
+        return eventInvitationWriterService.inviteUserToEvent(event, getUser(), userId);
     }
 
     /**
@@ -105,42 +73,7 @@ public class EventInvitationController extends AbstractController {
         throws InvalidFieldValueException, UnauthorizedOperationException {
         Objects.requireNonNull(eventId);
         LOGGER.debug("Accept invitation for event:id={}", eventId);
-
-        QUserEvent qUserEvent = QUserEvent.userEvent;
-        Optional.ofNullable(
-            userEventPersistenceService.findOne(
-                qUserEvent.id.event.id.eq(eventId)
-                    .and(qUserEvent.id.user.eq(getUser()))
-                    .and(qUserEvent.invitation.isNotNull())
-            )
-        )
-        .ifPresent(userEvent -> {
-            EventInvitation invitation = userEvent.getInvitation();
-            userEvent.setAdmin(invitation.isAdmin());
-            userEvent.setInvitation(null);
-
-            switch (invitation.getType()) {
-
-                case TARGET:
-                    userEvent.setCanSeeMines(true);
-                    userEvent.setCanSeeOthers(false);
-                    break;
-
-                case PARTICIPANT:
-                    userEvent.setCanSeeMines(false);
-                    userEvent.setCanSeeOthers(true);
-                    break;
-
-                default:
-                    userEvent.setCanSeeMines(true);
-                    userEvent.setCanSeeOthers(true);
-                    break;
-            }
-
-            eventInvitationPersistenceService.delete(invitation);
-            userEventPersistenceService.save(userEvent);
-        });
-
+        eventInvitationWriterService.acceptInvitation(getUser(), eventId);
     }
 
     /**
@@ -154,20 +87,7 @@ public class EventInvitationController extends AbstractController {
     public void refuse(@PathVariable(value = "invitationId") Long invitationId) throws InvalidFieldValueException, UnauthorizedOperationException {
         Objects.requireNonNull(invitationId);
         LOGGER.debug("Refuse invitation for invitation:id={}", invitationId);
-
-        Optional.ofNullable(eventInvitationPersistenceService.findOne(invitationId))
-            .filter(filter -> filter.getTargetUser().equals(getUser()))
-            .ifPresent(invitation -> {
-                userEventPersistenceService.delete(invitation.getId());
-                QUserEvent qUserEvent = QUserEvent.userEvent;
-                Optional.ofNullable(
-                    userEventPersistenceService.findOne(
-                        qUserEvent.id.user.eq(getUser())
-                            .and(qUserEvent.id.event.eq(invitation.getEvent())
-                                .and(qUserEvent.invitation.isNotNull()))))
-                .ifPresent(userEventPersistenceService::delete);
-            }
-        );
+        eventInvitationWriterService.refuseInvitation(getUser(), invitationId);
     }
 
     /**
@@ -181,20 +101,8 @@ public class EventInvitationController extends AbstractController {
     @RequestMapping(method = RequestMethod.DELETE, path = "/users/{userId}/invitations/{invitationId}")
     public void cancel(@PathVariable(value = "userId") Long userId,
                        @PathVariable(value = "invitationId") Long invitationId) throws InvalidFieldValueException, UnauthorizedOperationException {
-        Objects.requireNonNull(userId);
-        Objects.requireNonNull(invitationId);
         LOGGER.debug("Cancel invitation from user:id={} for invitation:id={}", userId, invitationId);
-
-        QUserEvent qUserEvent = QUserEvent.userEvent;
-        Optional.ofNullable(
-            userEventPersistenceService.findOne(
-                qUserEvent.invitation.isNotNull()
-                    .and(qUserEvent.invitation.id.eq(invitationId)))
-        )
-        .filter(filter -> filter.getInvitation().getSenderUser().equals(getUser()))
-        .ifPresent(userEvent -> {
-            eventInvitationPersistenceService.delete(userEvent.getInvitation());
-            userEventPersistenceService.delete(userEvent);
-        });
+        eventInvitationWriterService.cancelInvitation(getUser(), invitationId);
     }
+
 }

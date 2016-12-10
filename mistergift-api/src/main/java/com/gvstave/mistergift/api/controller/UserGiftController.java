@@ -6,7 +6,7 @@ import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.QUserGift;
 import com.gvstave.mistergift.data.domain.UserGift;
 import com.gvstave.mistergift.data.persistence.UserGiftPersistenceService;
-import com.gvstave.mistergift.data.service.UserService;
+import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

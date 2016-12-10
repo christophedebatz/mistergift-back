@@ -13,6 +13,7 @@
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context-3.1.xsd">
     <import resource="classpath:WEB-INF/data-context-${env}.xml"/>
+    <import resource="classpath:WEB-INF/service-context.xml"/>
 
     <context:annotation-config />
     <context:property-placeholder location="classpath:WEB-INF/mg-admin-${env}.properties" />
@@ -53,18 +54,13 @@
         </security:authentication-provider>
     </security:authentication-manager>
 
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="i18n.message"/>
-        <property name="defaultEncoding" value="UTF-8"/>
+    <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg name="strength" value="11" />
     </bean>
 
     <bean id="corsFilter" class="com.gvstave.mistergift.api.filter.CorsFilter" />
 
     <bean id="userAccessFilter" class="com.gvstave.mistergift.api.filter.UserAccessFilter" />
-    
-    <bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
-        <constructor-arg name="strength" value="11" />
-    </bean>
 
     <bean id="unauthorizedEntryPoint" class="com.gvstave.mistergift.api.auth.filter.UnauthorizedEntryPoint"/>
 
@@ -77,16 +73,9 @@
         <property name="authenticationManager" ref="authenticationManager" />
     </bean>
 
-    <bean id="userService" class="com.gvstave.mistergift.data.service.UserService">
-        <constructor-arg ref="bcryptEncoder" />
-    </bean>
-
-    <bean id="userProvider" class="com.gvstave.mistergift.data.service.UserProvider" />
+    <bean id="userProvider" class="com.gvstave.mistergift.data.service.query.UserProvider" />
 
     <bean id="contextInitializer" class="com.gvstave.mistergift.config.ContextInitializer" />
 
     <bean id="swaggerConfig" class="com.gvstave.mistergift.config.SwaggerConfig" />
-
-    <bean id="multipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 </beans>

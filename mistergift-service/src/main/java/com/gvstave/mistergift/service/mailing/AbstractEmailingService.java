@@ -24,7 +24,7 @@ abstract class AbstractEmailingService implements Mailable {
     @Inject
     private DefaultEmailingFactory defaultEmailingFactory;
 
-    /** The environment. */
+    /** The env. */
     @Inject
     private Environment environment;
 

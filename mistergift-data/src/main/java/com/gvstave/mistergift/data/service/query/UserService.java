@@ -1,10 +1,8 @@
-package com.gvstave.mistergift.data.service;
+package com.gvstave.mistergift.data.service.query;
 
 
 import com.gvstave.mistergift.data.domain.QUser;
-import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,10 +21,6 @@ public class UserService {
     /** The user persistence service. */
     @Inject
     private UserPersistenceService userPersistenceService;
-
-    /** The token persistence service. */
-    @Inject
-    private TokenPersistenceService tokenPersistenceService;
 
     /** The password encoder. */
     private PasswordEncoder passwordEncoder;
@@ -60,36 +54,6 @@ public class UserService {
         }
 
         return null;
-    }
-
-    /**
-     * Removes user token.
-     *
-     * @param user The user.
-     */
-    public void removeToken(User user) {
-        Objects.requireNonNull(user);
-        Token token = user.getToken();
-        user.setToken(null);
-        userPersistenceService.save(user);
-        tokenPersistenceService.delete(token.getId());
-    }
-
-    /**
-     * Saves a new user in database.
-     *
-     * @param user The new user.
-     * @return The created user id.
-     */
-    public User saveOrUpdate(User user) {
-        // encode password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // set user role
-        user.setRole(User.Role.ROLE_USER);
-
-        // finally save
-        return userPersistenceService.save(user);
     }
 
     /**

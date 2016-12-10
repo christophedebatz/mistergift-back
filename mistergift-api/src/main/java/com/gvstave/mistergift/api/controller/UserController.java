@@ -1,16 +1,17 @@
 package com.gvstave.mistergift.api.controller;
 
+import com.gvstave.mistergift.api.response.PageResponse;
+import com.gvstave.mistergift.config.annotation.UserRestricted;
+import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.config.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import com.gvstave.mistergift.data.service.ProductService;
-import com.gvstave.mistergift.data.service.UserService;
+import com.gvstave.mistergift.data.service.query.ProductService;
+import com.gvstave.mistergift.data.service.query.UserService;
+import com.gvstave.mistergift.data.service.command.UserWriterService;
 import com.gvstave.mistergift.service.CroppingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,6 +44,10 @@ public class UserController extends AbstractController {
     @Inject
     private UserService userService;
 
+    /** The user writer service. */
+    @Inject
+    private UserWriterService userWriterService;
+
     /** The product service. */
     @Inject
     private ProductService productService;
@@ -63,7 +64,7 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public @ResponseBody PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+    public PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         LOGGER.debug("Retrieving users with page={}", page);
         PageRequest pageRequest = getPageRequest(page);
         return new PageResponse<>(userPersistenceService.findAll(pageRequest));
@@ -78,10 +79,9 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me")
-    public @ResponseBody User getSelfUser() {
-        User user = getUser();
-        LOGGER.debug("Retrieving current user with id={}", user.getId());
-        return user;
+    public User getSelfUser() {
+        LOGGER.debug("Retrieving current user");
+        return getUser();
     }
 
     /**
@@ -92,7 +92,7 @@ public class UserController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
-    public @ResponseBody User getUserById(@PathVariable(value = "id") Long id) {
+    public User getUserById(@PathVariable(value = "id") Long id) {
         LOGGER.debug("Retrieving user by id={}", id);
         return userPersistenceService.findOne(id);
     }
@@ -106,7 +106,7 @@ public class UserController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/users", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody User save(@RequestBody User user) throws UnauthorizedOperationException, InvalidFieldValueException {
+    public User save(@RequestBody User user) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, false);
         LOGGER.debug("Saving user={}", user);
 
@@ -118,7 +118,7 @@ public class UserController extends AbstractController {
             throw new DuplicatedEntityException("user", "email");
         }
 
-        return userService.saveOrUpdate(user);
+        return userWriterService.saveOrUpdate(user);
     }
 
     /**
@@ -135,7 +135,7 @@ public class UserController extends AbstractController {
             throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(user, true);
         LOGGER.debug("Updating user={}", user);
-        userService.saveOrUpdate(user);
+        userWriterService.saveOrUpdate(user);
     }
 
     /**
@@ -149,48 +149,9 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, path = "/me/picture", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public @ResponseBody FileMetadata uploadProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam("coords") String coords) throws InvalidFieldValueException, FileUploadException {
+    public FileMetadata uploadProfilePicture(@RequestParam("file") MultipartFile file, @RequestParam("coords") String coords) throws InvalidFieldValueException, FileUploadException {
         LOGGER.debug("Uploading picture={} and cropping={}", file, coords);
-
-        if (file == null || file.isEmpty()) {
-            throw new InvalidFieldValueException("file");
-        }
-
-        Rectangle croppingCoords = parseCroppingCoords(coords);
-        String extension = environment.getProperty("upload.picture.extension");
-
-        String targetFileName = String.format("%s/%s.%s",
-            environment.getProperty("upload.picture.directory"),
-            UUID.randomUUID().toString(),
-            extension
-        );
-
-        try {
-            // convert to file
-            File pictureFile = new File(targetFileName);
-            file.transferTo(pictureFile);
-
-            // crop and save
-            croppingService.crop(pictureFile, croppingCoords).save(extension);
-
-            // create file-metadata
-            User currentUser = getUser();
-            FileMetadata profilePicture = new FileMetadata();
-            profilePicture.setOwner(currentUser);
-            profilePicture.setUrl(environment.getProperty("upload.domain") + targetFileName);
-
-            // save file meta data
-            profilePicture = fileMetadataPersistenceService.save(profilePicture);
-
-            // save user
-            currentUser.setPicture(profilePicture);
-            userPersistenceService.save(currentUser);
-
-            return profilePicture;
-
-        } catch (IOException exception) {
-            throw new FileUploadException(file, exception);
-        }
+        return userWriterService.uploadPicture(getUser(), file, coords);
     }
 
     /**
@@ -202,10 +163,9 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me/wishlist")
-    public @ResponseBody PageResponse<Gift> getUserWishList(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+    public PageResponse<Gift> getUserWishList(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         User user = getUser();
         LOGGER.debug("Retrieving user={} viewable products with page={}", user, page);
-
         // todo
         return null;
     }
@@ -217,30 +177,10 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me/timeline")
-    public @ResponseBody String getUserTimeline() {
+    public String getUserTimeline() {
         User user = getUser();
         LOGGER.debug("Retrieving user={} timeline", user);
         return userService.getTimeline(user);
-    }
-
-    /**
-     * Returns a Rectangle from String coordinates.
-     *
-     * @param stringCoords The coordinates in string format.
-     * @return The rectangle.
-     * @throws InvalidFieldValueException whether the coordinate string is invalid.
-     */
-    private Rectangle parseCroppingCoords(String stringCoords) throws InvalidFieldValueException {
-
-        List<Integer> coords = Arrays.asList(stringCoords.split("\\s")).stream()
-            .map(Integer::valueOf)
-            .collect(Collectors.toList());
-
-        if (coords.size() < 4) {
-            throw new InvalidFieldValueException("coords");
-        }
-
-        return new Rectangle(coords.get(0), coords.get(1), coords.get(2), coords.get(3));
     }
 
     /**

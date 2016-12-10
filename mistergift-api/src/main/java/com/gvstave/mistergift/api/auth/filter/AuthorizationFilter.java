@@ -4,7 +4,7 @@ import com.gvstave.mistergift.api.auth.exception.InvalidTokenException;
 import com.gvstave.mistergift.api.auth.exception.MissingTokenException;
 import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
-import com.gvstave.mistergift.data.service.TokenService;
+import com.gvstave.mistergift.data.service.query.TokenService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +38,7 @@ public class AuthorizationFilter extends GenericFilterBean {
     @Inject
     private TokenPersistenceService tokenPersistenceService;
 
-    /** The environment. */
+    /** The env. */
     @Inject
     private Environment environment;
 
