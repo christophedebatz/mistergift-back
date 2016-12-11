@@ -180,7 +180,7 @@ public class UserController extends AbstractController {
             throws UnauthorizedOperationException, InvalidFieldValueException {
         Objects.requireNonNull(user);
 
-        if (isUpdate && (user.getId() != null || user.getId() != getUser().getId())) {
+        if (isUpdate && (user.getId() != null || !Objects.equals(user.getId(), getUser().getId()))) {
             throw new UnauthorizedOperationException("update user");
         }
 

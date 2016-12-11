@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * .
+ * Service that write event invitations.
  */
 @Service
 public class EventInvitationWriterService {
@@ -38,13 +38,14 @@ public class EventInvitationWriterService {
     private UserEventPersistenceService userEventPersistenceService;
 
     /**
+     * Invites another user to join an event.
      *
-     * @param event
-     * @param fromUser
-     * @param toUserId
-     * @return
-     * @throws UnauthorizedOperationException
-     * @throws InvalidFieldValueException
+     * @param event The event.
+     * @param fromUser The user that invite.
+     * @param toUserId The invited user id.
+     * @return The created invitation.
+     * @throws UnauthorizedOperationException If user cannot invite someone.
+     * @throws InvalidFieldValueException If given args are not valid.
      */
     @Transactional
     public EventInvitation inviteUserToEvent (Event event, User fromUser, Long toUserId) throws
@@ -89,9 +90,10 @@ public class EventInvitationWriterService {
     }
 
     /**
+     * Accepts the invitation for a user to join an event.
      *
-     * @param user
-     * @param eventId
+     * @param user The user.
+     * @param eventId The event id.
      */
     @Transactional
     public void acceptInvitation(User user, Long eventId) {
@@ -134,9 +136,10 @@ public class EventInvitationWriterService {
     }
 
     /**
+     * Refuses and cancel an invitation to join an event.
      *
-     * @param user
-     * @param invitationId
+     * @param user The user.
+     * @param invitationId The invitation id.
      */
     @Transactional
     public void refuseInvitation (User user, Long invitationId) {
@@ -159,9 +162,10 @@ public class EventInvitationWriterService {
     }
 
     /**
+     * Cancel an sent invitation to join an event.
      *
-     * @param user
-     * @param invitationId
+     * @param user The user.
+     * @param invitationId The invitation id.
      */
     public void cancelInvitation(User user, Long invitationId) {
         Objects.requireNonNull(user);
