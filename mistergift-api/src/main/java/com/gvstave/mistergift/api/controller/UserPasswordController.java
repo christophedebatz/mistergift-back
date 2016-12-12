@@ -1,10 +1,7 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.data.domain.Token;
-import com.gvstave.mistergift.data.service.query.password.PasswordTokenNotFound;
-import com.gvstave.mistergift.data.service.query.password.UserNotFoundException;
-import com.gvstave.mistergift.data.service.query.password.UserPasswordResult;
-import com.gvstave.mistergift.data.service.query.password.UserPasswordService;
+import com.gvstave.mistergift.data.service.query.password.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -61,8 +58,8 @@ public class UserPasswordController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
-    public Token setNewPassword(@RequestBody String password, @RequestParam(value = "token") String token) throws
-        UserNotFoundException, PasswordTokenNotFound {
+    public Token setNewPassword(@RequestBody String password, @RequestParam(value = "token") String token)
+        throws UserNotFoundException, PasswordTokenNotFound, UserIdNotFoundException {
         LOGGER.debug("Settings new password from token={}", token);
         return userPasswordService.setNewPassword(token, password);
     }

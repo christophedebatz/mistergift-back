@@ -12,4 +12,12 @@ public class UserNotFoundException extends Exception {
     public UserNotFoundException (Long userId) {
         super("Unable to find user with id=" + userId);
     }
+
+    /**
+     *
+     * @param userEmail
+     */
+    public UserNotFoundException (String userEmail) {
+        super("Unable to find user with email=" + userEmail);
+    }
 }

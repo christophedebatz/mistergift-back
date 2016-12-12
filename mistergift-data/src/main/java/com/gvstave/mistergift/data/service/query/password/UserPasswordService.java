@@ -44,12 +44,13 @@ public class UserPasswordService {
     @Inject
     private CacheService cacheService;
 
+    /** The token service. */
+    @Inject
+    private TokenService tokenService;
+
     /** The environment. */
     @Inject
     private Environment env;
-
-    @Inject
-    private TokenService tokenService;
 
     /** The cipher service. */
     private DesCipherService cipherService;
@@ -74,9 +75,9 @@ public class UserPasswordService {
      */
     public UserPasswordResult requestNewPassword (String email) {
         Objects.requireNonNull(email);
+        UserPasswordResult result = new UserPasswordResult();
 
         return Optional.ofNullable(userPersistenceService.findByEmail(email)).map(user -> {
-            UserPasswordResult result = new UserPasswordResult();
 
             // get token cache key
             String cacheKey = getCachePattern(user.getId());
@@ -107,7 +108,10 @@ public class UserPasswordService {
 
             return result;
 
-        }).orElseGet(UserPasswordResult::new);
+        }).orElseGet(() -> {
+            result.setErrorType("mail");
+            return result;
+        });
     }
 
     /**
@@ -116,15 +120,18 @@ public class UserPasswordService {
      * @param rawToken The raw token (from email).
      * @return The user token.
      * @throws UserNotFoundException if user has been not found.
-     * @throws PasswordTokenNotFound if password token has been not found or is not recognized.
+     * @throws PasswordTokenNotFound if password token has been not recognized.
      */
     @Transactional
-    public Token setNewPassword(String rawToken, String password) throws UserNotFoundException, PasswordTokenNotFound {
+    public Token setNewPassword (String rawToken, String password)
+        throws UserNotFoundException, PasswordTokenNotFound, UserIdNotFoundException {
         Objects.requireNonNull(rawToken);
-        String token = cipherService.decrypt(rawToken);
-        Long userId = extractUserId(token);
-        String cacheKey = getCachePattern(userId);
 
+        String token = cipherService.decrypt(rawToken); // decrypt given raw token
+        Long userId = extractUserId(token); // retrieve user id from token
+        String cacheKey = getCachePattern(userId); // get cache key from token-extracted user
+
+        // if cache contains a password token for this user id
         if (cacheService.exists(cacheKey)) {
             return Optional.ofNullable(userPersistenceService.findOne(userId)).map(user -> {
                 user.setPassword(passwordEncoder.encode(password));
@@ -146,16 +153,17 @@ public class UserPasswordService {
     }
 
     /**
+     * Returns the user id that is contained into the token.
      *
-     * @param token
-     * @return
+     * @param token The password token.
+     * @return The user id.
      */
-    private static Long extractUserId(String token) {
+    private static Long extractUserId(String token) throws UserIdNotFoundException {
         String[] split = token.split("-");
         if (split.length > 0) {
             return Long.valueOf(split[0]);
         }
-        return null;
+        throw new UserIdNotFoundException();
     }
 
 }
