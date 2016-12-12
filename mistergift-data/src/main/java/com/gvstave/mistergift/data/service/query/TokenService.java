@@ -4,12 +4,16 @@ import com.gvstave.mistergift.data.domain.Token;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import org.joda.time.DateTime;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -25,6 +29,10 @@ public class TokenService {
     /** The token persistence service. */
     @Inject
     private TokenPersistenceService tokenPersistenceService;
+
+    /** The environment. */
+    @Inject
+    private Environment env;
 
     /**
      * Returns the token associated with a user.
@@ -106,6 +114,25 @@ public class TokenService {
         }
 
         return null;
+    }
+
+    /**
+     * Creates token for user.
+     *
+     * @param user The user.
+     * @return The new token.
+     */
+    @Transactional
+    public Token createUserToken(User user) {
+        Objects.requireNonNull(user);
+        int ttl = Integer.parseInt(env.getProperty("token.ttl"));
+        Date expireAt = DateTime.now().plusSeconds(ttl).toDate();
+        Token token = new Token(expireAt, user);
+        tokenPersistenceService.delete(user.getToken());
+        tokenPersistenceService.save(token);
+        user.setToken(token);
+        userPersistenceService.save(user);
+        return token;
     }
 
 }

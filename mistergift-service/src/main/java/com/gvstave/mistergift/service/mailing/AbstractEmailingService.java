@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.service.mailing;
 
+import com.gvstave.mistergift.service.mailing.exception.MailException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.StringWriter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  *
@@ -40,22 +43,41 @@ abstract class AbstractEmailingService implements Mailable {
      * @param recipient The recipient email.
      * @param model The model.
      */
-    public void send(String recipient, Map<String, Object> model) {
+    public void send(String recipient, Map<String, Object> model) throws MailException {
         Objects.requireNonNull(recipient);
-        send(environment.getProperty("mail.from"), new String[] { recipient }, model);
+        Locale locale = Optional.ofNullable(LocaleContextHolder.getLocale()).orElse(Locale.ENGLISH);
+        send(environment.getProperty("mail.from"), new String[] { recipient }, model, locale);
     }
 
     /**
-     * Send the message.
+     * Send an email to the given recipient and with given locale.
      *
-     * @param data The variables the message need.
+     * @param recipient The recipient email.
+     * @param model  The model.
+     * @param locale The locale.
      */
-    public void send(String expeditor, String[] recipients, Map<String, Object> data) {
+    public void send(String recipient, Map<String, Object> model, Locale locale) throws MailException {
+        Objects.requireNonNull(recipient);
+        Objects.requireNonNull(locale);
+        send(environment.getProperty("mail.from"), new String[] { recipient }, model, locale);
+    }
+
+    /**
+     * Sends the mail.
+     *
+     * @param expeditor The expeditor.
+     * @param recipients The recipients.
+     * @param data The data.
+     * @param locale The locale.
+     */
+    public void send(String expeditor, String[] recipients, Map<String, Object> data, Locale locale)
+        throws MailException {
         Objects.requireNonNull(expeditor);
         Objects.requireNonNull(recipients);
+        Objects.requireNonNull(locale);
 
         if (!control(data)) {
-            throw new RuntimeException("Invalid mailing property.");
+            throw new IllegalArgumentException("Invalid mailing property.");
         }
 
         MimeMessagePreparator preparator = mimeMessage -> {
@@ -63,8 +85,7 @@ abstract class AbstractEmailingService implements Mailable {
             message.setTo(recipients);
             message.setFrom(expeditor);
 
-            String locale = LocaleContextHolder.getLocale().getDisplayLanguage().toLowerCase();
-            String templatePath = String.format("%s/%s-%s.vm", getTemplateDirectory(), getTemplateName(), locale);
+            String templatePath = String.format("%s/%s-%s.vm", getTemplateDirectory(), getTemplateName(), locale.getDisplayLanguage());
             Template template = getDefaultEmailingFactory().getTemplater().getTemplate(templatePath);
 
             if (data != null && !data.isEmpty()) {
@@ -77,7 +98,11 @@ abstract class AbstractEmailingService implements Mailable {
             AbstractEmailingService.this.prepare(template, message, data);
         };
 
-        defaultEmailingFactory.getMailer().send(preparator);
+        try {
+            defaultEmailingFactory.getMailer().send(preparator);
+        } catch (RuntimeException e) {
+            throw new MailException("Unable to send password-resseting email", e);
+        }
     }
 
     /**

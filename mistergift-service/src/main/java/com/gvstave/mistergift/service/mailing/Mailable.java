@@ -1,5 +1,8 @@
 package com.gvstave.mistergift.service.mailing;
 
+import com.gvstave.mistergift.service.mailing.exception.MailException;
+
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -13,7 +16,9 @@ public interface Mailable {
      * @param expeditor  The expeditor.
      * @param recipients The recipients.
      * @param data       The data.
+     * @param locale     The locale.
      */
-    void send(String expeditor, final String[] recipients, final Map<String, Object> data);
+    void send(String expeditor, final String[] recipients, final Map<String, Object> data, Locale locale)
+        throws MailException;
 
 }
