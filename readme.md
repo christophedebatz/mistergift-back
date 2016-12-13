@@ -295,8 +295,8 @@ It retrieves all participations for the given user gifts, in terms of the user w
 | <kbd>Gift</kbd> gift | The associated gift |
 | <kbd>User</kbd> autor | The user who writes the comment |
 | <kbd>string</kbd> text | The comment text |
-| <kbd>Date</kbd> creationDate | The user role (admin, user) |
-| <kbd>Date</kbd> modificationDate | The user token |
+| <kbd>Date</kbd> creationDate | The date of creation |
+| <kbd>Date</kbd> modificationDate | The date of modification |
 
 #### Retrieve all the comments for a gift
 
@@ -309,3 +309,25 @@ It retrieves all participations for the given user gifts, in terms of the user w
 #### Update a comment for a gift
 
 > **PUT** /gifts/**{gift-id}**/comments/**{comment-id}**
+
+
+### <i class="icon-file"></i> User notifications
+
+Notifications are a good way to maintains user informed of site dynamism and to creates move of users.
+Notifications can be broadcasted by the MG administrators but are mainly automatic!
+
+
+#### Retrieves user notifications
+
+Notification
+| Field        | Description           
+| ------------- |:-------------:|
+| <kbd>User</kbd> content | The target user|
+| <kbd>Long</kbd> eventId | The event id |
+| <kbd>Type</kbd> type | The notification type (gift, comment, participation) |
+| <kbd>Date</kbd> readDate | The date of read |
+| <kbd>Date</kbd> date | The date |
+
+> **GET** /me/notifications[?status=**{unread|read|all}**&from=**{from-date}**&to=**{toDate}**&page=**{page-no}**]
+
+By default, the interval between the from date and the to date is one month and the default notifications status is "unread" (that's all notifications that the user doesn't read yet).
