@@ -51,6 +51,12 @@ You will be an administrator.
 
 > **POST** /events
 
+#### Create an event for someone else
+
+You and him will be an administrator, obviously if he comes and subscribe to MG.
+
+> **POST** /events // to be clarified
+
 #### Update an event
 
 You must be the event administrator.
@@ -103,6 +109,24 @@ Your can invite a user to join an event if you already takes part of this one. Y
 ```
 {
 	"id": 2
+}
+```
+
+#### Invite somebody who does not exists on MG
+
+Your can invite another people who does not exists (at the moment) on MG.
+
+>  **POST** /events/{event-id}/externals
+```
+{
+	[
+	   "name": "Julien Ducrot",
+	   "email": "pro@joulse.com"
+	],
+	[
+	   "name": "Christophe de Batz",
+	   "email": "christophe.db@gmail.com"
+	]
 }
 ```
 
@@ -223,3 +247,65 @@ You must be the user that you attempt to update.
 #### Retrieve the public whishlist of a user
 
 > **GET** /me/whishlist[?page=**{ page-no }**]
+
+#### Participate to a user gift
+
+> **POST** /users/**{user-id}**/events/**{event-id}**/participations
+
+To reserve a gift for a user, you have to post the gift (only its id is sufficient) into the user participations (it's a bag with all user participations for a specific event).
+
+Example 1: book an entire gift
+```
+// application/json
+{
+	"id": 38
+}
+```
+
+Example 2: book a variable part of a gift (for instance 50% of the price)
+```
+// application/json
+{
+	"id": 38,
+	"type": "dynamic",
+	"value": 50
+}
+```
+
+Example 3: book a fixed part of a gift (for instance, only 25 euros)
+```
+// application/json
+{
+	"id": 38,
+	"type": "fixed",
+	"value": 25
+}
+```
+
+#### Retrieve all the participations for a user for an event
+
+It retrieves all participations for the given user gifts, in terms of the user who made the request. If it's the given user, it will get nothing etc. (because surprise is surprise !)
+
+> **GET** /users/**{user-id}**/events/**{event-id}**/participations[?page=**{ page-no }**]
+
+### <i class="icon-file"></i> Gift comments
+
+| Field        | Description           
+| ------------- |:-------------:|
+| <kbd>Gift</kbd> gift | The associated gift |
+| <kbd>User</kbd> autor | The user who writes the comment |
+| <kbd>string</kbd> text | The comment text |
+| <kbd>Date</kbd> creationDate | The user role (admin, user) |
+| <kbd>Date</kbd> modificationDate | The user token |
+
+#### Retrieve all the comments for a gift
+
+> **GET** /gifts/**{gift-id}**/comments[?page=**{ page-no }**]
+
+#### Post a comment for a gift
+
+> **POST** /gifts/**{gift-id}**/comments
+
+#### Update a comment for a gift
+
+> **PUT** /gifts/**{gift-id}**/comments/**{comment-id}**
