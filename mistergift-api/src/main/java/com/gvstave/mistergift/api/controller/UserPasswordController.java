@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * Manages the requests that refers to when user forgots its password.
  */
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserPasswordController {
 
     /** The logger. */
@@ -31,7 +31,7 @@ public class UserPasswordController {
      * @param response The servlet response.
      * @param email The email that user entered.
      */
-    @RequestMapping(path = "/password/token", method = RequestMethod.GET)
+    @RequestMapping(path = "/token", method = RequestMethod.GET)
     public void requestNewPassword(HttpServletResponse response, @RequestParam(value = "email") String email) {
         LOGGER.debug("Retrieving user from email={}", email);
         UserPasswordResult result = userPasswordService.requestNewPassword(email);
@@ -57,7 +57,7 @@ public class UserPasswordController {
      * @throws PasswordTokenNotFound If password is not recognized.
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
     public Token setNewPassword(@RequestBody String password, @RequestParam(value = "token") String token)
         throws UserNotFoundException, PasswordTokenNotFound, UserIdNotFoundException {
         LOGGER.debug("Settings new password from token={}", token);

@@ -138,6 +138,22 @@ public class UserEventService {
     }
 
     /**
+     *
+     * @param event
+     * @param pageable
+     * @return
+     */
+    public Page<User> getEventMembers (Event event, Pageable pageable) {
+        Objects.requireNonNull(event);
+        Objects.requireNonNull(pageable);
+
+        QUserEvent qUserEvent = QUserEvent.userEvent;
+        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.invitation.isNull());
+
+        return userPersistenceService.findAll(predicate, pageable);
+    }
+
+    /**
      * Returns the event administrators.
      *
      * @param event The event.

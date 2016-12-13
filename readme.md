@@ -25,21 +25,25 @@ Endpoints
 
 > **GET** /events/**{ event-id }**
 
-#### Retrieve current user events
+#### Retrieve current-user events
 
 > **GET** /me/events[?page=**{ page-no }**]
 
-#### Retrieve event participants
+#### Retrieve event participant(s)
 
-> **GET** /events/**{event-id}**/users[?page=**{ page-no }**]
+> **GET** /events/**{event-id}**/members[?page=**{ page-no }**]
 
-#### Retrieve event user whishlist
+#### Retrieve event invited user(s)
 
-> **GET** /events/**{ event-id }**/users/**{ userId }**/gifts[?page=**{ page-no }**]
+> **GET** /events/**{event-id}**/guests[?page=**{ page-no }**]
 
 #### Retrieve event administrator(s)
 
 > **GET** /events/**{ event-id }**/admins[?page=**{ page-no }**]
+
+#### Retrieve event user whishlist
+
+> **GET** /events/**{ event-id }**/users/**{ user-id }**/gifts[?page=**{ page-no }**]
 
 #### Create an event
 
@@ -142,6 +146,23 @@ To refuse a pending invitation you must be the target (the invited user) of the 
 
 > **DELETE** /token
 
+#### Recover user password (not logged-in user only)
+
+***Step #1: send email with token***
+
+> **GET** /password/token?email=**{ user-email }**
+
+***Step #2: set new password***
+
+> **PUT** /password?token=**{ token }**
+
+Request:
+```
+// application/json
+{
+	"password": "chris@gvstave.io"
+}
+```
 
 ----------
 
@@ -185,6 +206,10 @@ You must be the user that you attempt to update.
 #### Upload the logged-in profile picture
 
 > **POST** /me/picture
+
+#### Retrieve logged-in user whishlist
+
+> **GET** /me/whishlist
 
 #### Retrieve logged-in user timeline
 

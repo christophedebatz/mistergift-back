@@ -8,16 +8,12 @@ import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserGiftPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
-import com.gvstave.mistergift.data.service.query.EventService;
 import com.gvstave.mistergift.data.service.query.UserEventService;
-import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -120,32 +116,37 @@ public class UserEventController extends AbstractController {
     }
 
     /**
-     * Returns the event users.
-     *
-     * @param event The event.
-     * @param pageable The pageable.
-     * @return The event users.
-     */
-    public Page<User> getEventUsers(Event event, Pageable pageable) {
-        Objects.requireNonNull(event);
-        Objects.requireNonNull(pageable);
-
-        QUserEvent qUserEvent = QUserEvent.userEvent;
-        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.invitation.isNull());
-
-        return userPersistenceService.findAll(predicate, pageable);
-    }
-
-    /**
-     * Returns the event users.
+     * Returns the event members.
      *
      * @param page The current page.
      * @param eventId The event id.
      * @throws EntityNotFoundException
-     * @return The event users.
+     * @return The event guests.
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users")
+    @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/members")
+    public PageResponse<User> getEventsMembers(
+        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @PathVariable(value = "eventId") Long eventId) {
+        Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
+
+        if (event.isPresent()) {
+            return new PageResponse<>(userEventService.getEventMembers(event.get(), getPageRequest(page)));
+        }
+
+        throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);
+    }
+
+    /**
+     * Returns the event guests users.
+     *
+     * @param page The current page.
+     * @param eventId The event id.
+     * @throws EntityNotFoundException
+     * @return The event invited users.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/guests")
     public PageResponse<User> getEventInvitedUsers(
         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
         @PathVariable(value = "eventId") Long eventId) {
