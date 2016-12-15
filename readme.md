@@ -250,15 +250,19 @@ You must be the user that you attempt to update.
 
 #### Participate to a user gift
 
-> **POST** /users/**{user-id}**/events/**{event-id}**/participations
+> **POST** /gifts/**{gift-id}**/participations
 
 To reserve a gift for a user, you have to post the gift (only its id is sufficient) into the user participations (it's a bag with all user participations for a specific event).
+
+A partir du moment ou un cadeau a été réservé dans un event, c'est marqué dans le cadeau et ce cadeau est caché sur les autre events où le membre est inscrit (todo mettre un flag eventReservationId dans le gift)
 
 Example 1: book an entire gift
 ```
 // application/json
 {
-	"id": 38
+	"id": 38,
+	"type": "dynamic",
+	"value": 100
 }
 ```
 
