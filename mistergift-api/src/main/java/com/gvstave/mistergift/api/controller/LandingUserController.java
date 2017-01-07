@@ -1,13 +1,14 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.domain.LandingUser;
 import com.gvstave.mistergift.data.domain.QLandingUser;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.persistence.LandingUserPersistenceService;
 import com.gvstave.mistergift.service.geoip.GeolocationService;
 import com.gvstave.mistergift.service.mailing.LandingUserEmailingService;
+import com.gvstave.mistergift.service.mailing.exception.MailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,8 @@ public class LandingUserController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody LandingUser save(@RequestBody LandingUser landingUser) throws InvalidFieldValueException, IOException {
+    public @ResponseBody LandingUser save(@RequestBody LandingUser landingUser) throws InvalidFieldValueException,
+        IOException, MailException {
         LOGGER.debug("Creating landingUser={}", landingUser);
 
         if (landingUser.getEmail() == null) {

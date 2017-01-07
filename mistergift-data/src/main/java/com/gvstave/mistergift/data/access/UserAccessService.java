@@ -1,6 +1,6 @@
-package com.gvstave.mistergift.api.access;
+package com.gvstave.mistergift.data.access;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.cache.CacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

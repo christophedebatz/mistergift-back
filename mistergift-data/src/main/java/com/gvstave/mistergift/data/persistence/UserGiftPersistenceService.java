@@ -4,8 +4,8 @@ import com.gvstave.mistergift.data.domain.UserGift;
 import com.gvstave.mistergift.data.domain.UserGiftId;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.UserGiftRepository;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -100,7 +100,7 @@ public class UserGiftPersistenceService extends BaseQueryDslRepositorySupport<Us
     }
 
     @Override
-    public Iterable<UserGift> findAll(Predicate predicate, Sort sort) {
+    public Iterable<UserGift> findAll (Predicate predicate, Sort sort) {
         return null;
     }
 
@@ -110,7 +110,7 @@ public class UserGiftPersistenceService extends BaseQueryDslRepositorySupport<Us
     }
 
     @Override
-    public Iterable<UserGift> findAll(OrderSpecifier<?>... orderSpecifiers) {
+    public Iterable<UserGift> findAll (OrderSpecifier<?>... orderSpecifiers) {
         return null;
     }
 
@@ -126,7 +126,8 @@ public class UserGiftPersistenceService extends BaseQueryDslRepositorySupport<Us
     }
 
     @Override
-    public boolean exists(Predicate predicate) {
+    public boolean exists (Predicate predicate) {
         return false;
     }
+
 }

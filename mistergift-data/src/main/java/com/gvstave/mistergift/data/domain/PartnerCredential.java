@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.domain;
 
-import com.mysema.query.annotations.QueryEmbeddable;
+import com.querydsl.core.annotations.QueryEmbeddable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -20,6 +20,13 @@ public class PartnerCredential implements Serializable {
     /** The password. */
     @Column(name = "password", nullable = false)
     private String password;
+
+    /**
+     * Default constructor.
+     */
+    public PartnerCredential () {
+        // useful for Hibernate
+    }
 
     /**
      * Constructor.

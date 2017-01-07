@@ -5,10 +5,9 @@ import com.gvstave.mistergift.data.domain.QUser;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.UserRepository;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -54,6 +53,7 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      * @param users The users to persist.
      * @return The hydrated users list.
      */
+    @Transactional
     public <S extends User> Iterable<S> save(Iterable<S> users) {
         List<S> results = new ArrayList<>();
         for (S user : users) {
@@ -121,6 +121,7 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      *
      * @param id The user id.
      */
+    @Transactional
     public void delete(Long id) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaDelete<User> delete = cb.createCriteriaDelete(User.class);
@@ -135,6 +136,7 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      *
      * @param user The user to remove.
      */
+    @Transactional
     public void delete(User user) {
         getEntityManager().remove(user);
     }
@@ -144,6 +146,7 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      *
      * @param users The users to remove.
      */
+    @Transactional
     public void delete(Iterable<? extends User> users) {
         for (User user : users) {
             delete(user);
@@ -153,6 +156,7 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
     /**
      * Removes all the users. Be careful of this method.
      */
+    @Transactional
     public void deleteAll() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaDelete<User> delete = cb.createCriteriaDelete(User.class);
@@ -183,8 +187,8 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      */
     public User findOne(Predicate predicate) {
         QUser qUser = QUser.user;
-        JPAQuery query = new JPAQuery(getEntityManager());
-        return query.from(qUser).where(predicate).uniqueResult(qUser);
+        JPAQuery<User> query = new JPAQuery<>(getEntityManager());
+        return query.from(qUser).where(predicate).fetchOne();
     }
 
     /**
@@ -194,9 +198,9 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      * @return The users.
      */
     public Page<User> findAll(Pageable pageable) {
-        JPQLQuery query = from(QUser.user);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable).list(QUser.user), pageable);
+        JPAQuery<User> query = new JPAQuery<User>(getEntityManager()).from(QUser.user);
+        long resultsCount = query.fetchCount();
+        return buildPage(resultsCount, applyPagination(query, pageable), pageable);
     }
 
     /**
@@ -208,10 +212,11 @@ public class UserPersistenceService extends BaseQueryDslRepositorySupport<User> 
      * @return The users.
      */
     public Page<User> findAll(Predicate predicate, Pageable pageable) {
-        JPQLQuery query = from(QUser.user).where(predicate);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable)
-                .list(QUser.user), pageable);
+        JPAQuery<User> query = new JPAQuery<User>(getEntityManager())
+            .from(QUser.user)
+            .where(predicate);
+        long resultsCount = query.fetchCount();
+        return buildPage(resultsCount, applyPagination(query, pageable), pageable);
     }
 
     public Iterable<User> findAll(Predicate predicate) {

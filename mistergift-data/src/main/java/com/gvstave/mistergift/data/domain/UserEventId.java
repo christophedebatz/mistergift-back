@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.domain;
 
-import com.mysema.query.annotations.QueryEmbeddable;
+import com.querydsl.core.annotations.QueryEmbeddable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;

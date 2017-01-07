@@ -1,7 +1,6 @@
 package com.gvstave.mistergift.data.domain;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
 import java.util.Date;

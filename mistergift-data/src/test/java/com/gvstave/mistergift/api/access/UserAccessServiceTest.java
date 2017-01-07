@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.api.access;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gvstave.mistergift.data.access.UserAccessService;
 import com.gvstave.mistergift.data.cache.CacheService;
 import org.junit.Before;
 import org.mockito.InjectMocks;

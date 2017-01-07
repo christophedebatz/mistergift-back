@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,7 @@ import javax.inject.Inject;
  * Handler for http authentication.
  */
 @Service
-public class AuthenticationHandler implements AuthenticationManager {
+public class AuthenticationHandler implements AuthenticationManager, AuthenticationProvider {
 
     /** The user persistence service. */
     @Inject
@@ -43,4 +44,13 @@ public class AuthenticationHandler implements AuthenticationManager {
             Lists.newArrayList(new SimpleGrantedAuthority(user.getRole().getName().toUpperCase()))
         );
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean supports (Class<?> aClass) {
+        return false;
+    }
+
 }

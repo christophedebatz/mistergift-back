@@ -81,12 +81,18 @@ abstract class AbstractTimestampableJpaEntity<T extends Serializable> extends Ab
     }
 
     /**
-     * Called when entity is persisted or updated.
+     * Called when entity is being persisted.
      */
     @PrePersist
+    public void persist() {
+        setCreationDate(new Date());
+    }
+
+    /**
+     * Called when entity is being updated.
+     */
     @PreUpdate
     public void update() {
-        setCreationDate(new Date());
         setModificationDate(new Date());
     }
 

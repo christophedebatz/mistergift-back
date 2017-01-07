@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.api.access.exception;
+package com.gvstave.mistergift.data.exception;
 
 public class TooManyRequestException extends Exception {
 

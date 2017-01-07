@@ -4,9 +4,9 @@ import com.gvstave.mistergift.data.domain.LandingUser;
 import com.gvstave.mistergift.data.domain.QLandingUser;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.LandingUserRepository;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -93,8 +93,8 @@ public class LandingUserPersistenceService extends BaseQueryDslRepositorySupport
     @Override
     public LandingUser findOne(Predicate predicate) {
         QLandingUser qUser = QLandingUser.landingUser;
-        JPAQuery query = new JPAQuery(getEntityManager());
-        return query.from(qUser).where(predicate).uniqueResult(qUser);
+        JPAQuery<LandingUser> query = new JPAQuery<>(getEntityManager());
+        return query.from(qUser).where(predicate).fetchOne();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class LandingUserPersistenceService extends BaseQueryDslRepositorySupport
     }
 
     @Override
-    public Iterable<LandingUser> findAll(Predicate predicate, Sort sort) {
+    public Iterable<LandingUser> findAll (Predicate predicate, Sort sort) {
         return null;
     }
 
@@ -113,7 +113,7 @@ public class LandingUserPersistenceService extends BaseQueryDslRepositorySupport
     }
 
     @Override
-    public Iterable<LandingUser> findAll(OrderSpecifier<?>... orderSpecifiers) {
+    public Iterable<LandingUser> findAll (OrderSpecifier<?>... orderSpecifiers) {
         return null;
     }
 
@@ -129,7 +129,17 @@ public class LandingUserPersistenceService extends BaseQueryDslRepositorySupport
     }
 
     @Override
-    public boolean exists(Predicate predicate) {
+    public boolean exists (Predicate predicate) {
         return false;
+    }
+
+    @Override
+    public Iterable<LandingUser> findAll (Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Page<LandingUser> findAll (Pageable pageable) {
+        return null;
     }
 }

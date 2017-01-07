@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.api.filter;
 
-import com.gvstave.mistergift.api.access.UserAccessService;
+import com.gvstave.mistergift.data.access.UserAccessService;
 
 import javax.inject.Inject;
 import javax.servlet.*;

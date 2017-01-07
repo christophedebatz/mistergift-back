@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.config;
+package com.gvstave.mistergift.api.configuration;
 
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;

@@ -1,10 +1,10 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
+import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.QUserGift;
 import com.gvstave.mistergift.data.domain.UserGift;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.persistence.UserGiftPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;

@@ -1,6 +1,5 @@
 package com.gvstave.mistergift.data.service.utils;
 
-import com.gvstave.mistergift.data.service.query.password.UserPasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,7 @@ import java.util.Objects;
 public class DesCipherService {
 
     /** The logger. */
-    private static Logger LOGGER = LoggerFactory.getLogger(UserPasswordService.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(DesCipherService.class);
 
     /** The cipher key (can be common for app or dynamic). */
     private String key;

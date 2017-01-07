@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -52,20 +53,19 @@ public class UserPasswordService {
     @Inject
     private Environment env;
 
+    /** The password encoder. */
+    @Inject
+    private PasswordEncoder passwordEncoder;
+
     /** The cipher service. */
     private DesCipherService cipherService;
 
-    /** The password encoder. */
-    private PasswordEncoder passwordEncoder;
-
     /**
      * Constructor.
-     *
-     * @param passwordEncoder The password encoder.
      */
-    public UserPasswordService (PasswordEncoder passwordEncoder) throws InvalidKeyException, NoSuchAlgorithmException {
+    @PostConstruct
+    public void initialize() throws InvalidKeyException, NoSuchAlgorithmException {
         cipherService = new DesCipherService(env.getProperty("cipher.key"), env.getProperty("cipher.algorithm"));
-        this.passwordEncoder = passwordEncoder;
     }
 
     /**

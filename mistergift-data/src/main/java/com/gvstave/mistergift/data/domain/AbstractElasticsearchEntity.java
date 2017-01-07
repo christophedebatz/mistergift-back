@@ -1,6 +1,8 @@
 package com.gvstave.mistergift.data.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.repository.NoRepositoryBean;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,6 +11,7 @@ import java.util.Objects;
  *
  * @param <T> the entity type.
  */
+@NoRepositoryBean
 abstract class AbstractElasticsearchEntity<T extends Serializable> implements BaseEntity<T>
 {
 

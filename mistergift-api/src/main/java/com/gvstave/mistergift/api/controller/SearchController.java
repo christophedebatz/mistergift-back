@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
-import com.gvstave.mistergift.config.annotation.UserRestricted;
+import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.provider.api.ProductSupplierService;
 import com.gvstave.mistergift.provider.api.SearchBuilder;
 import com.gvstave.mistergift.provider.common.ProductComparator;

@@ -4,7 +4,7 @@ import com.gvstave.mistergift.data.domain.EventInvitation;
 import com.gvstave.mistergift.data.domain.QEventInvitation;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.EventInvitationPersistenceService;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

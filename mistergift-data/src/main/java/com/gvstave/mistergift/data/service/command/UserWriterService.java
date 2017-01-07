@@ -44,21 +44,13 @@ public class UserWriterService {
     @Inject
     private CroppingService croppingService;
 
+    /** The password encoder. */
+    @Inject
+    private PasswordEncoder passwordEncoder;
+
     /** The environment. */
     @Inject
     private Environment env;
-
-    /** The password encoder. */
-    private PasswordEncoder passwordEncoder;
-
-    /**
-     * Constructor.
-     *
-     * @param passwordEncoder The password encoder.
-     */
-    public UserWriterService(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     /**
      * Removes user token.

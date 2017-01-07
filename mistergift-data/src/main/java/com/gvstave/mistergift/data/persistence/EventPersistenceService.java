@@ -4,9 +4,9 @@ import com.gvstave.mistergift.data.domain.Event;
 import com.gvstave.mistergift.data.domain.QEvent;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.EventRepository;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -42,6 +42,7 @@ public class EventPersistenceService extends BaseQueryDslRepositorySupport<Event
         return newGroup;
     }
 
+    @Transactional
     public <S extends Event> Iterable<S> save(Iterable<S> iterable) {
         return null;
     }
@@ -135,9 +136,10 @@ public class EventPersistenceService extends BaseQueryDslRepositorySupport<Event
      * @return
      */
     public Page<Event> findAll(Pageable pageable) {
-        JPQLQuery query = from(QEvent.event);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable).list(QEvent.event), pageable);
+        JPAQuery query = new JPAQuery<>(getEntityManager())
+            .from(QEvent.event);
+        long resultsCount = query.fetchCount();
+        return buildPage(resultsCount, applyPagination(query, pageable), pageable);
     }
 
     /**
@@ -147,10 +149,11 @@ public class EventPersistenceService extends BaseQueryDslRepositorySupport<Event
      * @return
      */
     public Page<Event> findAll(Predicate predicate, Pageable pageable) {
-        JPQLQuery query = from(QEvent.event).where(predicate);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable)
-                .list(QEvent.event), pageable);
+        JPAQuery query = new JPAQuery<>(getEntityManager())
+            .from(QEvent.event)
+            .where(predicate);
+        long resultsCount = query.fetchCount();
+        return buildPage(resultsCount, applyPagination(query, pageable), pageable);
     }
 
 }

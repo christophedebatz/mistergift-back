@@ -1,15 +1,15 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
+import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.config.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.*;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserGiftPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserEventService;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;

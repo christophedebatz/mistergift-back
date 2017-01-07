@@ -1,9 +1,9 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.access.exception.TooManyRequestException;
-import com.gvstave.mistergift.config.annotation.UserRestricted;
+import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.Event;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.service.command.EventWriterService;

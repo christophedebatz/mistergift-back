@@ -2,7 +2,7 @@
 # server-ip: 163.172.25.140
 
 if [[ $1 -ne "dev" || $1 -ne "stg" || $1 -ne "prd" ]]; then
-    echo "[ERROR] No environment config has been defined..."
+    echo "[ERROR] No environment configuration has been defined..."
 else
 
     echo "[INFO] Compiling project..."
@@ -17,8 +17,8 @@ else
     ssh mgadmin@mistergift.io "mysql -u root -p -h 127.0.0.1 -P 3307 mistergift < /home/mgadmin/deltas.sql"
     ssh mgadmin@mistergift.io "kill -9 $(ps aux | grep ssh | grep 3307 | awk '{print $2}')"
 
-    echo "[INFO] Set Catalina options as \"-Xms512M -Xmx1024M -Denv=$1\""
-    ssh mgadmin@mistergift.io "export CATALINA_OPTS=\"-Xms512M -Xmx1024M -Denv=$1\""
+    echo "[INFO] Set Catalina options as \"-Xms512M -Xmx1024M -Dserver.role=$1\""
+    ssh mgadmin@mistergift.io "export CATALINA_OPTS=\"-Xms512M -Xmx1024M -Dserver.role=$1\""
 
     echo "[INFO] Tomcat is shutting down..."
     ssh mgadmin@mistergift.io "/opt/tomcat8/bin/shutdown.sh" 2>/dev/null

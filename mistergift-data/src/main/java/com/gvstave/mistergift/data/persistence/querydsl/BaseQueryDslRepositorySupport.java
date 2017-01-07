@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.persistence.querydsl;
 
-import com.mysema.query.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,13 +48,13 @@ public class BaseQueryDslRepositorySupport<T> extends QueryDslRepositorySupport 
      * @param pageable The pageable.
      * @return The query.
      */
-    protected JPQLQuery applyPagination(JPQLQuery query, Pageable pageable) {
+    protected List<T> applyPagination(JPAQuery<T> query, Pageable pageable) {
         if (pageable != null) {
             return query
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
+                .limit(pageable.getPageSize()).fetch();
         }
 
-        return query;
+        return query.fetch();
     }
 }

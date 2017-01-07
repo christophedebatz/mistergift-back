@@ -5,9 +5,10 @@ import com.gvstave.mistergift.data.domain.QEvent;
 import com.gvstave.mistergift.data.domain.QEventInvitation;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.EventInvitationRepository;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -137,7 +138,7 @@ public class EventInvitationPersistenceService extends BaseQueryDslRepositorySup
      */
     public Page<EventInvitation> findAll(Pageable pageable) {
         JPQLQuery query = from(QEvent.event);
-        long resultsCount = query.count();
+        long resultsCount = query.fetchCount();
        // return buildPage(resultsCount, applyPagination(query, pageable).list(QEvent.event), pageable);
         return null;
     }
@@ -149,10 +150,13 @@ public class EventInvitationPersistenceService extends BaseQueryDslRepositorySup
      * @return
      */
     public Page<EventInvitation> findAll(Predicate predicate, Pageable pageable) {
-        JPQLQuery query = from(QEventInvitation.eventInvitation).where(predicate);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable)
-            .list(QEventInvitation.eventInvitation), pageable);
+        JPAQuery query = new JPAQuery<EventInvitation>(getEntityManager())
+            .from(QEventInvitation.eventInvitation)
+            .where(predicate);
+        long resultsCount = query.fetchCount();
+        return buildPage(resultsCount, applyPagination(query, pageable), pageable);
     }
+
+
 
 }

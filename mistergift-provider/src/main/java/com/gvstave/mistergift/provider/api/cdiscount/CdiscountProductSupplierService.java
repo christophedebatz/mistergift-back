@@ -7,10 +7,10 @@ import com.gvstave.mistergift.provider.domain.Api;
 import com.gvstave.mistergift.provider.domain.RemoteProduct;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Objects;
 

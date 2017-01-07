@@ -8,6 +8,7 @@ import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -58,7 +59,8 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
      *
      * @param defaultFilterProcessesUrl The default filter processes url.
      */
-    protected AuthenticationFilter(String defaultFilterProcessesUrl) {
+
+    public AuthenticationFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl);
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUrl));
 

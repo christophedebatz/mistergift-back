@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.mysema.query.annotations.QueryInit;
+import com.querydsl.core.annotations.QueryInit;
 
 import javax.persistence.*;
 

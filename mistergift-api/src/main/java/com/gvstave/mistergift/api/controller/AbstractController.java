@@ -65,7 +65,7 @@ class AbstractController {
      * @return The page request.
      */
     protected PageRequest getPageRequest(int page) {
-        return new PageRequest(Optional.of(page).map(p -> p - 1 >= 0 ? p - 1 : 0).get(), getMaximumResultsPageSize());
+        return new PageRequest(Optional.of(page).map(p -> p - 1 >= 0 ? p - 1 : 0).get(), getMaximumResultsSize());
 
     }
 
@@ -84,7 +84,7 @@ class AbstractController {
      *
      * @return The page size.
      */
-    private int getMaximumResultsPageSize () {
+    private int getMaximumResultsSize () {
         return Integer.valueOf(
             env.getProperty("results.page.size")
         );

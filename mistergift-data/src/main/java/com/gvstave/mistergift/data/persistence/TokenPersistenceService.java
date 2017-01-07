@@ -16,7 +16,7 @@ import java.util.Objects;
 public class TokenPersistenceService implements TokenRepository {
 
     /** The entity manager. */
-    @PersistenceContext(unitName = "mg-em-default")
+    @PersistenceContext(name = "entityManager", unitName = "entityManagerFactory")
     private EntityManager em;
 
     /**

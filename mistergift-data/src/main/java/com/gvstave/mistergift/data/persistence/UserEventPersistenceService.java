@@ -4,9 +4,9 @@ import com.gvstave.mistergift.data.domain.QUserEvent;
 import com.gvstave.mistergift.data.domain.UserEvent;
 import com.gvstave.mistergift.data.persistence.querydsl.BaseQueryDslRepositorySupport;
 import com.gvstave.mistergift.data.persistence.repository.UserEventRepository;
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.types.OrderSpecifier;
-import com.mysema.query.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -139,8 +139,9 @@ public class UserEventPersistenceService extends BaseQueryDslRepositorySupport<U
      * @return
      */
     public Page<UserEvent> findAll(Pageable pageable) {
-        JPQLQuery query = from(QUserEvent.userEvent);
-        long resultsCount = query.count();
-        return buildPage(resultsCount, applyPagination(query, pageable).list(QUserEvent.userEvent), pageable);
+        JPAQuery query = new JPAQuery<UserEvent>(getEntityManager())
+            .from(QUserEvent.userEvent);
+        long resultsCount = query.fetchCount();
+        return buildPage(resultsCount, applyPagination(query, pageable), pageable);
     }
 }
