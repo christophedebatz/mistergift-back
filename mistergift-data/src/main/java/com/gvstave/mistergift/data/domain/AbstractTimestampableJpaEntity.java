@@ -31,6 +31,7 @@ abstract class AbstractTimestampableJpaEntity<T extends Serializable> extends Ab
      * Default constructor.
      */
     public AbstractTimestampableJpaEntity() {
+        // this is for the player
     }
 
     /**
@@ -85,7 +86,12 @@ abstract class AbstractTimestampableJpaEntity<T extends Serializable> extends Ab
      */
     @PrePersist
     public void persist() {
-        setCreationDate(new Date());
+        if (creationDate == null) {
+            setCreationDate(new Date());
+        }
+        if (modificationDate == null) {
+            setModificationDate(new Date());
+        }
     }
 
     /**

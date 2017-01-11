@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
+import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.Gift;
 import com.gvstave.mistergift.data.domain.Product;

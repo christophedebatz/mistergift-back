@@ -86,7 +86,7 @@ public class User extends AbstractTimestampableJpaEntity<Long> {
     /** The user events. */
     @OneToMany
     @JoinTable(name = "user_events",
-            joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
+        joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
     )
     private List<UserEvent> userEvents;
 

@@ -71,7 +71,7 @@ public class AuthorizationFilter extends GenericFilterBean {
 
         // get the header token
         Optional<String> headerToken = Optional.ofNullable(
-                httpRequest.getHeader(environment.getProperty("token.header.name"))
+            httpRequest.getHeader(environment.getProperty("token.header.name"))
         );
 
         // reset the security context

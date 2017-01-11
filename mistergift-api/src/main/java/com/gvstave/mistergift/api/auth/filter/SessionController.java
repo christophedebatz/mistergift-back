@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.api.auth.filter;
 
 import com.gvstave.mistergift.api.controller.EventController;
-import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
+import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
+import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;

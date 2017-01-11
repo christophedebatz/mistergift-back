@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.configuration.annotation.UserRestricted;
+import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.persistence.GiftPersistenceService;

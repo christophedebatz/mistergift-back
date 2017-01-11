@@ -37,7 +37,7 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
     if (@currentSchemaVersion = 0) then
 
       CREATE TABLE `events` (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         creation_date date NOT NULL,
         modification_date date NOT NULL,
         `date` datetime DEFAULT NULL,
@@ -57,13 +57,13 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
       
       CREATE TABLE files (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         url varchar(255) NOT NULL,
         user_id bigint(20) DEFAULT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
       
       CREATE TABLE gifts (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         creation_date date NOT NULL,
         modification_date date NOT NULL,
         event_id bigint(20) NOT NULL,
@@ -71,7 +71,7 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
       CREATE TABLE landing_users (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         creation_date date NOT NULL,
         email varchar(100) NOT NULL,
         city varchar(255) DEFAULT NULL,
@@ -81,13 +81,13 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
       
       CREATE TABLE links (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         url varchar(255) NOT NULL,
         product_id bigint(20) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
       
       CREATE TABLE products (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         creation_date date NOT NULL,
         modification_date date NOT NULL,
         brand varchar(75) NOT NULL,
@@ -98,18 +98,16 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
       CREATE TABLE tokens (
-        id varchar(75) NOT NULL AUTO_INCREMENT,
+        id varchar(75) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         expire_at date NOT NULL,
         user_id bigint(20) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
       
       CREATE TABLE users (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         creation_date date NOT NULL,
         modification_date date NOT NULL,
         email varchar(150) NOT NULL,
-        first_name varchar(255) NOT NULL,
-        last_name varchar(255) NOT NULL,
         `password` varchar(255) NOT NULL,
         role int(11) NOT NULL,
         picture_id bigint(20) DEFAULT NULL,
@@ -134,21 +132,9 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
         gift_id bigint(20) NOT NULL,
         owners_id bigint(20) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-      
-      CREATE TABLE user_events (
-        user_id bigint(20) NOT NULL,
-        userEvents_event_id bigint(20) NOT NULL,
-        userEvents_user_id bigint(20) NOT NULL
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-      
-      CREATE TABLE whishlist (
-        user_id bigint(20) NOT NULL,
-        wishLists_product_id bigint(20) NOT NULL,
-        wishLists_user_id bigint(20) NOT NULL
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-      
+
       CREATE TABLE whishlists (
-        id bigint(20) NOT NULL AUTO_INCREMENT,
+        id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         product_id bigint(20) NOT NULL,
         user_id bigint(20) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -185,13 +171,7 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       
       ALTER TABLE users_gifts
        ADD UNIQUE KEY UK_k29cojk1dmr2hc9sn827nf10o (owners_id), ADD KEY FK_42r91rok9288e59mf7b7fu5n1 (gift_id);
-      
-      ALTER TABLE user_events
-       ADD UNIQUE KEY UK_ilxxi5qd0gynqvcc81o8hf35x (userEvents_event_id,userEvents_user_id), ADD KEY FK_jjl048nk4ntflcsyve9u5cxdf (user_id);
 
-      ALTER TABLE whishlist
-       ADD UNIQUE KEY UK_n2my9ugobnkh30qyghghgrniv (wishLists_product_id,wishLists_user_id), ADD KEY FK_r86ec1e9bxfsn54enmtd8wsl1 (user_id);
-      
       ALTER TABLE whishlists
        ADD PRIMARY KEY (id), ADD KEY FK_86k9grw3ve30lixhvhm9n3it2 (product_id), ADD KEY FK_97xl5w4f6u1vyt6cqhv9da006 (user_id);
 
@@ -231,14 +211,7 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       ALTER TABLE users_gifts
       ADD CONSTRAINT FK_42r91rok9288e59mf7b7fu5n1 FOREIGN KEY (gift_id) REFERENCES gifts (id),
       ADD CONSTRAINT FK_k29cojk1dmr2hc9sn827nf10o FOREIGN KEY (owners_id) REFERENCES `users` (id);
-      
-      ALTER TABLE user_events
-      ADD CONSTRAINT FK_ilxxi5qd0gynqvcc81o8hf35x FOREIGN KEY (userEvents_event_id, userEvents_user_id) REFERENCES users_events (event_id, user_id),
-      ADD CONSTRAINT FK_jjl048nk4ntflcsyve9u5cxdf FOREIGN KEY (user_id) REFERENCES `users` (id);
-      
-      ALTER TABLE whishlist
-      ADD CONSTRAINT FK_r86ec1e9bxfsn54enmtd8wsl1 FOREIGN KEY (user_id) REFERENCES `users` (id);
-      
+
       ALTER TABLE whishlists
       ADD CONSTRAINT FK_86k9grw3ve30lixhvhm9n3it2 FOREIGN KEY (product_id) REFERENCES products (id),
       ADD CONSTRAINT FK_97xl5w4f6u1vyt6cqhv9da006 FOREIGN KEY (user_id) REFERENCES `users` (id);

@@ -39,37 +39,33 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .passwordEncoder(bcryptEncoder());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
+        web.ignoring().antMatchers("/resources/**")
+            .and().ignoring().antMatchers(HttpMethod.POST, "/users")
+            .and().ignoring().antMatchers(HttpMethod.POST, "/landing");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
         http
-            .csrf().disable()
-            .exceptionHandling()
-            .authenticationEntryPoint(new UnauthorizedEntryPoint())
+            .csrf().disable();
 
-            .and()
-            .csrf().disable()
-            .addFilterBefore(authenticationFilter(), BasicAuthenticationFilter.class)
-            .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/authenticate").permitAll()
+        http
+            .antMatcher("/authenticate")
+            .addFilterBefore(authenticationFilter(), BasicAuthenticationFilter.class);
 
-            .and()
-            .csrf().disable()
-            .addFilterBefore(authorizationFilter(), BasicAuthenticationFilter.class)
-            .addFilterAfter(userAccessFilter(), BasicAuthenticationFilter.class)
-            .authorizeRequests()
-            .antMatchers("/**").hasRole("USER")
-            .antMatchers("/admin/**").hasRole("ADMIN")
-
-            .and()
-            .csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/landing/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/users").permitAll();
+        http
+            .antMatcher("/**")
+            .addFilterAfter(authorizationFilter(), BasicAuthenticationFilter.class)
+            .addFilterAfter(userAccessFilter(), BasicAuthenticationFilter.class);
     }
 
     @Bean

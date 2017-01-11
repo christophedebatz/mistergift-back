@@ -8,7 +8,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 /**
  * Represents a global product (such as Sony Ps4 or Canapé Cuir :-) )
  */
-@Document(indexName = "products")
+@Document(indexName = "products", type = "catalog")
 public class Product extends AbstractElasticsearchEntity<Long> {
 
     /** The product name. */

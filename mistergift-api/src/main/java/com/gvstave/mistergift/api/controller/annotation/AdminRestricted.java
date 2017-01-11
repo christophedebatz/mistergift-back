@@ -1,4 +1,4 @@
-package com.gvstave.mistergift.api.configuration.annotation;
+package com.gvstave.mistergift.api.controller.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import org.springframework.security.access.annotation.Secured;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.TYPE, ElementType.METHOD })
-@Secured("ROLE_USER")
-public @interface UserRestricted {
+@Secured("ROLE_ADMIN")
+public @interface AdminRestricted {
 
 }
