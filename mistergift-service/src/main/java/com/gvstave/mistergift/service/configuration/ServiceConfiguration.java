@@ -20,7 +20,7 @@ public class ServiceConfiguration {
     @Bean(name = "messageSource")
     public ReloadableResourceBundleMessageSource resourceBundleMessageSource() {
         ReloadableResourceBundleMessageSource bundle = new ReloadableResourceBundleMessageSource();
-        bundle.setBasename("i18n.message");
+        bundle.setBasename("classpath:i18n/message");
         bundle.setDefaultEncoding("utf-8");
         return bundle;
     }

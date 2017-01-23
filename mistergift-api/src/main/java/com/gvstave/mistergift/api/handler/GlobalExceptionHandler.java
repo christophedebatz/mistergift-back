@@ -6,6 +6,8 @@ import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 class GlobalExceptionHandler {
 
+    /** The logger. */
+    private static Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     /**
      * The default handling exception.
      *
@@ -32,7 +37,7 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ Exception.class, TooManyRequestException.class })
     public ResponseEntity<Response> defaultErrorHandler(HttpServletRequest httpServletRequest, Exception exception) throws Exception {
-
+        LOGGER.error("Error has been thrown !", exception);
         HttpStatus status = getHttpStatusCode(exception);
 
         Response response = Response.withError(

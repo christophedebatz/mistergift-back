@@ -6,10 +6,12 @@ if [[ $1 -ne "dev" || $1 -ne "stg" || $1 -ne "prd" ]]; then
 else
 
     echo "[INFO] Compiling project..."
-    #cd ../ && mvn clean install && cd deploy/
+    cd ../
+    mvn clean install
+    cd deploy/
 
     echo "[INFO] Uploading ROOT.war..."
-    #rsync -P -vrltD ../mistergift-api/target/ROOT.war mgadmin@mistergift.io:/opt/tomcat8/webapps/
+    rsync -P -vrltD ../mistergift-api/target/ROOT.war mgadmin@mistergift.io:/opt/tomcat8/webapps/
 
     #echo "[INFO] Computing SQL deltas..."
     #rsync -P -vrltD ../mistergift-data/src/main/resources/deltas.sql mgadmin@mistergift.io:/home/mgadmin/
@@ -19,7 +21,7 @@ else
 
     echo "[INFO] Set Catalina options as \"-Xms512M -Xmx1024M -Dserver.role=$1\""
     ssh mgadmin@mistergift.io "truncate --size=0 /opt/tomcat8/bin/setenv.sh"
-    ssh mgadmin@mistergift.io "echo 'export CATALINA_OPTS=\"\$CATALINA_OPTS -Xms512M -Xmx1024M -Dserver.role=$1\"' > /opt/tomcat8/bin/setenv.sh"
+    ssh mgadmin@mistergift.io "echo 'export JAVA_OPTS=\"\$JAVA_OPTS -Xms512M -Xmx1024M -Dserver.role=$1\"' > /opt/tomcat8/bin/setenv.sh"
 
     echo "[INFO] Tomcat is shutting down..."
     ssh mgadmin@mistergift.io "/opt/tomcat8/bin/shutdown.sh" 2>/dev/null

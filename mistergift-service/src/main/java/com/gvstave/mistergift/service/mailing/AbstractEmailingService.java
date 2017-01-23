@@ -85,7 +85,10 @@ abstract class AbstractEmailingService implements Mailable {
             message.setTo(recipients);
             message.setFrom(expeditor);
 
-            String templatePath = String.format("%s/%s-%s.vm", getTemplateDirectory(), getTemplateName(), locale.getDisplayLanguage());
+            String templatePath = constructTemplatePath(locale);
+            if (getClass().getClassLoader().getResource(templatePath) == null) {
+                templatePath = constructTemplatePath(null); // english by default
+            }
             Template template = getDefaultEmailingFactory().getTemplater().getTemplate(templatePath);
 
             if (data != null && !data.isEmpty()) {
@@ -101,8 +104,22 @@ abstract class AbstractEmailingService implements Mailable {
         try {
             defaultEmailingFactory.getMailer().send(preparator);
         } catch (RuntimeException e) {
-            throw new MailException("Unable to send password-resseting email", e);
+            throw new MailException("Unable to send email", e);
         }
+    }
+
+    /**
+     * Returns the template path.
+     * If locale is null, english will be provied instead.
+     *
+     * @param locale The locale.
+     * @return The template path.
+     */
+    private String constructTemplatePath(Locale locale) {
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
+        return String.format("%s/%s-%s.vm", getTemplateDirectory(), getTemplateName(), locale.getLanguage());
     }
 
     /**

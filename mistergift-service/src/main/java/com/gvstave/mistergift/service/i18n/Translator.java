@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -24,13 +25,15 @@ public class Translator {
      *
      * @param key The key.
      * @param args The args.
+     * @param locale The locale.
      * @return The associated translation.
      */
-    public String translate(String key, List<String> args) {
+    public String translate(String key, List<String> args, Locale locale) {
         Objects.requireNonNull(key);
         Object[] objects = (args != null && !args.isEmpty()) ? args.toArray() : null;
+        Locale forceLocale = (locale != null) ? locale : LocaleContextHolder.getLocale();
 
-        return messageSource.getMessage(key, objects, LocaleContextHolder.getLocale());
+        return messageSource.getMessage(key, objects, forceLocale);
     }
 
     /**
@@ -40,6 +43,6 @@ public class Translator {
      * @return The associated translation.
      */
     public String translate(String key) {
-        return translate(key, null);
+        return translate(key, null, null);
     }
 }
