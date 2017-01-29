@@ -18,12 +18,12 @@ import java.util.Date;
 abstract class AbstractTimestampableJpaEntity<T extends Serializable> extends AbstractJpaEntity<T>
 {
     /** The create date. */
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 
     /** The modification date. */
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modification_date", nullable = false)
     private Date modificationDate;
 

@@ -52,8 +52,7 @@ class GlobalExceptionHandler {
         } else if (exception instanceof InvalidFieldValueException) {
             InvalidFieldValueException ex = (InvalidFieldValueException) exception;
             ErrorResponse response = ErrorResponse.fromException(exception, HttpStatus.BAD_REQUEST.value());
-            Optional.ofNullable(ex.getFields())
-                .map(name -> response.addParameter("field", name));
+            Optional.ofNullable(ex.getFields()).ifPresent(name -> response.addParameter("field", name.toString()));
         } else if (exception instanceof UnauthorizedOperationException) {
             return ErrorResponse.fromException(exception, HttpStatus.UNAUTHORIZED.value());
         } else if (exception instanceof EntityNotFoundException) {

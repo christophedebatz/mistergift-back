@@ -1,8 +1,11 @@
 package com.gvstave.mistergift.data.persistence.repository;
 
 import com.gvstave.mistergift.data.domain.Link;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-public interface LinkRepository extends PagingAndSortingRepository<Link, Long>, QueryDslPredicateExecutor<Link>{
+/**
+ * Repository for {@link Link}.
+ */
+@Repository
+public interface LinkRepository extends BaseEntityRepository<Link, Long> {
 }

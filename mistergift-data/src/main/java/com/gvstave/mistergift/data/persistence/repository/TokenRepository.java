@@ -1,7 +1,11 @@
 package com.gvstave.mistergift.data.persistence.repository;
 
 import com.gvstave.mistergift.data.domain.Token;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TokenRepository extends CrudRepository<Token, String> {
+/**
+ * Repository for {@link Token}.
+ */
+@Repository
+public interface TokenRepository extends BaseEntityRepository<Token, String> {
 }

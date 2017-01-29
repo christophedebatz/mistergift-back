@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryEmbeddable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 /**
@@ -15,12 +15,12 @@ import java.io.Serializable;
 public class UserEventId implements Serializable {
 
     /** The event. */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
     /** The user. */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

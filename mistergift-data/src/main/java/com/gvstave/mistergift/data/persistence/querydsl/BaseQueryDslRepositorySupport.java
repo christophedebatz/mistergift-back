@@ -16,6 +16,9 @@ import java.util.List;
  */
 public class BaseQueryDslRepositorySupport<T> extends QueryDslRepositorySupport {
 
+    /** The domain class. */
+    protected Class<T> domainClass;
+
     /**
      * Default query DSL constructor.
      *
@@ -23,6 +26,7 @@ public class BaseQueryDslRepositorySupport<T> extends QueryDslRepositorySupport 
      */
     protected BaseQueryDslRepositorySupport(Class<T> domainClass) {
         super(domainClass);
+        this.domainClass = domainClass;
     }
 
     /**
@@ -52,7 +56,8 @@ public class BaseQueryDslRepositorySupport<T> extends QueryDslRepositorySupport 
         if (pageable != null) {
             return query
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()).fetch();
+                .limit(pageable.getPageSize())
+                .fetch();
         }
 
         return query.fetch();

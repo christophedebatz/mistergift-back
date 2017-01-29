@@ -1,8 +1,13 @@
 package com.gvstave.mistergift.data.persistence.repository;
 
+import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.domain.UserEvent;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.gvstave.mistergift.data.domain.UserEventId;
+import org.springframework.stereotype.Repository;
 
-public interface UserEventRepository extends PagingAndSortingRepository<UserEvent, Long>, QueryDslPredicateExecutor<UserEvent> {
+/**
+ * Repository for {@link User}.
+ */
+@Repository
+public interface UserEventRepository extends BaseEntityRepository<UserEvent, UserEventId> {
 }

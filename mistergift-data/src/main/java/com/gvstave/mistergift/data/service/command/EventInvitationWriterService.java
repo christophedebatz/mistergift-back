@@ -149,7 +149,7 @@ public class EventInvitationWriterService {
         Optional.ofNullable(eventInvitationPersistenceService.findOne(invitationId))
             .filter(filter -> filter.getTargetUser().equals(user))
             .ifPresent(invitation -> {
-                userEventPersistenceService.delete(invitation.getId());
+                eventInvitationPersistenceService.delete(invitation);
                 QUserEvent qUserEvent = QUserEvent.userEvent;
                 Optional.ofNullable(
                     userEventPersistenceService.findOne(

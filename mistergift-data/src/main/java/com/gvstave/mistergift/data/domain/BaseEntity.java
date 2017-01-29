@@ -5,22 +5,22 @@ import java.io.Serializable;
 /**
  * Base interface to construct entity.
  *
- * @param <T> the primary key (id) type.
+ * @param <ID> the primary key (id) type.
  */
-public interface BaseEntity<T> extends Serializable {
+public interface BaseEntity<ID> extends Serializable {
 
     /**
      * Returns the entity id.
      *
      * @return the id.
      */
-    T getId();
+    ID getId();
 
     /**
      * Sets the entity id.
      *
      * @param id the id.
      */
-    void setId(T id);
+    void setId(ID id);
 
 }

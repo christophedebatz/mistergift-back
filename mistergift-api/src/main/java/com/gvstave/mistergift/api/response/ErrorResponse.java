@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents a response in failure.
@@ -68,15 +69,18 @@ public class ErrorResponse {
      *
      * @param key The parameter key.
      * @param value The parameter value.
-     * @return The response.
      */
-    public ErrorResponse addParameter(String key, Object value) {
+    public void addParameter(String key, Object value) {
         Objects.requireNonNull(key);
         if (parameters == null) {
             parameters = new HashMap<>();
         }
-        parameters.put(key, value);
-        return this;
+
+        String newValue = Optional.ofNullable(parameters.get(key))
+            .map(oldValue -> String.format("%s,%s", oldValue, value))
+            .orElse(value.toString());
+
+        parameters.put(key, newValue);
     }
 
     /**

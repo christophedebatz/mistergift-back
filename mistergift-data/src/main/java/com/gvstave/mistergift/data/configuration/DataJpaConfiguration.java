@@ -1,13 +1,17 @@
 package com.gvstave.mistergift.data.configuration;
 
+import com.gvstave.mistergift.data.Data;
+import com.gvstave.mistergift.data.persistence.repository.BaseEntityRepository;
 import com.querydsl.sql.MySQLTemplates;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
 import com.querydsl.sql.spring.SpringConnectionProvider;
 import com.querydsl.sql.spring.SpringExceptionTranslator;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,7 +31,9 @@ import java.util.Properties;
  * .
  */
 @Configuration
+@ComponentScan(basePackageClasses = Data.class)
 @EnableTransactionManagement(proxyTargetClass = true)
+@EnableJpaRepositories(basePackageClasses = BaseEntityRepository.class)
 public class DataJpaConfiguration {
 
     @Inject

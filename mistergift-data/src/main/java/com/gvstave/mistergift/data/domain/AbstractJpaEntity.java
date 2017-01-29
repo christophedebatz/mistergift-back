@@ -10,22 +10,22 @@ import java.util.Objects;
 /**
  * Represents the abstract base entity.
  *
- * @param <T> the entity type.
+ * @param <ID> the entity type.
  */
 @MappedSuperclass
-abstract class AbstractJpaEntity<T extends Serializable> implements BaseEntity<T>
+abstract class AbstractJpaEntity<ID extends Serializable> implements BaseEntity<ID>
 {
 
     /** The entity id. */
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private T id;
+    private ID id;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public T getId() {
+    public ID getId() {
         return id;
     }
 
@@ -33,7 +33,7 @@ abstract class AbstractJpaEntity<T extends Serializable> implements BaseEntity<T
      * {@inheritDoc}
      */
     @Override
-    public void setId(T id) {
+    public void setId(ID id) {
         this.id = id;
     }
 
