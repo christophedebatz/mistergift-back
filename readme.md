@@ -58,6 +58,20 @@ The "parameters" part is optional and allow the front-side to have some precisio
 }
 ```
 
+### Invalid field
+```
+{
+  "error": {
+    "status": 400,
+    "exception": "InvalidFieldValueException",
+    "message": "The field firstName is invalid, null or empty.",
+    "parameters": {
+      "fieldName": "firstName"
+    }
+  }
+}
+```
+
 Endpoints
 -------------
 

@@ -4,7 +4,6 @@ import com.gvstave.mistergift.api.response.ErrorResponse;
 import com.gvstave.mistergift.api.response.Response;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 /**
  * The main exception handler.
@@ -34,17 +33,11 @@ class GlobalExceptionHandler {
      * @return The serialized object.
      * @throws Exception The given exception.
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({ Exception.class, TooManyRequestException.class })
+    @ExceptionHandler
     public ResponseEntity<Response> defaultErrorHandler(HttpServletRequest httpServletRequest, Exception exception) throws Exception {
-        LOGGER.error("Error has been thrown !", exception);
-        HttpStatus status = getHttpStatusCode(exception);
-
-        Response response = Response.withError(
-            ErrorResponse.fromException(exception, status.value())
-        );
-
-        return new ResponseEntity<>(response, status);
+        LOGGER.error("Error has been thrown!", exception);
+        Response response = Response.withError(createErrorResponse(exception));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getError().getStatus()));
     }
 
     /**
@@ -53,24 +46,21 @@ class GlobalExceptionHandler {
      * @param exception The raised exception.
      * @return The status code.
      */
-    private HttpStatus getHttpStatusCode(Exception exception) {
-        HttpStatus status;
-
+    private ErrorResponse createErrorResponse(Exception exception) {
         if (exception instanceof DuplicatedEntityException) {
-            status = HttpStatus.CONFLICT;
+            return ErrorResponse.fromException(exception, HttpStatus.CONFLICT.value());
         } else if (exception instanceof InvalidFieldValueException) {
-            status = HttpStatus.BAD_REQUEST;
+            InvalidFieldValueException ex = (InvalidFieldValueException) exception;
+            ErrorResponse response = ErrorResponse.fromException(exception, HttpStatus.BAD_REQUEST.value());
+            Optional.ofNullable(ex.getFields())
+                .map(name -> response.addParameter("field", name));
         } else if (exception instanceof UnauthorizedOperationException) {
-            status = HttpStatus.UNAUTHORIZED;
+            return ErrorResponse.fromException(exception, HttpStatus.UNAUTHORIZED.value());
         } else if (exception instanceof EntityNotFoundException) {
-            status = HttpStatus.NOT_FOUND;
-        } else if (exception instanceof TooManyRequestException) {
-            status = HttpStatus.TOO_MANY_REQUESTS;
-        } else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return ErrorResponse.fromException(exception, HttpStatus.NOT_FOUND.value());
         }
 
-        return status;
+        return ErrorResponse.fromException(exception, HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 }
