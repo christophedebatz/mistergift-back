@@ -4,6 +4,60 @@ Mistergift.io API
 ----------
 Just a little brief for API endpoints for first version.
 
+Exceptions handling
+-------------
+
+Exception format remains the same on the API. An exception has been thrown when the response only contains the "error" node. From this point, it's quite easy for the front-side to get more information about what has failed by browsing the "error" content.
+
+```
+{
+  "error": {
+    "status": "<status-code>",
+    "exception": "<exception-name",
+    "message": "<exception-message>",
+    "parameters": {
+      "<name>": "<value>
+    }
+  }
+}
+```
+The "parameters" part is optional and allow the front-side to have some precisions about the exception.
+
+### Too many requests
+
+```
+{
+  "error": {
+    "status": 429,
+    "exception": "TooManyRequestException",
+    "message": "Too many requests. Please try again in 6 s.",
+    "parameters": {
+      "waitingTime": 6
+    }
+  }
+}
+```
+### Missing token
+```
+{
+  "error": {
+    "status": 401,
+    "exception": "MissingTokenException",
+    "message": "Missing authorization token."
+  }
+}
+```
+### Invalid token
+```
+{
+  "error": {
+    "status": 401,
+    "exception": "InvalidTokenException",
+    "message": "The authorization token is wrong."
+  }
+}
+```
+
 Endpoints
 -------------
 

@@ -2,6 +2,7 @@ package com.gvstave.mistergift.api.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gvstave.mistergift.api.response.ErrorResponse;
+import com.gvstave.mistergift.api.response.Response;
 import com.gvstave.mistergift.data.access.UserAccessService;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import org.springframework.http.MediaType;
@@ -72,10 +73,10 @@ public class UserAccessFilter implements Filter {
 
         // generates the error
         ErrorResponse errorResponse = ErrorResponse.fromException(exception, TooManyRequestException.getStatusCode());
-        errorResponse.addParameter("remainingTime", exception.getTimeToWait());
+        errorResponse.addParameter("waitingTime", exception.getTimeToWait());
 
         // creates response
-        httpResponse.getWriter().print(mapper.writeValueAsString(errorResponse));
+        httpResponse.getWriter().print(mapper.writeValueAsString(Response.withError(errorResponse)));
         httpResponse.setStatus(errorResponse.getStatus());
         httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         httpResponse.flushBuffer();
