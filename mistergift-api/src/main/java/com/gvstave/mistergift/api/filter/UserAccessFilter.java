@@ -12,6 +12,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * This filter checks all client request.
@@ -24,9 +25,6 @@ public class UserAccessFilter implements Filter {
      */
     @Inject
     private UserAccessService userAccessService;
-
-    /** The object mapper. */
-    private ObjectMapper mapper = new ObjectMapper();
 
     /**
      * {@inheritDoc}
@@ -44,12 +42,7 @@ public class UserAccessFilter implements Filter {
         try {
             userAccessService.checkTooManyRequests((HttpServletRequest)request);
         } catch (TooManyRequestException exception) {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            ErrorResponse errorResponse = ErrorResponse.fromException(exception, TooManyRequestException.getStatusCode());
-            httpResponse.getWriter().print(mapper.writeValueAsString(errorResponse));
-            httpResponse.setStatus(errorResponse.getStatus());
-            httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            httpResponse.flushBuffer();
+            sendException(exception, (HttpServletResponse) response);
             return;
         }
 
@@ -62,6 +55,30 @@ public class UserAccessFilter implements Filter {
     @Override
     public void destroy() {
         // no action
+    }
+
+    /**
+     * Sends the errored response to the client.
+     *
+     * @param exception The exception.
+     * @param httpResponse The http response.
+     * @throws IOException If the response-sending has failed.
+     */
+    private static void sendException(TooManyRequestException exception, HttpServletResponse httpResponse) throws IOException {
+        Objects.requireNonNull(exception);
+        Objects.requireNonNull(httpResponse);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        // generates the error
+        ErrorResponse errorResponse = ErrorResponse.fromException(exception, TooManyRequestException.getStatusCode());
+        errorResponse.addParameter("remainingTime", exception.getTimeToWait());
+
+        // creates response
+        httpResponse.getWriter().print(mapper.writeValueAsString(errorResponse));
+        httpResponse.setStatus(errorResponse.getStatus());
+        httpResponse.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        httpResponse.flushBuffer();
     }
 
 }

@@ -1,10 +1,8 @@
 package com.gvstave.mistergift.data.access;
 
-import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.cache.CacheService;
+import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.service.misc.ClientUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -17,11 +15,8 @@ import java.util.Optional;
 @Service
 public class UserAccessService {
 
-    /** The logger. */
-    private static Logger LOGGER = LoggerFactory.getLogger(UserAccessService.class);
-
     /** The maximum requests that an IP can make per second. */
-    private static final Integer MAX_REQUESTS_PER_SECOND = 3;
+    private static final Integer MAX_REQUESTS_PER_SECOND = 2;
 
     /** The cache service. */
     @Inject
@@ -29,7 +24,7 @@ public class UserAccessService {
 
     /**
      * Checks that user has the right to request the server to get resource.
-     * If not, it throws an error announcing the time to wait for the user.
+     * If not, it throws an exception with the time to wait for the user.
      *
      * @param request The http request.
      * @throws TooManyRequestException If too many requests has been found.
@@ -38,11 +33,12 @@ public class UserAccessService {
         // check that the ip is not blocked
         String blockedKey = getCachePattern(request, "blocked");
         if (cacheService.exists(blockedKey)) {
-            Long timeToWait = cacheService.getTTL(blockedKey);
+            Long timeToWait = Math.round(cacheService.getTTL(blockedKey) * 1.1);
+            cacheService.set(blockedKey, true, timeToWait);
             throw new TooManyRequestException(timeToWait);
         }
 
-        Integer accessCount = getAccessCount(request);
+        Integer accessCount = getAccessesCount(request);
 
         // if user cannot request anymore, throw
         if (accessCount != null && accessCount > MAX_REQUESTS_PER_SECOND) {
@@ -57,9 +53,8 @@ public class UserAccessService {
      *
      * @param request The http request.
      * @return The number of request for the current IP address.
-     * @throws Exception If there has been a cache exception.
      */
-    private Integer getAccessCount(HttpServletRequest request) {
+    private Integer getAccessesCount (HttpServletRequest request) {
         String key = getCachePattern(request, null);
         Object data = cacheService.get(key);
 
@@ -79,7 +74,7 @@ public class UserAccessService {
      * @param request The http request.
      * @return The string pattern.
      */
-    private String getCachePattern(HttpServletRequest request, String keySuffix) {
+    private static String getCachePattern(HttpServletRequest request, String keySuffix) {
         if (keySuffix == null) {
             keySuffix = "";
         } else {

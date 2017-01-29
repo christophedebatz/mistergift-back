@@ -65,8 +65,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
             .antMatcher("/**")
-            .addFilterAfter(authorizationFilter(), BasicAuthenticationFilter.class)
-            .addFilterAfter(userAccessFilter(), ChannelProcessingFilter.class);
+            .addFilterBefore(userAccessFilter(), ChannelProcessingFilter.class)
+            .addFilterAfter(authorizationFilter(), BasicAuthenticationFilter.class);
 
     }
 

@@ -3,6 +3,8 @@ package com.gvstave.mistergift.api.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,6 +24,10 @@ public class ErrorResponse {
     /** The error message. */
     @JsonProperty
     private String message;
+
+    /** The error optional parameters (to help error understanding front-side). */
+    @JsonProperty
+    private Map<String, Object> parameters;
 
     /**
      * Constructor.
@@ -55,6 +61,22 @@ public class ErrorResponse {
     public static ErrorResponse fromException(Exception exception, int status) {
         Objects.requireNonNull(exception);
         return new ErrorResponse(status, exception.getClass().getSimpleName(), exception.getMessage());
+    }
+
+    /**
+     * Adds a parameter.
+     *
+     * @param key The parameter key.
+     * @param value The parameter value.
+     * @return The response.
+     */
+    public ErrorResponse addParameter(String key, Object value) {
+        Objects.requireNonNull(key);
+        if (parameters == null) {
+            parameters = new HashMap<>();
+        }
+        parameters.put(key, value);
+        return this;
     }
 
     /**
