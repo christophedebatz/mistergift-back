@@ -36,9 +36,8 @@ public interface CacheService {
      *
      * @param key   The value key.
      * @param value The value.
-     * @throws Exception If the operation failed.
      */
-    void set(String key, Object value) throws Exception;
+    void set(String key, Object value);
 
     /**
      * Sets a new value with ttl.
@@ -46,19 +45,16 @@ public interface CacheService {
      * @param key   The value key.
      * @param value The value.
      * @param ttl   The ttl.
-     * @throws Exception If the operation failed.
      */
-    void set(String key, Object value, Long ttl) throws Exception;
+    void set(String key, Object value, Long ttl);
 
     /**
      * Returns the value associated with the given key.
      *
      * @param key The key.
      * @return The value.
-     *
-     * @throws Exception If the operation failed.
      */
-    Object get(String key) throws Exception;
+    Object get(String key);
 
     /**
      * Returns the value associated to the given key or the default value

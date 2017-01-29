@@ -33,8 +33,8 @@ class AbstractController {
 
     /** The current logged-in users cache. */
     private Cache<String, User> users = CacheBuilder.newBuilder()
-                    .expireAfterWrite(10, TimeUnit.MINUTES)
-                    .maximumSize(1000)
+                    .expireAfterWrite(5, TimeUnit.MINUTES)
+                    .maximumSize(10000)
                     .build();
 
     /**

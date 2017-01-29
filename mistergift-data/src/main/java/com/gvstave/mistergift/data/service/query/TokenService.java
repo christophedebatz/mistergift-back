@@ -40,6 +40,7 @@ public class TokenService {
      * @param userDetails The user.
      * @return The token.
      */
+    @Transactional(readOnly = true)
     public String getToken(UserDetails userDetails) {
         Objects.requireNonNull(userDetails);
         User user = userPersistenceService.findByEmail(userDetails.getUsername());
@@ -57,6 +58,7 @@ public class TokenService {
      * @param token The token value.
      * @return The token.
      */
+    @Transactional(readOnly = true)
     public Token getToken(String token) {
         Objects.requireNonNull(token);
         return tokenPersistenceService.findOne(token);
@@ -81,6 +83,7 @@ public class TokenService {
      * @param token The token.
      * @return The user.
      */
+    @Transactional(readOnly = true)
     public UserDetails getUserFromToken(Token token) {
         User user = token.getUser();
 
@@ -105,6 +108,7 @@ public class TokenService {
      * @param token The token.
      * @return The user.
      */
+    @Transactional(readOnly = true)
     public User getUserFromToken(String token) {
         Objects.requireNonNull(token);
         Token foundToken = tokenPersistenceService.findOne(token);
@@ -122,7 +126,7 @@ public class TokenService {
      * @param user The user.
      * @return The new token.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public Token createUserToken(User user) {
         Objects.requireNonNull(user);
         int ttl = Integer.parseInt(env.getProperty("token.ttl"));

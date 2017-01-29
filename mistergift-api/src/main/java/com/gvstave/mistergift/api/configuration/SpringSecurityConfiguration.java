@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.inject.Inject;
@@ -65,7 +66,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .antMatcher("/**")
             .addFilterAfter(authorizationFilter(), BasicAuthenticationFilter.class)
-            .addFilterAfter(userAccessFilter(), BasicAuthenticationFilter.class);
+            .addFilterAfter(userAccessFilter(), ChannelProcessingFilter.class);
+
     }
 
     @Bean

@@ -37,9 +37,9 @@ public class UserEventPersistenceService extends BaseQueryDslRepositorySupport<U
     @Transactional
     public <S extends UserEvent> S save(S userEvent) {
         Objects.requireNonNull(userEvent);
-        S newGroup = getEntityManager().merge(userEvent);
+        S newUserEvent = getEntityManager().merge(userEvent);
         getEntityManager().flush();
-        return newGroup;
+        return newUserEvent;
     }
 
     public <S extends UserEvent> Iterable<S> save(Iterable<S> iterable) {

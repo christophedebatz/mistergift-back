@@ -8,7 +8,6 @@ import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.persistence.EventPersistenceService;
 import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
-import com.gvstave.mistergift.data.service.query.EventService;
 import com.gvstave.mistergift.data.service.query.UserEventService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +35,6 @@ public class EventWriterService {
     @Inject
     private UserEventService userEventService;
 
-    /** The event service. */
-    @Inject
-    private EventService eventService;
-
     /**
      * Creates new event and add it to the given user.
      *
@@ -49,14 +44,15 @@ public class EventWriterService {
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public Event createEvent(Event event, User user) throws UnauthorizedOperationException, InvalidFieldValueException {
         Objects.requireNonNull(event);
         Objects.requireNonNull(user);
 
         ensureUserCanUpdateEvent(event, false);
 
-        UserEventId userEventId = new UserEventId(null, user);
+        Event savedEvent = eventPersistenceService.save(event); // useless?
+        UserEventId userEventId = new UserEventId(savedEvent, user);
         UserEvent userEvent = new UserEvent(userEventId, true);
         userEvent = userEventPersistenceService.save(userEvent);
 
@@ -70,7 +66,7 @@ public class EventWriterService {
      * @param user    The user.
      * @throws UnauthorizedOperationException If operation is not permitted for the user.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public void deleteEvent(Long eventId, User user) throws UnauthorizedOperationException {
         Objects.requireNonNull(eventId);
         Objects.requireNonNull(user);
@@ -90,7 +86,7 @@ public class EventWriterService {
      * @throws UnauthorizedOperationException If operation is not permitted for the user.
      * @throws InvalidFieldValueException If the status is not recognized.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public void updateStatus(Long eventId, String status, User user) throws UnauthorizedOperationException,
         InvalidFieldValueException {
         Objects.requireNonNull(eventId);
@@ -118,7 +114,7 @@ public class EventWriterService {
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public Event updateEvent(Event event, User user) throws UnauthorizedOperationException, InvalidFieldValueException {
         Objects.requireNonNull(event);
         Objects.requireNonNull(user);

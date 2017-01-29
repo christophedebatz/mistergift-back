@@ -9,6 +9,7 @@ import com.gvstave.mistergift.data.persistence.LandingUserPersistenceService;
 import com.gvstave.mistergift.service.geoip.GeolocationService;
 import com.gvstave.mistergift.service.mailing.LandingUserEmailingService;
 import com.gvstave.mistergift.service.mailing.exception.MailException;
+import com.gvstave.mistergift.service.misc.ClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -84,7 +85,7 @@ public class LandingUserController extends AbstractController {
         landingUserEmailingService.send(landingUser.getEmail(), model);
 
         // geolocalize client from its ip address
-        Optional.ofNullable(geolocationService.requestClientIp(request))
+        Optional.ofNullable(ClientUtils.getClientAddr(request))
             .map(ip -> { landingUser.setIp(ip); return ip; })
             .flatMap(geolocationService::requestClientGeolocation)
             .ifPresent(result -> {

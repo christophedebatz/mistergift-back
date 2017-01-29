@@ -29,17 +29,17 @@ public class EventPersistenceService extends BaseQueryDslRepositorySupport<Event
     }
 
     /**
-     * Saves a {@link Event}.
+     * Saves an {@link Event}.
      *
-     * @param group The event to persist.
+     * @param event The event to persist.
      * @return The hydrated user.
      */
     @Transactional
-    public <S extends Event> S save(S group) {
-        Objects.requireNonNull(group);
-        S newGroup = getEntityManager().merge(group);
+    public <S extends Event> S save(S event) {
+        Objects.requireNonNull(event);
+        S newEvent = getEntityManager().merge(event);
         getEntityManager().flush();
-        return newGroup;
+        return newEvent;
     }
 
     @Transactional

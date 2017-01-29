@@ -58,7 +58,7 @@ public class RedisCacheService implements CacheService {
      * {@inheritDoc}
      */
     @Override
-    public void set(String name, Object value, Long ttl) throws Exception {
+    public void set(String name, Object value, Long ttl) {
         if (commander.isPresent()) {
             commander.get().set(name, value);
 
@@ -72,7 +72,7 @@ public class RedisCacheService implements CacheService {
      * {@inheritDoc}
      */
     @Override
-    public void set(String name, Object value) throws Exception {
+    public void set(String name, Object value) {
         set(name, value, null);
     }
 
@@ -80,7 +80,7 @@ public class RedisCacheService implements CacheService {
      * {@inheritDoc}
      */
     @Override
-    public Object get(String name) throws Exception {
+    public Object get(String name) {
         return get(name, null);
     }
 

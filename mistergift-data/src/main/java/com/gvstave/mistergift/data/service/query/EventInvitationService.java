@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class EventInvitationService {
      * @param pageable The pageable.
      * @return The page of user event invitations.
      */
+    @Transactional(readOnly = true)
     public Page<EventInvitation> getUserEventInvitations(User user, Pageable pageable) {
         Objects.requireNonNull(user);
         BooleanExpression qEventInvitation = QEventInvitation.eventInvitation.targetUser.eq(user);

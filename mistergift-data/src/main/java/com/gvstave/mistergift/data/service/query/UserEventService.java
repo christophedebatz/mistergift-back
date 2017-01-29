@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -45,6 +46,7 @@ public class UserEventService {
      * @param pageable The pageable if necessary.
      * @return The events.
      */
+    @Transactional(readOnly = true)
     public List<Event> getUserEventsByStatus(User user, Event.EventStatus status, Pageable pageable) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(status);
@@ -73,6 +75,7 @@ public class UserEventService {
      * @param pageable The pageable.
      * @return The user events.
      */
+    @Transactional(readOnly = true)
     public List<Event> getUserInvitationEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
@@ -94,6 +97,7 @@ public class UserEventService {
      * @param pageable The pageable.
      * @return The pending invited user to the event.
      */
+    @Transactional(readOnly = true)
     public Page<User> getEventPendingUsers(Event event, Pageable pageable) {
         Objects.requireNonNull(event);
 
@@ -123,6 +127,7 @@ public class UserEventService {
      * @param user The administrator.
      * @return The list of administrated events.
      */
+    @Transactional(readOnly = true)
     public List<Event> getUserAdminEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
@@ -143,6 +148,7 @@ public class UserEventService {
      * @param pageable
      * @return
      */
+    @Transactional(readOnly = true)
     public Page<User> getEventMembers (Event event, Pageable pageable) {
         Objects.requireNonNull(event);
         Objects.requireNonNull(pageable);
@@ -160,6 +166,7 @@ public class UserEventService {
      * @param pageable The pageable.
      * @return The event administrators.
      */
+    @Transactional(readOnly = true)
     public Page<User> getEventAdmins(Event event, Pageable pageable) {
         Objects.requireNonNull(event);
         Objects.requireNonNull(pageable);
@@ -177,6 +184,7 @@ public class UserEventService {
      * @param eventId The event id.
      * @return whether the user is part of the event admins.
      */
+    @Transactional(readOnly = true)
     public boolean isUserEventAdmin(User user, Long eventId) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(eventId);

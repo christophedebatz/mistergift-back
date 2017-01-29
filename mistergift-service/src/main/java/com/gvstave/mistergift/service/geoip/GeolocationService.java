@@ -8,7 +8,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -31,28 +30,6 @@ public class GeolocationService {
     /** The env. */
     @Inject
     private Environment environment;
-
-    /**
-     * Returns the client IP address.
-     *
-     * @param request The servlet request.
-     * @return The client IP.
-     */
-    public String requestClientIp (HttpServletRequest request) {
-        System.setProperty("java.net.preferIPv4Stack", "true");
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-
-        // try getting header from nginx proxy pass
-        if (ipAddress == null) {
-            ipAddress = request.getHeader("X-Real-IP");
-        }
-
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-
-        return ipAddress;
-    }
 
     /**
      * Returns the client city.

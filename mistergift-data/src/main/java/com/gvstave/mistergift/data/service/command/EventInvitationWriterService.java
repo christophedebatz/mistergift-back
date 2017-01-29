@@ -47,7 +47,7 @@ public class EventInvitationWriterService {
      * @throws UnauthorizedOperationException If user cannot invite someone.
      * @throws InvalidFieldValueException If given args are not valid.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public EventInvitation inviteUserToEvent (Event event, User fromUser, Long toUserId) throws
         UnauthorizedOperationException, InvalidFieldValueException {
         Objects.requireNonNull(event);
@@ -95,7 +95,7 @@ public class EventInvitationWriterService {
      * @param user The user.
      * @param eventId The event id.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public void acceptInvitation(User user, Long eventId) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(eventId);
@@ -141,7 +141,7 @@ public class EventInvitationWriterService {
      * @param user The user.
      * @param invitationId The invitation id.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public void refuseInvitation (User user, Long invitationId) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(invitationId);
@@ -167,6 +167,7 @@ public class EventInvitationWriterService {
      * @param user The user.
      * @param invitationId The invitation id.
      */
+    @Transactional(readOnly = false)
     public void cancelInvitation(User user, Long invitationId) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(invitationId);

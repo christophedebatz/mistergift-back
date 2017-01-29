@@ -2,6 +2,7 @@ package com.gvstave.mistergift.data.access;
 
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.cache.CacheService;
+import com.gvstave.mistergift.service.misc.ClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,8 @@ public class UserAccessService {
      *
      * @param request The http request.
      * @throws TooManyRequestException If too many requests has been found.
-     * @throws Exception If there has been a cache exception.
      */
-    public void checkTooManyRequests(HttpServletRequest request) throws Exception {
+    public void checkTooManyRequests(HttpServletRequest request) throws TooManyRequestException {
         // check that the ip is not blocked
         String blockedKey = getCachePattern(request, "blocked");
         if (cacheService.exists(blockedKey)) {
@@ -42,14 +42,7 @@ public class UserAccessService {
             throw new TooManyRequestException(timeToWait);
         }
 
-        Integer accessCount;
-
-        try {
-            accessCount = getAccessCount(request);
-        } catch (Exception exception) {
-            LOGGER.error("Cache error={}", exception);
-            throw exception;
-        }
+        Integer accessCount = getAccessCount(request);
 
         // if user cannot request anymore, throw
         if (accessCount != null && accessCount > MAX_REQUESTS_PER_SECOND) {
@@ -66,7 +59,7 @@ public class UserAccessService {
      * @return The number of request for the current IP address.
      * @throws Exception If there has been a cache exception.
      */
-    private Integer getAccessCount(HttpServletRequest request) throws Exception {
+    private Integer getAccessCount(HttpServletRequest request) {
         String key = getCachePattern(request, null);
         Object data = cacheService.get(key);
 
@@ -93,29 +86,7 @@ public class UserAccessService {
             keySuffix = ":" + keySuffix;
         }
 
-        return String.format("access:ip:%s", getRemoteAddr(request) + keySuffix);
-    }
-
-    /**
-     * Returns the remote IP address.
-     *
-     * @param request The http address.
-     * @return The IP address.
-     */
-    private static String getRemoteAddr(HttpServletRequest request) {
-        String remoteAddr = request.getRemoteAddr();
-        String forwardedRemoteAddress;
-
-        if ((forwardedRemoteAddress = request.getHeader("X-FORWARDED-FOR")) != null) {
-            remoteAddr = forwardedRemoteAddress;
-            int idx = remoteAddr.indexOf(',');
-
-            if (idx > -1) {
-                remoteAddr = remoteAddr.substring(0, idx);
-            }
-        }
-
-        return remoteAddr;
+        return String.format("access:ip:%s", ClientUtils.getClientAddr(request) + keySuffix);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.gvstave.mistergift.api.auth.handler;
 
-import com.google.common.collect.Lists;
 import com.gvstave.mistergift.data.domain.User;
 import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.TransactionScoped;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Handler for http authentication.
@@ -28,6 +30,7 @@ public class AuthenticationHandler implements AuthenticationManager, Authenticat
      * {@inheritDoc}
      */
     @Override
+    @TransactionScoped
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
@@ -38,11 +41,11 @@ public class AuthenticationHandler implements AuthenticationManager, Authenticat
             throw new BadCredentialsException("Bad credentials.");
         }
 
-        return new UsernamePasswordAuthenticationToken(
-            email,
-            password,
-            Lists.newArrayList(new SimpleGrantedAuthority(user.getRole().getName().toUpperCase()))
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+            new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
         );
+
+        return new UsernamePasswordAuthenticationToken(email, password, authorities);
     }
 
     /**

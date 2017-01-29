@@ -16,7 +16,7 @@ public class Token
     private String id;
 
     @Column(name = "expire_at", nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expireAt;
 
     @OneToOne

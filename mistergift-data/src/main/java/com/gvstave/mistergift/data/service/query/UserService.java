@@ -7,6 +7,7 @@ import com.gvstave.mistergift.data.persistence.UserPersistenceService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class UserService {
      * @param rawPassword The user password.
      * @return The user if found, null else.
      */
+    @Transactional(readOnly = true)
     public User fromCredentials(String email, String rawPassword) {
         if (email == null || rawPassword == null) {
             return null;
@@ -54,6 +56,7 @@ public class UserService {
      * @param id The user id.
      * @return The user.
      */
+    @Transactional(readOnly = true)
     public Optional<User> fromId(Long id) {
         return Optional.ofNullable(userPersistenceService.findOne(id));
     }
