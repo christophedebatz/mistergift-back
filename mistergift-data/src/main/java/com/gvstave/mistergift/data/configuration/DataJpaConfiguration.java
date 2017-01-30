@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.configuration;
 
 import com.gvstave.mistergift.data.Data;
-import com.gvstave.mistergift.data.persistence.repository.BaseEntityRepository;
+import com.gvstave.mistergift.data.persistence.repository.EntityRepository;
 import com.querydsl.sql.MySQLTemplates;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
@@ -33,7 +33,7 @@ import java.util.Properties;
 @Configuration
 @ComponentScan(basePackageClasses = Data.class)
 @EnableTransactionManagement(proxyTargetClass = true)
-@EnableJpaRepositories(basePackageClasses = BaseEntityRepository.class)
+@EnableJpaRepositories(basePackageClasses = EntityRepository.class)
 public class DataJpaConfiguration {
 
     @Inject

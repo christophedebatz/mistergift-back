@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
  * Repository for {@link FileMetadata}.
  */
 @Repository
-public interface FileMetadataRepository extends BaseEntityRepository<FileMetadata, Long> {
+public interface FileMetadataRepository extends EntityRepository<FileMetadata, Long> {
 }

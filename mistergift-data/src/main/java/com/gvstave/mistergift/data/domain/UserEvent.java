@@ -5,10 +5,10 @@ import com.querydsl.core.annotations.QueryInit;
 
 import javax.persistence.*;
 
-@Entity
+@javax.persistence.Entity
 @Table(schema = "mistergift", name = "users_events")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserEvent implements BaseEntity<UserEventId> {
+public class UserEvent implements Entity<UserEventId> {
 
     /**
      * The user event filter.

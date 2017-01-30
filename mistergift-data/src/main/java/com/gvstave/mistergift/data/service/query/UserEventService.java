@@ -86,8 +86,7 @@ public class UserEventService {
             return eventPersistenceService.findAll(predicate, pageable).getContent();
         }
 
-        return Streams.of(eventPersistenceService.findAll(predicate))
-            .collect(Collectors.toList());
+        return eventPersistenceService.streamAll(predicate).collect(Collectors.toList());
     }
 
     /**

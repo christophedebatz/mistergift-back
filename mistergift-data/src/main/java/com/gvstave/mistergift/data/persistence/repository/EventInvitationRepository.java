@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
  * Repository for {@link EventInvitation}.
  */
 @Repository
-public interface EventInvitationRepository extends BaseEntityRepository<EventInvitation, Long> {
+public interface EventInvitationRepository extends EntityRepository<EventInvitation, Long> {
 }

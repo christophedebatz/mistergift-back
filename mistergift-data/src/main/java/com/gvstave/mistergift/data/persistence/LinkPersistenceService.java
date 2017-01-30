@@ -7,13 +7,6 @@ import org.springframework.stereotype.Service;
  * Persistence service for {@link Link}.
  */
 @Service
-public class LinkPersistenceService extends BaseEntityPersistenceService<Link, Long> {
-
-    /**
-     * Constructor.
-     */
-    public LinkPersistenceService() {
-        super(Link.class);
-    }
+public class LinkPersistenceService extends EntityPersistenceService<Link, Long> {
 
 }

@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @param <ID> the primary key (id) type.
  */
-public interface BaseEntity<ID> extends Serializable {
+public interface Entity<ID> extends Serializable {
 
     /**
      * Returns the entity id.

@@ -7,13 +7,6 @@ import org.springframework.stereotype.Service;
  * Persistence service for {@link FileMetadata}.
  */
 @Service
-public class FileMetadataPersistenceService extends BaseEntityPersistenceService<FileMetadata, Long> {
-
-    /**
-     * Constructor.
-     */
-    public FileMetadataPersistenceService() {
-        super(FileMetadata.class);
-    }
+public class FileMetadataPersistenceService extends EntityPersistenceService<FileMetadata, Long> {
 
 }

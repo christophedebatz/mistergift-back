@@ -7,14 +7,7 @@ import org.springframework.stereotype.Service;
  * Persistence service for {@link User}.
  */
 @Service
-public class UserPersistenceService extends BaseEntityPersistenceService<User, Long> {
-
-    /**
-     * Constructor.
-     */
-    public UserPersistenceService() {
-        super(User.class);
-    }
+public class UserPersistenceService extends EntityPersistenceService<User, Long> {
 
     /**
      * Returns the user by its email.

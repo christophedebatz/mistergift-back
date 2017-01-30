@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * Repository for {@link UserGift}.
  */
 @Repository
-public interface UserGiftRepository extends BaseEntityRepository<UserGift, UserGiftId> {
+public interface UserGiftRepository extends EntityRepository<UserGift, UserGiftId> {
 }

@@ -3,12 +3,11 @@ package com.gvstave.mistergift.data.domain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
-@Entity
+@javax.persistence.Entity
 @Table(schema = "mistergift", name = "tokens")
-public class Token implements BaseEntity<String> {
+public class Token implements Entity<String> {
 
     @Id
     @GeneratedValue(generator = "uuid")

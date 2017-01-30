@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
  * Repository for {@link Event}.
  */
 @Repository
-public interface EventRepository extends BaseEntityRepository<Event, Long> {
+public interface EventRepository extends EntityRepository<Event, Long> {
 }

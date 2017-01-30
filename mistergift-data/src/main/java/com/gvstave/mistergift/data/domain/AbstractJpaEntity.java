@@ -13,7 +13,7 @@ import java.util.Objects;
  * @param <ID> the entity type.
  */
 @MappedSuperclass
-abstract class AbstractJpaEntity<ID extends Serializable> implements BaseEntity<ID>
+abstract class AbstractJpaEntity<ID extends Serializable> implements Entity<ID>
 {
 
     /** The entity id. */
@@ -51,8 +51,8 @@ abstract class AbstractJpaEntity<ID extends Serializable> implements BaseEntity<
     @Override
     public boolean equals(Object object) {
         return super.equals(object)
-                && object instanceof BaseEntity
-                && Objects.equals(((BaseEntity) object).getId(), id);
+                && object instanceof Entity
+                && Objects.equals(((Entity) object).getId(), id);
     }
 
 }

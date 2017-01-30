@@ -7,13 +7,6 @@ import org.springframework.stereotype.Service;
  * Persistence service for {@link LandingUser}.
  */
 @Service
-public class LandingUserPersistenceService extends BaseEntityPersistenceService<LandingUser, Long> {
-
-    /**
-     * Constructor.
-     */
-    public LandingUserPersistenceService() {
-        super(LandingUser.class);
-    }
+public class LandingUserPersistenceService extends EntityPersistenceService<LandingUser, Long> {
 
 }

@@ -3,10 +3,7 @@ package com.gvstave.mistergift.data.service.command;
 import com.gvstave.mistergift.data.domain.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.EventInvitationPersistenceService;
-import com.gvstave.mistergift.data.persistence.EventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.persistence.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

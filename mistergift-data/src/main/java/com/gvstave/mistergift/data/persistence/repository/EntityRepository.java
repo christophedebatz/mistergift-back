@@ -10,5 +10,5 @@ import java.io.Serializable;
  * Base entity repository.
  */
 @NoRepositoryBean
-public interface BaseEntityRepository<E extends Serializable, ID extends Serializable> extends PagingAndSortingRepository<E, ID>, QueryDslPredicateExecutor<E> {
+public interface EntityRepository<E extends Serializable, ID extends Serializable> extends PagingAndSortingRepository<E, ID>, QueryDslPredicateExecutor<E> {
 }

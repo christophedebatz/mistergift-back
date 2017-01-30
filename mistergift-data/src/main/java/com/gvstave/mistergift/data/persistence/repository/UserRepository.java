@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
  * Repository for {@link User}.
  */
 @Repository
-public interface UserRepository extends BaseEntityRepository<User, Long> {
+public interface UserRepository extends EntityRepository<User, Long> {
 
     /**
      * Returns the user who is associated with the given email.

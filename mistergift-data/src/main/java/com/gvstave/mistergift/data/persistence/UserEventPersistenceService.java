@@ -8,13 +8,6 @@ import org.springframework.stereotype.Service;
  * Persistence service for {@link UserEvent}.
  */
 @Service
-public class UserEventPersistenceService extends BaseEntityPersistenceService<UserEvent, UserEventId> {
-
-    /**
-     * Constructor.
-     */
-    protected UserEventPersistenceService() {
-        super(UserEvent.class);
-    }
+public class UserEventPersistenceService extends EntityPersistenceService<UserEvent, UserEventId> {
 
 }

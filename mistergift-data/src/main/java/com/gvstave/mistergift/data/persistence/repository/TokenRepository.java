@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
  * Repository for {@link Token}.
  */
 @Repository
-public interface TokenRepository extends BaseEntityRepository<Token, String> {
+public interface TokenRepository extends EntityRepository<Token, String> {
 }

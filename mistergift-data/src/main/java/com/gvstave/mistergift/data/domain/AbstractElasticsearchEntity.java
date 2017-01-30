@@ -12,7 +12,7 @@ import java.util.Objects;
  * @param <T> the entity type.
  */
 @NoRepositoryBean
-abstract class AbstractElasticsearchEntity<T extends Serializable> implements BaseEntity<T>
+abstract class AbstractElasticsearchEntity<T extends Serializable> implements Entity<T>
 {
 
     /** The entity id. */
@@ -49,8 +49,8 @@ abstract class AbstractElasticsearchEntity<T extends Serializable> implements Ba
     @Override
     public boolean equals(Object object) {
         return super.equals(object)
-                && object instanceof BaseEntity
-                && Objects.equals(((BaseEntity) object).getId(), id);
+                && object instanceof Entity
+                && Objects.equals(((Entity) object).getId(), id);
     }
 
 }

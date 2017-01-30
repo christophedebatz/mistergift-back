@@ -4,16 +4,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.querydsl.core.annotations.QueryInit;
 
 import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
  * The user gift (gift that belongs to a user).
  */
-@Entity
+@javax.persistence.Entity
 @Table(schema = "mistergift", name = "user_gift")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserGift implements BaseEntity<UserGiftId> {
+public class UserGift implements Entity<UserGiftId> {
 
     /** The user gift id. */
     @QueryInit({"user", "product"})

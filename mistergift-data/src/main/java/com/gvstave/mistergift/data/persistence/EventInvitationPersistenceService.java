@@ -7,13 +7,6 @@ import org.springframework.stereotype.Service;
  * Repository for {@link EventInvitation}.
  */
 @Service
-public class EventInvitationPersistenceService extends BaseEntityPersistenceService<EventInvitation, Long> {
-
-    /**
-     * Constructor.
-     */
-    protected EventInvitationPersistenceService () {
-        super(EventInvitation.class);
-    }
+public class EventInvitationPersistenceService extends EntityPersistenceService<EventInvitation, Long> {
 
 }
