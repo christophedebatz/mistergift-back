@@ -15,7 +15,7 @@ Exception format remains the same on the API. An exception has been thrown when 
     "status": "<status-code>",
     "exception": "<exception-name",
     "message": "<exception-message>",
-    "parameters": {
+    "details": {
       "<name>": "<value>
     }
   }
@@ -58,7 +58,7 @@ The "parameters" part is optional and allow the front-side to have some precisio
 }
 ```
 
-### Invalid field
+### Invalid fields
 ```
 {
   "error": {
@@ -66,7 +66,7 @@ The "parameters" part is optional and allow the front-side to have some precisio
     "exception": "InvalidFieldValueException",
     "message": "The field firstName is invalid, null or empty.",
     "parameters": {
-      "fieldName": "firstName"
+      "fields": "firstName,lastName,email"
     }
   }
 }

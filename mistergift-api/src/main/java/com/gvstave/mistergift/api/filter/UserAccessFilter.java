@@ -73,7 +73,7 @@ public class UserAccessFilter implements Filter {
 
         // generates the error
         ErrorResponse errorResponse = ErrorResponse.fromException(exception, TooManyRequestException.getStatusCode());
-        errorResponse.addParameter("waitingTime", exception.getTimeToWait());
+        errorResponse.withDetail("waitingTime", exception.getTimeToWait());
 
         // creates response
         httpResponse.getWriter().print(mapper.writeValueAsString(Response.withError(errorResponse)));

@@ -26,9 +26,9 @@ public class ErrorResponse {
     @JsonProperty
     private String message;
 
-    /** The error optional parameters (to help error understanding front-side). */
+    /** The error optional details (to help error understanding front-side). */
     @JsonProperty
-    private Map<String, Object> parameters;
+    private Map<String, Object> details;
 
     /**
      * Constructor.
@@ -70,17 +70,17 @@ public class ErrorResponse {
      * @param key The parameter key.
      * @param value The parameter value.
      */
-    public void addParameter(String key, Object value) {
+    public void withDetail (String key, Object value) {
         Objects.requireNonNull(key);
-        if (parameters == null) {
-            parameters = new HashMap<>();
+        if (details == null) {
+            details = new HashMap<>();
         }
 
-        String newValue = Optional.ofNullable(parameters.get(key))
+        String newValue = Optional.ofNullable(details.get(key))
             .map(oldValue -> String.format("%s,%s", oldValue, value))
             .orElse(value.toString());
 
-        parameters.put(key, newValue);
+        details.put(key, newValue);
     }
 
     /**
