@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.data.domain.Token;
+import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.service.query.password.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,10 +2,10 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.Gift;
-import com.gvstave.mistergift.data.domain.Product;
+import com.gvstave.mistergift.data.domain.es.Product;
+import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.ProductPersistenceService;
+import com.gvstave.mistergift.data.persistence.es.service.ProductPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
@@ -47,7 +47,8 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public @ResponseBody Product getProductById(@RequestParam("id") Long id) {
-        return productPersistenceService.findOne(id);
+        // return productPersistenceService.findOne(id);
+        return null;
     }
 
     /**

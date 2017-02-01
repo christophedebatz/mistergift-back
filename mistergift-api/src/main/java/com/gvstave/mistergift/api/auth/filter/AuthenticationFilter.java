@@ -2,13 +2,12 @@ package com.gvstave.mistergift.api.auth.filter;
 
 import com.gvstave.mistergift.api.auth.handler.AuthenticationErrorHandler;
 import com.gvstave.mistergift.api.auth.handler.AuthenticationSuccessHandler;
-import com.gvstave.mistergift.data.domain.Token;
-import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.Token;
+import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.query.UserService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -48,7 +47,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The env. */
     @Inject

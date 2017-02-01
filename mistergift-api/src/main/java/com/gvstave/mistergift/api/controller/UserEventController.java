@@ -2,9 +2,16 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.*;
+import com.gvstave.mistergift.data.domain.jpa.*;
+import com.gvstave.mistergift.data.domain.jpa.Event;
+import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.domain.jpa.UserEvent;
+import com.gvstave.mistergift.data.domain.jpa.UserGift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.*;
+import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserGiftPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.query.UserEventService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.slf4j.Logger;
@@ -29,15 +36,15 @@ public class UserEventController extends AbstractController {
 
     /** The event persistence service. */
     @Inject
-    private EventPersistenceService eventPersistenceService;
+    private EventPersistenceServiceJpa eventPersistenceService;
 
     /** The user events persistence service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventPersistenceServiceJpa userEventPersistenceService;
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The user event service. */
     @Inject
@@ -45,7 +52,7 @@ public class UserEventController extends AbstractController {
 
     /** The whishlist persistence service. */
     @Inject
-    private UserGiftPersistenceService userGiftPersistenceService;
+    private UserGiftPersistenceServiceJpa userGiftPersistenceService;
 
     /**
      * Default constructor.

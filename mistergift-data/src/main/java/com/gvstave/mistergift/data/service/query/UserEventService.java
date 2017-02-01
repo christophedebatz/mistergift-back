@@ -1,9 +1,13 @@
 package com.gvstave.mistergift.data.service.query;
 
-import com.gvstave.mistergift.data.domain.*;
-import com.gvstave.mistergift.data.persistence.EventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserEventPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.*;
+import com.gvstave.mistergift.data.domain.jpa.Event;
+import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.domain.jpa.UserEvent;
+import com.gvstave.mistergift.data.domain.jpa.UserEventId;
+import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.gvstave.mistergift.data.utils.Streams;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -27,18 +31,18 @@ public class UserEventService {
 
     /** The user event persistence service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventPersistenceServiceJpa userEventPersistenceService;
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The event persistence service. */
     @Inject
-    private EventPersistenceService eventPersistenceService;
+    private EventPersistenceServiceJpa eventPersistenceService;
 
     /**
-     * Returns the event according to their {@link com.gvstave.mistergift.data.domain.Event.EventStatus}.
+     * Returns the event according to their {@link Event.EventStatus}.
      * Note: the unpublished events can be see only by event admins.
      *
      * @param user The user.

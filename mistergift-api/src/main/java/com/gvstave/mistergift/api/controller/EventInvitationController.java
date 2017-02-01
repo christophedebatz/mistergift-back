@@ -2,8 +2,8 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.Event;
-import com.gvstave.mistergift.data.domain.EventInvitation;
+import com.gvstave.mistergift.data.domain.jpa.Event;
+import com.gvstave.mistergift.data.domain.jpa.EventInvitation;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.service.command.EventInvitationWriterService;

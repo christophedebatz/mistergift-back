@@ -1,9 +1,9 @@
 package com.gvstave.mistergift.data.service.query;
 
-import com.gvstave.mistergift.data.domain.EventInvitation;
-import com.gvstave.mistergift.data.domain.QEventInvitation;
-import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.persistence.EventInvitationPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.EventInvitation;
+import com.gvstave.mistergift.data.domain.jpa.QEventInvitation;
+import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.persistence.jpa.service.EventInvitationPersistenceServiceJpa;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ public class EventInvitationService {
 
     /** The event invitation persistence service. */
     @Inject
-    private EventInvitationPersistenceService eventInvitationPersistenceService;
+    private EventInvitationPersistenceServiceJpa eventInvitationPersistenceService;
 
     /**
      * Returns user event invitations.

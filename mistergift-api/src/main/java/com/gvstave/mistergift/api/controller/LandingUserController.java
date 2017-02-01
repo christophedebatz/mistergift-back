@@ -1,11 +1,11 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.data.domain.LandingUser;
-import com.gvstave.mistergift.data.domain.QLandingUser;
+import com.gvstave.mistergift.data.domain.jpa.LandingUser;
+import com.gvstave.mistergift.data.domain.jpa.QLandingUser;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.LandingUserPersistenceService;
+import com.gvstave.mistergift.data.persistence.jpa.service.LandingUserPersistenceServiceJpa;
 import com.gvstave.mistergift.service.geoip.GeolocationService;
 import com.gvstave.mistergift.service.mailing.LandingUserEmailingService;
 import com.gvstave.mistergift.service.mailing.exception.MailException;
@@ -32,7 +32,7 @@ public class LandingUserController extends AbstractController {
 
     /** The landing user persistence service. */
     @Inject
-    private LandingUserPersistenceService landingUserPersistenceService;
+    private LandingUserPersistenceServiceJpa landingUserPersistenceService;
 
     /** The landing user emailing service. */
     @Inject

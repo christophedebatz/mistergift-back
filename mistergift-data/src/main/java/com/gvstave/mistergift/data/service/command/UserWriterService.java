@@ -1,13 +1,13 @@
 package com.gvstave.mistergift.data.service.command;
 
-import com.gvstave.mistergift.data.domain.FileMetadata;
-import com.gvstave.mistergift.data.domain.Token;
-import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.domain.jpa.FileMetadata;
+import com.gvstave.mistergift.data.domain.jpa.Token;
+import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.data.persistence.FileMetadataPersistenceService;
-import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.persistence.jpa.service.FileMetadataPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.TokenPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.gvstave.mistergift.service.CroppingService;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,15 +30,15 @@ public class UserWriterService {
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The token persistence service. */
     @Inject
-    private TokenPersistenceService tokenPersistenceService;
+    private TokenPersistenceServiceJpa tokenPersistenceService;
 
     /** The file metadata persistence service. */
     @Inject
-    private FileMetadataPersistenceService fileMetadataPersistenceService;
+    private FileMetadataPersistenceServiceJpa fileMetadataPersistenceService;
 
     /** The cropping service. */
     @Inject

@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
-import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +20,7 @@ public class UserProvider implements UserDetailsService {
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /**
      * {@inheritDoc}

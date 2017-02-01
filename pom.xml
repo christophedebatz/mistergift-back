@@ -20,6 +20,7 @@
         <spring.security.version>4.2.0.RELEASE</spring.security.version>
         <spring.context.version>4.3.4.RELEASE</spring.context.version>
         <springdata.jpa.version>2.0.0.M1</springdata.jpa.version>
+        <springdata.mongodb.version>1.10.0.RELEASE</springdata.mongodb.version>
         <springdata.es.version>2.0.5.RELEASE</springdata.es.version>
         <springdata.common.version>2.0.0.M1</springdata.common.version>
         <junit.version>4.12</junit.version>

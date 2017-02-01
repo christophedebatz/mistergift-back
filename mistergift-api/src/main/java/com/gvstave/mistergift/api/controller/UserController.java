@@ -1,13 +1,17 @@
 package com.gvstave.mistergift.api.controller;
 
-import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.*;
+import com.gvstave.mistergift.api.response.PageResponse;
+import com.gvstave.mistergift.data.domain.es.Product;
+import com.gvstave.mistergift.data.domain.jpa.FileMetadata;
+import com.gvstave.mistergift.data.domain.jpa.Gift;
+import com.gvstave.mistergift.data.domain.jpa.QUser;
+import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
@@ -31,7 +35,7 @@ public class UserController extends AbstractController {
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The user service. */
     @Inject

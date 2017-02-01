@@ -1,11 +1,11 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
-import com.gvstave.mistergift.data.domain.Event;
+import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.EventPersistenceService;
+import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.command.EventWriterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class EventController extends AbstractController {
 
     /** The event persistence service. */
     @Inject
-    private EventPersistenceService eventPersistenceService;
+    private EventPersistenceServiceJpa eventPersistenceService;
 
     /** The event writer service. */
     @Inject

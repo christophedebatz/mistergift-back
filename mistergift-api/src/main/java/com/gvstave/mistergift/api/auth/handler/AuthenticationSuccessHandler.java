@@ -1,8 +1,8 @@
 package com.gvstave.mistergift.api.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gvstave.mistergift.data.domain.Token;
-import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.domain.jpa.Token;
+import com.gvstave.mistergift.data.domain.jpa.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;

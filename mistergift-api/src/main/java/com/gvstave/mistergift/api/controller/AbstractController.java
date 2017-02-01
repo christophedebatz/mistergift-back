@@ -3,7 +3,7 @@ package com.gvstave.mistergift.api.controller;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.gvstave.mistergift.api.auth.exception.UserNotFoundException;
-import com.gvstave.mistergift.data.domain.User;
+import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.service.query.TokenService;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;

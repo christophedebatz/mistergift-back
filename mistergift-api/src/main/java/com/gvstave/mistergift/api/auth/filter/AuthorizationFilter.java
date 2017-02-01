@@ -2,8 +2,8 @@ package com.gvstave.mistergift.api.auth.filter;
 
 import com.gvstave.mistergift.api.auth.exception.InvalidTokenException;
 import com.gvstave.mistergift.api.auth.exception.MissingTokenException;
-import com.gvstave.mistergift.data.domain.Token;
-import com.gvstave.mistergift.data.persistence.TokenPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.Token;
+import com.gvstave.mistergift.data.persistence.jpa.service.TokenPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.query.TokenService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
@@ -36,7 +36,7 @@ public class AuthorizationFilter extends GenericFilterBean {
 
     /** The token persistence service. */
     @Inject
-    private TokenPersistenceService tokenPersistenceService;
+    private TokenPersistenceServiceJpa tokenPersistenceService;
 
     /** The env. */
     @Inject

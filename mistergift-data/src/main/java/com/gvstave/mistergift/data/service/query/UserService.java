@@ -1,9 +1,9 @@
 package com.gvstave.mistergift.data.service.query;
 
 
-import com.gvstave.mistergift.data.domain.QUser;
-import com.gvstave.mistergift.data.domain.User;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.QUser;
+import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class UserService {
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The password encoder. */
     @Inject

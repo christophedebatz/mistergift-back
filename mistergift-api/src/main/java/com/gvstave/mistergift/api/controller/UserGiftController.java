@@ -2,10 +2,10 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.QUserGift;
-import com.gvstave.mistergift.data.domain.UserGift;
+import com.gvstave.mistergift.data.domain.jpa.QUserGift;
+import com.gvstave.mistergift.data.domain.jpa.UserGift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.UserGiftPersistenceService;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserGiftPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class UserGiftController extends AbstractController {
 
     /** The user gifts persistence service. */
     @Inject
-    private UserGiftPersistenceService userGiftPersistenceService;
+    private UserGiftPersistenceServiceJpa userGiftPersistenceService;
 
     /** The user service. */
     @Inject

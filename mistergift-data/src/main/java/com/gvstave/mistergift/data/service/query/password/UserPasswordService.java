@@ -2,8 +2,8 @@ package com.gvstave.mistergift.data.service.query.password;
 
 
 import com.gvstave.mistergift.data.cache.CacheService;
-import com.gvstave.mistergift.data.domain.Token;
-import com.gvstave.mistergift.data.persistence.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.Token;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import com.gvstave.mistergift.data.service.query.TokenService;
 import com.gvstave.mistergift.data.service.utils.DesCipherService;
 import com.gvstave.mistergift.service.mailing.UserPasswordEmailService;
@@ -35,7 +35,7 @@ public class UserPasswordService {
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The user password email service. */
     @Inject

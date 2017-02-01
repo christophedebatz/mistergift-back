@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.configuration;
 
-import com.gvstave.mistergift.data.Data;
-import com.gvstave.mistergift.data.persistence.repository.EntityRepository;
+import com.gvstave.mistergift.data.domain.jpa.DataDomainJpa;
+import com.gvstave.mistergift.data.persistence.jpa.DataPersistenceJpa;
 import com.querydsl.sql.MySQLTemplates;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
@@ -31,9 +31,9 @@ import java.util.Properties;
  * .
  */
 @Configuration
-@ComponentScan(basePackageClasses = Data.class)
+@ComponentScan(basePackageClasses = { DataPersistenceJpa.class, DataDomainJpa.class })
 @EnableTransactionManagement(proxyTargetClass = true)
-@EnableJpaRepositories(basePackageClasses = EntityRepository.class)
+@EnableJpaRepositories(basePackageClasses = { DataPersistenceJpa.class, DataDomainJpa.class })
 public class DataJpaConfiguration {
 
     @Inject
@@ -82,7 +82,7 @@ public class DataJpaConfiguration {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.gvstave.mistergift.data.domain");
+        factory.setPackagesToScan("com.gvstave.mistergift.data.domain.jpa");
         factory.setDataSource(dataSource());
         factory.setJpaProperties(jpaProps);
         factory.setPersistenceUnitName("mistergift_pu");

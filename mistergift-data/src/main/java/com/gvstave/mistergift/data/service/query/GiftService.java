@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
-import com.gvstave.mistergift.data.domain.Gift;
-import com.gvstave.mistergift.data.persistence.GiftPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.Gift;
+import com.gvstave.mistergift.data.persistence.jpa.service.GiftPersistenceServiceJpa;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ public class GiftService {
 
     /** The gift persistence service. */
     @Inject
-    private GiftPersistenceService giftPersistenceService;
+    private GiftPersistenceServiceJpa giftPersistenceService;
 
 //    /**
 //     * Returns a pageable response of user gift.

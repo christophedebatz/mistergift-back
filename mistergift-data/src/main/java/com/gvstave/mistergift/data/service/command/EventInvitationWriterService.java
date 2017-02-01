@@ -1,9 +1,12 @@
 package com.gvstave.mistergift.data.service.command;
 
-import com.gvstave.mistergift.data.domain.*;
+import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.*;
+import com.gvstave.mistergift.data.persistence.jpa.service.EventInvitationPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,19 +23,19 @@ public class EventInvitationWriterService {
 
     /** The event persistence service. */
     @Inject
-    private EventPersistenceService eventPersistenceService;
+    private EventPersistenceServiceJpa eventPersistenceService;
 
     /** The user persistence service. */
     @Inject
-    private UserPersistenceService userPersistenceService;
+    private UserPersistenceServiceJpa userPersistenceService;
 
     /** The event invitation persistence service. */
     @Inject
-    private EventInvitationPersistenceService eventInvitationPersistenceService;
+    private EventInvitationPersistenceServiceJpa eventInvitationPersistenceService;
 
     /** The user event persistence service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventPersistenceServiceJpa userEventPersistenceService;
 
     /**
      * Invites another user to join an event.
