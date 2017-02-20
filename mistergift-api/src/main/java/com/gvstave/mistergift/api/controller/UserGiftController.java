@@ -5,7 +5,7 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.jpa.QUserGift;
 import com.gvstave.mistergift.data.domain.jpa.UserGift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserGiftPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.UserGiftPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ public class UserGiftController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(UserGiftController.class);
 
-    /** The user gifts persistence service. */
+    /** The user gifts repositories service. */
     @Inject
-    private UserGiftPersistenceServiceJpa userGiftPersistenceService;
+    private UserGiftPersistenceService userGiftPersistenceService;
 
     /** The user service. */
     @Inject

@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.jpa.Event;
-import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -13,9 +13,9 @@ import java.util.Objects;
 @Service
 public class EventService {
 
-    /** The event persistence service. */
+    /** The event repositories service. */
     @Inject
-    private EventPersistenceServiceJpa eventPersistenceService;
+    private EventPersistenceService eventPersistenceService;
 
     /**
      * Returns an event by its id, or null if it does not exist.

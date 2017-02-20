@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.api.auth.handler;
 
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,9 +22,9 @@ import java.util.List;
 @Service
 public class AuthenticationHandler implements AuthenticationManager, AuthenticationProvider {
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
     /**
      * {@inheritDoc}

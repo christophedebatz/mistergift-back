@@ -2,8 +2,8 @@ package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.persistence.jpa.service.TokenPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.TokenPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,13 +22,13 @@ import java.util.Objects;
 @Service
 public class TokenService {
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
-    /** The token persistence service. */
+    /** The token repositories service. */
     @Inject
-    private TokenPersistenceServiceJpa tokenPersistenceService;
+    private TokenPersistenceService tokenPersistenceService;
 
     /** The environment. */
     @Inject

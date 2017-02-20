@@ -1,10 +1,8 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.mongo.Comment;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,8 +14,8 @@ import java.util.Objects;
 public class CommentService {
 
     /** The mongo operations. */
-    @Inject
-    private MongoOperations mongoOperations;
+    //@Inject
+    //private MongoOperations mongoOperations;
 
     /**
      *

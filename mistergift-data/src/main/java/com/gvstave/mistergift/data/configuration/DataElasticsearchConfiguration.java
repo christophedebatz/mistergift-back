@@ -4,8 +4,8 @@ package com.gvstave.mistergift.data.configuration;
  * .
  */
 //@Configuration
-//@EnableElasticsearchRepositories(basePackageClasses = {DataPersistence.class})
-//@ComponentScan(basePackageClasses = {Data.class})
+//@EnableElasticsearchRepositories(basePackageClasses = {DataRepositories.class})
+//@ComponentScan(basePackageClasses = {DataServices.class})
 //public class DataElasticsearchConfiguration {
 //
 //    @Bean

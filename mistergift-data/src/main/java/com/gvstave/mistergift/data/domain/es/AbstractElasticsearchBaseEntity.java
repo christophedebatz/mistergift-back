@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.domain.es;
 
-import com.gvstave.mistergift.data.domain.jpa.BaseEntity;
+import com.gvstave.mistergift.data.domain.BaseEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.repository.NoRepositoryBean;
 

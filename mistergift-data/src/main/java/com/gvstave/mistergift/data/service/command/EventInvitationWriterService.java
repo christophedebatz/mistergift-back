@@ -3,10 +3,10 @@ package com.gvstave.mistergift.data.service.command;
 import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.jpa.service.EventInvitationPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.EventInvitationPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserEventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,21 +21,21 @@ import java.util.Optional;
 @Service
 public class EventInvitationWriterService {
 
-    /** The event persistence service. */
+    /** The event repositories service. */
     @Inject
-    private EventPersistenceServiceJpa eventPersistenceService;
+    private EventPersistenceService eventPersistenceService;
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
-    /** The event invitation persistence service. */
+    /** The event invitation repositories service. */
     @Inject
-    private EventInvitationPersistenceServiceJpa eventInvitationPersistenceService;
+    private EventInvitationPersistenceService eventInvitationPersistenceService;
 
-    /** The user event persistence service. */
+    /** The user event repositories service. */
     @Inject
-    private UserEventPersistenceServiceJpa userEventPersistenceService;
+    private UserEventPersistenceService userEventPersistenceService;
 
     /**
      * Invites another user to join an event.

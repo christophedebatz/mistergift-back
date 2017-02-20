@@ -11,7 +11,7 @@ import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
@@ -33,9 +33,9 @@ public class UserController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
     /** The user service. */
     @Inject

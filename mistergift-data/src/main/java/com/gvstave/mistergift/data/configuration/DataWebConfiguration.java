@@ -1,11 +1,9 @@
 package com.gvstave.mistergift.data.configuration;
 
-import com.gvstave.mistergift.data.Data;
+import com.gvstave.mistergift.data.repositories.es.EsRepositories;
+import com.gvstave.mistergift.data.service.DataServices;
 import com.gvstave.mistergift.service.Services;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +16,8 @@ import javax.inject.Inject;
  * .
  */
 @Configuration
-@ComponentScan(basePackageClasses = { Data.class, Services.class })
+@ComponentScan(basePackageClasses = { Services.class, DataServices.class, EsRepositories.class})
+@Import({ DataRedisConfiguration.class, DataJpaConfiguration.class, DataMongoConfiguration.class })
 @PropertySource("classpath:/WEB-INF/${server.role}.properties")
 public class DataWebConfiguration {
 

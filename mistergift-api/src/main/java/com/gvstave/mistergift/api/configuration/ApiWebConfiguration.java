@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.api.configuration;
 
 import com.gvstave.mistergift.api.Api;
+import com.gvstave.mistergift.data.configuration.DataWebConfiguration;
 import com.gvstave.mistergift.provider.Providers;
 import com.gvstave.mistergift.service.Services;
 import org.springframework.context.ApplicationContextInitializer;
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackageClasses = { Api.class, ApiConfiguration.class, Providers.class, Services.class})
+@ComponentScan(basePackageClasses = { Api.class, ApiConfiguration.class, Providers.class, Services.class, DataWebConfiguration.class })
 public class ApiWebConfiguration {
 
     @Bean

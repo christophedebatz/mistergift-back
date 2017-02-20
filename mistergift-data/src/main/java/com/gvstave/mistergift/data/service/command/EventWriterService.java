@@ -6,8 +6,8 @@ import com.gvstave.mistergift.data.domain.jpa.UserEvent;
 import com.gvstave.mistergift.data.domain.jpa.UserEventId;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserEventPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserEventService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +23,13 @@ import java.util.Optional;
 @Service
 public class EventWriterService {
 
-    /** The user event persistence service. */
+    /** The user event repositories service. */
     @Inject
-    private UserEventPersistenceServiceJpa userEventPersistenceService;
+    private UserEventPersistenceService userEventPersistenceService;
 
-    /** The event persistence service. */
+    /** The event repositories service. */
     @Inject
-    private EventPersistenceServiceJpa eventPersistenceService;
+    private EventPersistenceService eventPersistenceService;
 
     /** The user event service. */
     @Inject

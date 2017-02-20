@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.configuration;
 
-import com.gvstave.mistergift.data.cache.redis.RedisCacheService;
+import com.gvstave.mistergift.data.service.cache.redis.RedisCacheService;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.resource.ClientResources;
 import com.lambdaworks.redis.resource.DefaultClientResources;

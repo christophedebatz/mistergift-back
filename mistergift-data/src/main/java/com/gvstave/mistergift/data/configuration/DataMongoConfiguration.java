@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.configuration;
 
 import com.gvstave.mistergift.data.domain.mongo.DataDomainMongo;
-import com.gvstave.mistergift.data.persistence.mongo.DataPersistenceMongo;
+import com.gvstave.mistergift.data.repositories.other.CommentRepository;
 import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,8 +16,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * Configuration for mongodb.
  */
 @Configuration
-@ComponentScan(basePackageClasses = { DataPersistenceMongo.class, DataDomainMongo.class })
-@EnableMongoRepositories(basePackageClasses = { DataPersistenceMongo.class, DataDomainMongo.class })
+@ComponentScan(basePackageClasses = { CommentRepository.class, DataDomainMongo.class })
+@EnableMongoRepositories(basePackageClasses = CommentRepository.class)
 public class DataMongoConfiguration {
 
     @Bean

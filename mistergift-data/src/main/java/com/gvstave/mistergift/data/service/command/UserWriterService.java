@@ -5,9 +5,9 @@ import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.data.persistence.jpa.service.FileMetadataPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.TokenPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.FileMetadataPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.TokenPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import com.gvstave.mistergift.service.CroppingService;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,17 +28,17 @@ import java.util.stream.Collectors;
 @Service
 public class UserWriterService {
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
-    /** The token persistence service. */
+    /** The token repositories service. */
     @Inject
-    private TokenPersistenceServiceJpa tokenPersistenceService;
+    private TokenPersistenceService tokenPersistenceService;
 
-    /** The file metadata persistence service. */
+    /** The file metadata repositories service. */
     @Inject
-    private FileMetadataPersistenceServiceJpa fileMetadataPersistenceService;
+    private FileMetadataPersistenceService fileMetadataPersistenceService;
 
     /** The cropping service. */
     @Inject

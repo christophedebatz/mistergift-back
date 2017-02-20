@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.data.domain.mongo;
 
-import com.gvstave.mistergift.data.domain.jpa.BaseEntity;
+import com.gvstave.mistergift.data.domain.BaseEntity;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,11 +12,11 @@ import java.util.Date;
  * A comment.
  */
 @Document(collection = "gifts.comments")
-public class Comment implements BaseEntity<String> {
+public class Comment implements BaseEntity<ObjectId> {
 
     /** The comment id. */
     @Id
-    private String id;
+    private ObjectId id;
 
     /** The comment parent id. */
     private String parentId;
@@ -32,12 +33,9 @@ public class Comment implements BaseEntity<String> {
     /** The comment modification date. */
     private Date modificationDate;
 
-    /**
-     * Getter for property 'id'.
-     *
-     * @return Value for property 'id'.
-     */
-    public String getId () {
+    /** {@inheritDoc} */
+    @Override
+    public ObjectId getId () {
         return id;
     }
 
@@ -46,7 +44,7 @@ public class Comment implements BaseEntity<String> {
      *
      * @param id Value to set for property 'id'.
      */
-    public void setId (String id) {
+    public void setId (ObjectId id) {
         this.id = id;
     }
 

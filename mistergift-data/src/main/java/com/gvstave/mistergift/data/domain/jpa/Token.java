@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.data.domain.jpa;
 
+import com.gvstave.mistergift.data.domain.BaseEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

@@ -8,10 +8,10 @@ import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.domain.jpa.UserEvent;
 import com.gvstave.mistergift.data.domain.jpa.UserGift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserGiftPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserEventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserGiftPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserEventService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.slf4j.Logger;
@@ -34,25 +34,25 @@ public class UserEventController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(UserEventController.class);
 
-    /** The event persistence service. */
+    /** The event repositories service. */
     @Inject
-    private EventPersistenceServiceJpa eventPersistenceService;
+    private EventPersistenceService eventPersistenceService;
 
-    /** The user events persistence service. */
+    /** The user events repositories service. */
     @Inject
-    private UserEventPersistenceServiceJpa userEventPersistenceService;
+    private UserEventPersistenceService userEventPersistenceService;
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
     /** The user event service. */
     @Inject
     private UserEventService userEventService;
 
-    /** The whishlist persistence service. */
+    /** The whishlist repositories service. */
     @Inject
-    private UserGiftPersistenceServiceJpa userGiftPersistenceService;
+    private UserGiftPersistenceService userGiftPersistenceService;
 
     /**
      * Default constructor.

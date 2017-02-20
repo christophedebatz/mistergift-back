@@ -4,7 +4,7 @@ import com.gvstave.mistergift.api.auth.handler.AuthenticationErrorHandler;
 import com.gvstave.mistergift.api.auth.handler.AuthenticationSuccessHandler;
 import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import org.joda.time.DateTime;
@@ -37,7 +37,7 @@ import java.util.Date;
 @Service
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
     private UserService userService;
 
@@ -45,9 +45,9 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
     @Inject
     private UserWriterService userWriterService;
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
     /** The env. */
     @Inject

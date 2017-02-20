@@ -3,7 +3,7 @@ package com.gvstave.mistergift.api.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gvstave.mistergift.api.response.ErrorResponse;
 import com.gvstave.mistergift.api.response.Response;
-import com.gvstave.mistergift.data.access.UserAccessService;
+import com.gvstave.mistergift.data.service.access.UserAccessService;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;

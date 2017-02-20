@@ -3,7 +3,7 @@ package com.gvstave.mistergift.data.service.query;
 import com.gvstave.mistergift.data.domain.es.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.persistence.es.service.ProductPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.ProductPersistenceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @Service
 public class ProductService {
 
-    /** The gift persistence service. */
+    /** The gift repositories service. */
     @Inject
     private ProductPersistenceService productPersistenceService;
 

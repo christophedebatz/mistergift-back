@@ -3,7 +3,7 @@ package com.gvstave.mistergift.api.controller;
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.persistence.jpa.service.GiftPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.GiftPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -22,9 +22,9 @@ public class GiftController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(GiftController.class);
 
-    /** The gift persistence service. */
+    /** The gift repositories service. */
     @Inject
-    private GiftPersistenceServiceJpa giftPersistenceService;
+    private GiftPersistenceService giftPersistenceService;
 
     /**
      * Default constructor.

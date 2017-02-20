@@ -1,5 +1,7 @@
 package com.gvstave.mistergift.data.domain.jpa;
 
+import com.gvstave.mistergift.data.domain.BaseEntity;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;

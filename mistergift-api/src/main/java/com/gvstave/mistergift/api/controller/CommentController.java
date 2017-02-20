@@ -8,8 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-
 /**
  * API endpoint for {@link Comment}.
  */

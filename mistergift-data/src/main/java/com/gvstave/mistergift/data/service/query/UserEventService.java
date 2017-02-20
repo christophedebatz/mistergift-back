@@ -5,9 +5,9 @@ import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.domain.jpa.UserEvent;
 import com.gvstave.mistergift.data.domain.jpa.UserEventId;
-import com.gvstave.mistergift.data.persistence.jpa.service.EventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserEventPersistenceServiceJpa;
-import com.gvstave.mistergift.data.persistence.jpa.service.UserPersistenceServiceJpa;
+import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserEventPersistenceService;
+import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
 import com.gvstave.mistergift.data.utils.Streams;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -29,17 +29,17 @@ import java.util.stream.Collectors;
 @Service
 public class UserEventService {
 
-    /** The user event persistence service. */
+    /** The user event repositories service. */
     @Inject
-    private UserEventPersistenceServiceJpa userEventPersistenceService;
+    private UserEventPersistenceService userEventPersistenceService;
 
-    /** The user persistence service. */
+    /** The user repositories service. */
     @Inject
-    private UserPersistenceServiceJpa userPersistenceService;
+    private UserPersistenceService userPersistenceService;
 
-    /** The event persistence service. */
+    /** The event repositories service. */
     @Inject
-    private EventPersistenceServiceJpa eventPersistenceService;
+    private EventPersistenceService eventPersistenceService;
 
     /**
      * Returns the event according to their {@link Event.EventStatus}.
