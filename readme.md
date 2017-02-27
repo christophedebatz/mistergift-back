@@ -95,7 +95,16 @@ Endpoints
 
 #### Retrieve current-user events
 
-> **GET** /me/events[?page=**{ page-no }**]
+Returns the logged-in user events. You must specify which types of events you want, each type must be separated by a coma.
+
+- **invitation**: returns all the invitations that owns the user
+- **admin**: returns all the events which the user is an administrator
+- **can-see-mine**: returns all the "can see mine" events (the user participates to the event and all participants can see its gifts)
+- **can-see-others**: returns all the "can see other" events (the user participates to the event and can see the gifts of other participants)
+
+For instance:
+
+> **GET** /me/events?filters=invitation,admin[&page=**{ page-no }**]
 
 #### Retrieve event participant(s)
 
