@@ -5,7 +5,7 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.jpa.QUserGift;
 import com.gvstave.mistergift.data.domain.jpa.UserGift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.repositories.other.UserGiftPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserGiftPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

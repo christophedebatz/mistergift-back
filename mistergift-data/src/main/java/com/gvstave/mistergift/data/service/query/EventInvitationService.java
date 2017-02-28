@@ -3,7 +3,7 @@ package com.gvstave.mistergift.data.service.query;
 import com.gvstave.mistergift.data.domain.jpa.EventInvitation;
 import com.gvstave.mistergift.data.domain.jpa.QEventInvitation;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.repositories.other.EventInvitationPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.EventInvitationPersistenceService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

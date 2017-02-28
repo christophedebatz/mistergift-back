@@ -3,7 +3,7 @@ package com.gvstave.mistergift.data.service.query.password;
 
 import com.gvstave.mistergift.data.service.cache.CacheService;
 import com.gvstave.mistergift.data.domain.jpa.Token;
-import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.TokenService;
 import com.gvstave.mistergift.data.utils.DesCipherService;
 import com.gvstave.mistergift.service.mailing.UserPasswordEmailService;

@@ -5,7 +5,7 @@ import com.gvstave.mistergift.data.domain.jpa.QLandingUser;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.repositories.other.LandingUserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.LandingUserPersistenceService;
 import com.gvstave.mistergift.service.geoip.GeolocationService;
 import com.gvstave.mistergift.service.mailing.LandingUserEmailingService;
 import com.gvstave.mistergift.service.mailing.exception.MailException;

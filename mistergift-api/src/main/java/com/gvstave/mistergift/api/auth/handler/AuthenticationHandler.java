@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.api.auth.handler;
 
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

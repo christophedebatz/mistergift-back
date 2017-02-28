@@ -2,8 +2,8 @@ package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.repositories.other.TokenPersistenceService;
-import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.TokenPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -84,22 +84,8 @@ public class TokenService {
      * @return The user.
      */
     @Transactional(readOnly = true)
-    public UserDetails getUserFromToken(Token token) {
-        User user = token.getUser();
-
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
-                    user.getPassword(),
-                    Collections.unmodifiableList(
-                            Collections.singletonList(
-                                    new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
-                            )
-                    )
-            );
-        }
-
-        return null;
+    public User getUserFromToken(Token token) {
+        return token.getUser();
     }
 
     /**

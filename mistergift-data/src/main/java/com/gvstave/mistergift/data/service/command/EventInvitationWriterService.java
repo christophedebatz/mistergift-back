@@ -3,10 +3,10 @@ package com.gvstave.mistergift.data.service.command;
 import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.repositories.other.EventInvitationPersistenceService;
-import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
-import com.gvstave.mistergift.data.repositories.other.UserEventPersistenceService;
-import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.EventInvitationPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserEventPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

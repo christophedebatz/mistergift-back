@@ -14,10 +14,6 @@ import java.util.Map;
 @Service
 public class LandingUserEmailingService extends AbstractEmailingService {
 
-    /** The message source. */
-    @Inject
-    private Translator translator;
-
     /**
      * {@inheritDoc}
      */

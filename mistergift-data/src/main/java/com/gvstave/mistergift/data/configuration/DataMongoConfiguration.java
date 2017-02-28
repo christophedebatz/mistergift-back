@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.configuration;
 
 import com.gvstave.mistergift.data.domain.mongo.DataDomainMongo;
-import com.gvstave.mistergift.data.repositories.other.CommentRepository;
+import com.gvstave.mistergift.data.domain.mongo.CommentRepository;
 import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

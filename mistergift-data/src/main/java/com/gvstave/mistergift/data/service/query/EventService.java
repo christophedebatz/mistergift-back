@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.jpa.Event;
-import com.gvstave.mistergift.data.repositories.other.EventPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

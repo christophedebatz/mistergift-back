@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.jpa.Gift;
-import com.gvstave.mistergift.data.repositories.other.GiftPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.GiftPersistenceService;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

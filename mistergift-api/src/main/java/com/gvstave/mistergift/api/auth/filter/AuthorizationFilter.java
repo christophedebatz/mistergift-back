@@ -3,11 +3,13 @@ package com.gvstave.mistergift.api.auth.filter;
 import com.gvstave.mistergift.api.auth.exception.InvalidTokenException;
 import com.gvstave.mistergift.api.auth.exception.MissingTokenException;
 import com.gvstave.mistergift.data.domain.jpa.Token;
-import com.gvstave.mistergift.data.repositories.other.TokenPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.TokenPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.service.query.TokenService;
 import org.joda.time.DateTime;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -22,6 +24,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -41,6 +44,9 @@ public class AuthorizationFilter extends GenericFilterBean {
     /** The env. */
     @Inject
     private Environment environment;
+
+    /** The request-scoped authenticated user. */
+    private ThreadLocal<User> authenticatedUser;
 
     /** The unauthorized entry point. */
     private UnauthorizedEntryPoint entryPoint;
@@ -84,11 +90,12 @@ public class AuthorizationFilter extends GenericFilterBean {
             // ensure that this token is well-recognized
             Token token = tokenService.getToken(stringToken);
             if (token != null && token.isValid()) {
-                UserDetails user = tokenService.getUserFromToken(token);
+                User user = tokenService.getUserFromToken(token);
+                UserDetails userDetails = getUserDetails(user);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(),
-                    user.getPassword(),
-                    user.getAuthorities()
+                    userDetails.getUsername(),
+                    userDetails.getPassword(),
+                    userDetails.getAuthorities()
                 );
 
                 // refresh token expiration date
@@ -100,6 +107,8 @@ public class AuthorizationFilter extends GenericFilterBean {
                 authenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                authenticatedUser.set(user);
 
                 // continue the filters chain
                 chain.doFilter(request, response);
@@ -120,5 +129,25 @@ public class AuthorizationFilter extends GenericFilterBean {
             );
         }
 
+    }
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    private UserDetails getUserDetails(User user) {
+        if (user != null) {
+            return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.unmodifiableList(
+                        Collections.singletonList(
+                                new SimpleGrantedAuthority(user.getRole().getName().toUpperCase())
+                        )
+                )
+            );
+        }
+        return null;
     }
 }

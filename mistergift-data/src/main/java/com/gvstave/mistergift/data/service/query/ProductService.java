@@ -3,7 +3,7 @@ package com.gvstave.mistergift.data.service.query;
 import com.gvstave.mistergift.data.domain.es.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.repositories.other.ProductPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.ProductPersistenceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

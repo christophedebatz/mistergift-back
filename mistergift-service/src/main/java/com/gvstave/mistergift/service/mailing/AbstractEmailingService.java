@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.service.mailing;
 
+import com.gvstave.mistergift.service.i18n.Translator;
 import com.gvstave.mistergift.service.mailing.exception.MailException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -23,55 +24,69 @@ import java.util.Optional;
 @Service
 abstract class AbstractEmailingService implements Mailable {
 
-    /** The emailing factory. */
+    /**
+     * The emailing factory.
+     */
     @Inject
     private DefaultEmailingFactory defaultEmailingFactory;
 
-    /** The env. */
+    /**
+     * The env.
+     */
     @Inject
     private Environment environment;
 
-    /** The list of recepients. */
+    /**
+     * The message source.
+     */
+    @Inject
+    protected Translator translator;
+
+    /**
+     * The list of recepients.
+     */
     private String[] recipients;
 
-    /** The expeditor. */
+    /**
+     * The expeditor.
+     */
     private String expeditor;
 
     /**
      * Send an email to the given recipient.
      *
      * @param recipient The recipient email.
-     * @param model The model.
+     * @param model     The model.
      */
     public void send(String recipient, Map<String, Object> model) throws MailException {
         Objects.requireNonNull(recipient);
         Locale locale = Optional.ofNullable(LocaleContextHolder.getLocale()).orElse(Locale.ENGLISH);
-        send(environment.getProperty("mail.from"), new String[] { recipient }, model, locale);
+        send(environment.getProperty("mail.from"), new String[]{recipient}, model, locale);
     }
 
     /**
      * Send an email to the given recipient and with given locale.
      *
      * @param recipient The recipient email.
-     * @param model  The model.
-     * @param locale The locale.
+     * @param model     The model.
+     * @param locale    The locale.
      */
     public void send(String recipient, Map<String, Object> model, Locale locale) throws MailException {
         Objects.requireNonNull(recipient);
         Objects.requireNonNull(locale);
-        send(environment.getProperty("mail.from"), new String[] { recipient }, model, locale);
+        send(environment.getProperty("mail.from"), new String[]{recipient}, model, locale);
     }
 
     /**
      * Sends the mail.
      *
-     * @param expeditor The expeditor.
+     * @param expeditor  The expeditor.
      * @param recipients The recipients.
-     * @param data The data.
-     * @param locale The locale.
+     * @param data       The data.
+     * @param locale     The locale.
      */
     public void send(String expeditor, String[] recipients, Map<String, Object> data, Locale locale)
-        throws MailException {
+            throws MailException {
         Objects.requireNonNull(expeditor);
         Objects.requireNonNull(recipients);
         Objects.requireNonNull(locale);
@@ -143,7 +158,7 @@ abstract class AbstractEmailingService implements Mailable {
      *
      * @return The default emailing factory.
      */
-    protected DefaultEmailingFactory getDefaultEmailingFactory() {
+    private DefaultEmailingFactory getDefaultEmailingFactory() {
         return defaultEmailingFactory;
     }
 
@@ -151,7 +166,7 @@ abstract class AbstractEmailingService implements Mailable {
      * Prepares the message before sending it.
      *
      * @param message The message.
-     * @param data The data.
+     * @param data    The data.
      */
     protected abstract void prepare(Template template, MimeMessageHelper message, final Map<String, Object> data) throws Exception;
 

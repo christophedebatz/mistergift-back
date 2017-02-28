@@ -81,7 +81,7 @@ public class ApiApplicationInitializer implements WebApplicationInitializer {
         CorsFilter corsFilter = new CorsFilter(request -> {
             CorsConfiguration corsConfiguration = new CorsConfiguration();
             corsConfiguration
-                .setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "X-Requested-With", "Authorization"));
+                .setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "X-Requested-With", "X-MG-AUTH"));
             corsConfiguration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
             corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
             corsConfiguration.setAllowCredentials(true);

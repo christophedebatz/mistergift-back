@@ -1,7 +1,7 @@
 package com.gvstave.mistergift.data.configuration;
 
 import com.gvstave.mistergift.data.domain.jpa.DataDomainJpa;
-import com.gvstave.mistergift.data.repositories.other.EntityService;
+import com.gvstave.mistergift.data.domain.jpa.EntityService;
 import com.querydsl.sql.MySQLTemplates;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;

@@ -4,7 +4,7 @@ import com.gvstave.mistergift.api.auth.handler.AuthenticationErrorHandler;
 import com.gvstave.mistergift.api.auth.handler.AuthenticationSuccessHandler;
 import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.repositories.other.UserPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import org.joda.time.DateTime;

@@ -26,7 +26,12 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
         /**
          * A user.
          */
-        ROLE_USER("ROLE_USER");
+        ROLE_USER("ROLE_USER"),
+
+        /**
+         * An external invited user.
+         */
+        ROLE_EXTERNAL("ROLE_EXTERNAL");
 
         /** The name. */
         private final String name;
