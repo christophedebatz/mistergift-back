@@ -1,14 +1,9 @@
 package com.gvstave.mistergift.data.service.command;
 
-import com.gvstave.mistergift.data.domain.AuthenticatedUser;
-import com.gvstave.mistergift.data.domain.jpa.Event;
-import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.domain.jpa.UserEvent;
-import com.gvstave.mistergift.data.domain.jpa.UserEventId;
+import com.gvstave.mistergift.data.domain.jpa.*;
+import com.gvstave.mistergift.data.service.AuthenticatedUser;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.UserEventPersistenceService;
 import com.gvstave.mistergift.data.service.dto.ExternalUserDto;
 import com.gvstave.mistergift.data.service.query.UserEventService;
 import com.gvstave.mistergift.service.mailing.ExternalUserEmailingService;
@@ -160,34 +155,44 @@ public class EventWriterService {
         Objects.requireNonNull(id);
         Objects.requireNonNull(externalUsers);
 
+        Event event = eventPersistenceService.findOne(id);
         List<ExternalUserDto> results = new ArrayList<>();
 
+        String from = env.getProperty("mail.from");
+        Locale locale = authenticatedUser.getUser().getLocale();
+
         // import external users data
-        externalUsers.forEach(user -> {
-            boolean emailValid = EmailValidator.getInstance().isValid(user.getEmail());
+        externalUsers.forEach(externalUser -> {
+            boolean emailValid = EmailValidator.getInstance().isValid(externalUser.getEmail());
             if (emailValid) {
-                Locale locale = authenticatedUser.getUser().getLocale();
-                String[] recipients = {user.getEmail()};
-                String from = env.getProperty("mail.from");
+                String[] recipients = {externalUser.getEmail()};
 
                 User external = new User();
-                external.setEmail(user.getEmail());
+                external.setEmail(external.getEmail());
                 external.setLocale(locale);
-                external.setName(user.getName());
+                external.setName(external.getName());
                 external.setRole(User.Role.ROLE_EXTERNAL);
                 external.setCreationDate(new Date());
                 external.setModificationDate(new Date());
 
                 Map<String, Object> model = new HashMap<>();
-                model.put("sender-name", user.getSender().getName());
-                model.put("name", user.getName());
-                model.put("email", user.getEmail());
+                model.put("senderUser", authenticatedUser.getUser());
+                model.put("externalUser", external);
+                model.put("event", event);
+
+                EventInvitation invitation = new EventInvitation();
+
+                /**
+                 * todo:
+                 * - type of user event
+                 * - create invitation
+                 */
 
                 try {
                     externalUserEmailingService.send(from, recipients, model, locale);
-                    results.add(user);
+                    results.add(externalUser);
                 } catch (MailException e) {
-                    LOGGER.error("An error occurred when sending invitation email to {}, error = {}", user.getEmail(), e.getMessage());
+                    LOGGER.error("An error occurred when sending invitation email to {}, error = {}", external.getEmail(), e.getMessage());
                 }
             }
         });

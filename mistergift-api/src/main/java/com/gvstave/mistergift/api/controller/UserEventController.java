@@ -72,47 +72,58 @@ public class UserEventController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, path = "/me/events")
     public PageResponse<Map.Entry<String, List<Event>>> getUserEvents(
         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-        @RequestParam(value = "filters") String filters) {
+        @RequestParam(value = "filters", required = false) String filters) {
         LOGGER.debug("Retrieving current-user events for page={} and filter={}", page, filters);
-        User user = getUser();
         PageRequest pageable = getPageRequest(page);
 
         List<Map.Entry<String, List<Event>>> events = new ArrayList<>();
-        List<String> eventStatus = Arrays.asList(filters.replaceAll("\\s+","").split(","));
+        List<String> eventStatus;
+
+        if (filters != null) {
+            eventStatus = Arrays.asList(filters.replaceAll("\\s+","").split(","));
+        } else {
+            eventStatus = Arrays.asList(
+                UserEvent.UserEvenFilter.INVITATION.getFilter(),
+                UserEvent.UserEvenFilter.ADMIN.getFilter(),
+                Event.EventStatus.CANCELLED.getStatus(),
+                Event.EventStatus.UNPUBLISHED.getStatus(),
+                Event.EventStatus.PUBLISHED.getStatus()
+            );
+        }
 
         // user-event relation types
         // pending event / invitation from other participants
         String pendingFlag = UserEvent.UserEvenFilter.INVITATION.getFilter();
         if (eventStatus.contains(pendingFlag)) {
-            List<Event> inviteEvents = userEventService.getUserInvitationEvents(user, pageable);
+            List<Event> inviteEvents = userEventService.getUserInvitationEvents(getUser(), pageable);
             events.add(new AbstractMap.SimpleEntry<>(pendingFlag, inviteEvents));
         }
 
         // event where i'm admin
         String adminFlag = UserEvent.UserEvenFilter.ADMIN.getFilter();
         if (eventStatus.contains(adminFlag)) {
-            events.add(new AbstractMap.SimpleEntry<>(adminFlag, userEventService.getUserAdminEvents(user, pageable)));
+            events.add(new AbstractMap.SimpleEntry<>(adminFlag, userEventService.getUserAdminEvents(getUser(), pageable)));
         }
 
         // event status type
         // cancelled events
         String cancelledFlag = Event.EventStatus.CANCELLED.getStatus();
         if (eventStatus.contains(cancelledFlag)) {
-            List<Event> cancelled = userEventService.getUserEventsByStatus(user, Event.EventStatus.CANCELLED, pageable);
+            List<Event> cancelled = userEventService.getUserEventsByStatus(getUser(), Event.EventStatus.CANCELLED, pageable);
             events.add(new AbstractMap.SimpleEntry<>(cancelledFlag, cancelled));
         }
 
         // my unpublished events
         String unpublishedFlag = Event.EventStatus.UNPUBLISHED.getStatus();
         if (eventStatus.contains(unpublishedFlag)) {
-            List<Event> unpublished = userEventService.getUserEventsByStatus(user, Event.EventStatus.UNPUBLISHED, pageable);
+            List<Event> unpublished = userEventService.getUserEventsByStatus(getUser(), Event.EventStatus.UNPUBLISHED, pageable);
             events.add(new AbstractMap.SimpleEntry<>(unpublishedFlag, unpublished));
         }
 
         // the published events
         String publishedFlag = Event.EventStatus.PUBLISHED.getStatus();
         if (eventStatus.contains(publishedFlag)) {
-            List<Event> published = userEventService.getUserEventsByStatus(user, Event.EventStatus.PUBLISHED, pageable);
+            List<Event> published = userEventService.getUserEventsByStatus(getUser(), Event.EventStatus.PUBLISHED, pageable);
             events.add(new AbstractMap.SimpleEntry<>(publishedFlag, published));
         }
 

@@ -95,16 +95,19 @@ Endpoints
 
 #### Retrieve current-user events
 
-Returns the logged-in user events. You must specify which types of events you want, each type must be separated by a coma.
+Returns the logged-in user events. You can specify which types of events you want, each type must be separated by a coma.
+If no filter is given, you will get all user events, grouped by type.
 
-- **invitation**: returns all the invitations that owns the user
+- **invitation**: returns all the event user invitations
 - **admin**: returns all the events which the user is an administrator
-- **can-see-mine**: returns all the "can see mine" events (the user participates to the event and all participants can see its gifts)
-- **can-see-others**: returns all the "can see other" events (the user participates to the event and can see the gifts of other participants)
+- **removed**: returns all the user removed events 
+- **cancelled**: returns all the user cancelled events
+- **published**: returns all the user published events
+- **unpublished**: returns all the user unpublished events
 
 For instance:
 
-> **GET** /me/events?filters=invitation,admin[&page=**{ page-no }**]
+> **GET** /me/events?filters=invitation,admin,published[&page=**{ page-no }**]
 
 #### Retrieve event participant(s)
 

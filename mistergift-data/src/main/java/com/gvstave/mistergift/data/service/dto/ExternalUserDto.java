@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.data.service.dto;
 
+import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.domain.jpa.User;
 
 import java.io.Serializable;
@@ -12,6 +13,8 @@ public class ExternalUserDto implements Serializable {
     private String email;
 
     private String name;
+
+    private Event event;
 
     private Date invitationDate;
 

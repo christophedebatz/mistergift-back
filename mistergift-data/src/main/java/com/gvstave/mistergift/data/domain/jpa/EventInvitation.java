@@ -3,6 +3,7 @@ package com.gvstave.mistergift.data.domain.jpa;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 /**
  * .
@@ -49,6 +50,10 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
 
     }
 
+    /** The identifier of the invitation. */
+    @Column(unique = true, nullable = false)
+    private String key;
+
     /** The user who sends the event invitation. */
     @OneToOne
     private User senderUser;
@@ -65,6 +70,7 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
     @Column(name = "is_admin")
     private boolean admin;
 
+    /** The type of invitation. */
     @Column
     @Enumerated(EnumType.ORDINAL)
     private EventInvitationType type;
@@ -73,7 +79,25 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
      * Constructor.
      */
     public EventInvitation () {
-        // this is for Hibernate
+        this.key = UUID.fromString(getId().toString()).toString().replace("-", "");
+    }
+
+    /**
+     * Returns the event invitation key.
+     *
+     * @return The invitation key.
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Sets the event invitation key.
+     *
+     * @param key The invitation key.
+     */
+    public void setKey(String key) {
+        this.key = key;
     }
 
     /**

@@ -2,9 +2,11 @@ package com.gvstave.mistergift.service.mailing;
 
 import org.apache.velocity.Template;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Service
 public class ExternalUserEmailingService extends AbstractEmailingService {
 
     /**

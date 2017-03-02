@@ -2,6 +2,7 @@ package com.gvstave.mistergift.api.auth.filter;
 
 import com.gvstave.mistergift.api.auth.exception.InvalidTokenException;
 import com.gvstave.mistergift.api.auth.exception.MissingTokenException;
+import com.gvstave.mistergift.data.service.AuthenticatedUser;
 import com.gvstave.mistergift.data.domain.jpa.Token;
 import com.gvstave.mistergift.data.domain.jpa.TokenPersistenceService;
 import com.gvstave.mistergift.data.domain.jpa.User;
@@ -108,7 +109,7 @@ public class AuthorizationFilter extends GenericFilterBean {
                         new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                authenticatedUser.set(user);
+                AuthenticatedUser.setUserId(user.getId());
 
                 // continue the filters chain
                 chain.doFilter(request, response);

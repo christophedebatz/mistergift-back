@@ -1,0 +1,21 @@
+<html>
+    <body>
+    <h3>Hi,</h3>
+        <p style="text-align: justify;">
+            We hope you're fine ;-)<br />
+            A friend of you ( ${senderUser.name} ) just invite you to join his event ${event.name}!
+            MisterGift is a platform that allow people creating event and sharing whislist with friends!
+        </p>
+
+        <p>
+            Follow <a href="https://mistergift.io/#signup?key=${invitation.key}"this link to free subscribe now!
+        </p>
+
+        <p style="text-align: justify;">
+            You can also visit our Facebook page by clicking <a
+                href="https://www.facebook.com/mistergift.io">here</a>!
+        </p>
+
+        <p style="text-align: right;">The MG team.</p>
+    </body>
+</html>

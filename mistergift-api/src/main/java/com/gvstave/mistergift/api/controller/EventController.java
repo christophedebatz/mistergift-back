@@ -26,21 +26,15 @@ public class EventController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(EventController.class);
 
-    /**
-     * The event repositories service.
-     */
+    /** The event repositories service. */
     @Inject
     private EventPersistenceService eventPersistenceService;
 
-    /**
-     * The event writer service.
-     */
+    /** The event writer service. */
     @Inject
     private EventWriterService eventWriterService;
 
-    /**
-     * The user writer service.
-     */
+    /** The user writer service. */
     @Inject
     private UserWriterService userWriterService;
 
