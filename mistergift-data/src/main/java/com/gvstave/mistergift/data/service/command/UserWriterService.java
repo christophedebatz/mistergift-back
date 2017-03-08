@@ -1,13 +1,10 @@
 package com.gvstave.mistergift.data.service.command;
 
-import com.gvstave.mistergift.data.domain.jpa.FileMetadata;
-import com.gvstave.mistergift.data.domain.jpa.Token;
-import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.domain.jpa.*;
+import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
-import com.gvstave.mistergift.data.domain.jpa.FileMetadataPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.TokenPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
+import com.gvstave.mistergift.data.service.dto.UserDto;
 import com.gvstave.mistergift.service.CroppingService;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,21 +66,45 @@ public class UserWriterService {
     /**
      * Saves a new user in database.
      *
-     * @param user The new user.
+     * @param userDto The new user.
      * @return The created user id.
      */
-    public User saveOrUpdate(User user) {
+    @Transactional
+    public User createUser(UserDto userDto) {
+        Optional<User> existentUser = Optional.ofNullable(
+            userPersistenceService.findOne(QUser.user.email.eq(userDto.getEmail()))
+        );
+
+        if (existentUser.isPresent()) {
+            throw new DuplicatedEntityException("user", "email");
+        }
+
+        return saveOrUpdate(userDto);
+    }
+
+    /**
+     *
+     * @param userDto
+     * @return
+     */
+    @Transactional
+    public User saveOrUpdate(UserDto userDto) {
         // encode password and set role
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User();
         user.setRole(User.Role.ROLE_USER);
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         return userPersistenceService.save(user);
     }
 
     /**
      *
-     * @param user
-     * @param file
-     * @param coords
+     * @param user The user
+     * @param file The file to upload.
+     * @param coords The coords for cropping.
      * @throws InvalidFieldValueException
      */
     @Transactional

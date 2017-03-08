@@ -42,10 +42,6 @@ public class UserEventController extends AbstractController {
     @Inject
     private UserEventPersistenceService userEventPersistenceService;
 
-    /** The user repositories service. */
-    @Inject
-    private UserPersistenceService userPersistenceService;
-
     /** The user event service. */
     @Inject
     private UserEventService userEventService;

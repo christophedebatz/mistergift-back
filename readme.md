@@ -301,6 +301,12 @@ Request:
 
 > **POST** /users
 
+You must provide an object with:
+* The user first name ("firstName" node)
+* The user last name  ("lastName" node)
+* The user email ("email" node)
+* The user raw password ("password" node)
+
 #### Update the logged-in user
 
 You must be the user that you attempt to update.

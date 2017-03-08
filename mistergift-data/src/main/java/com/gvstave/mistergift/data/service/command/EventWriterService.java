@@ -170,7 +170,7 @@ public class EventWriterService {
                 User external = new User();
                 external.setEmail(external.getEmail());
                 external.setLocale(locale);
-                external.setName(external.getName());
+                external.setFirstName(external.getFirstName());
                 external.setRole(User.Role.ROLE_EXTERNAL);
                 external.setCreationDate(new Date());
                 external.setModificationDate(new Date());

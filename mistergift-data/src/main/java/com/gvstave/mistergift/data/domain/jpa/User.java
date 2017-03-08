@@ -56,9 +56,13 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
 
     }
 
-    /** The user name. */
-    @Column(name = "name", length = 255, nullable = false)
-    private String name;
+    /** The user first name. */
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    /** The user last name. */
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     /** The user email. */
     @Column(name = "email", unique = true, length = 150, nullable = false)
@@ -75,17 +79,17 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
 
     /** The user token. */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "token_id", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "token_id", referencedColumnName = "id")
     private Token token;
 
     /** The user picture. */
     @OneToOne
-    @JoinColumn(name = "picture_id", nullable = true)
+    @JoinColumn(name = "picture_id")
     private FileMetadata picture;
 
     /** The user picture. */
     @OneToOne
-    @JoinColumn(name = "thumbnail_id", nullable = true)
+    @JoinColumn(name = "thumbnail_id")
     private FileMetadata thumbnail;
 
     /** The user events. */
@@ -123,17 +127,35 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
      *
      * @return The user name.
      */
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
     /**
      * Set the user name.
      *
-     * @param name The user name.
+     * @param firstName The user name.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Returns the user last name.
+     *
+     * @return The user last name.
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set the user first name.
+     *
+     * @param lastName The user first name.
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     /**

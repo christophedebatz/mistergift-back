@@ -5,14 +5,13 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.es.Product;
 import com.gvstave.mistergift.data.domain.jpa.FileMetadata;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
-import com.gvstave.mistergift.data.domain.jpa.QUser;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
+import com.gvstave.mistergift.data.service.dto.UserDto;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,42 +87,34 @@ public class UserController extends AbstractController {
     /**
      * Save new user in database.
      *
-     * @param user The user.
+     * @param userDto The user dto.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/users", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public User save(@RequestBody User user) throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureUserValid(user, false);
-        LOGGER.debug("Saving user={}", user);
+    public User save(@RequestBody UserDto userDto) throws UnauthorizedOperationException, InvalidFieldValueException {
+        ensureUserValid(userDto, false);
+        LOGGER.debug("Saving user={}", userDto);
 
-        Optional<User> existentUser = Optional.ofNullable(
-            userPersistenceService.findOne(QUser.user.email.eq(user.getEmail()))
-        );
-
-        if (existentUser.isPresent()) {
-            throw new DuplicatedEntityException("user", "email");
-        }
-
-        return userWriterService.saveOrUpdate(user);
+        return userWriterService.createUser(userDto);
     }
 
     /**
      * Update user in database.
      *
-     * @param user The user.
+     * @param userDto The user.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(path = "/me", method = RequestMethod.PUT, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public void update(@RequestBody User user)
+    public void update(@RequestBody UserDto userDto)
             throws UnauthorizedOperationException, InvalidFieldValueException {
-        ensureUserValid(user, true);
-        LOGGER.debug("Updating user={}", user);
-        userWriterService.saveOrUpdate(user);
+        ensureUserValid(userDto, true);
+        LOGGER.debug("Updating user={}", userDto);
+        userWriterService.saveOrUpdate(userDto);
     }
 
     /**
@@ -175,29 +165,33 @@ public class UserController extends AbstractController {
     /**
      * Ensures that given user is correctly hydrated.
      *
-     * @param user The user.
+     * @param userDto The user.
      * @param isUpdate Whether we want to update user.
      * @throws UnauthorizedOperationException if the user that asks for action has not enough right to proceed.
      * @throws InvalidFieldValueException if a field to update is null or empty.
      */
-    private void ensureUserValid(User user, boolean isUpdate)
+    private void ensureUserValid(UserDto userDto, boolean isUpdate)
             throws UnauthorizedOperationException, InvalidFieldValueException {
-        Objects.requireNonNull(user);
+        Objects.requireNonNull(userDto);
 
-        if (isUpdate && (user.getId() != null || !Objects.equals(user.getId(), getUser().getId()))) {
+        if (isUpdate && (userDto.getId() != null || !Objects.equals(userDto.getId(), getUser().getId()))) {
             throw new UnauthorizedOperationException("update user");
         }
 
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
             throw new InvalidFieldValueException("email");
         }
 
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
             throw new InvalidFieldValueException("password");
         }
 
-        if (user.getName() == null || user.getName().isEmpty()) {
-            throw new InvalidFieldValueException("name");
+        if (userDto.getFirstName() == null || userDto.getFirstName().isEmpty()) {
+            throw new InvalidFieldValueException("firstName");
+        }
+
+        if (userDto.getLastName() == null || userDto.getLastName().isEmpty()) {
+            throw new InvalidFieldValueException("lastName");
         }
 
     }

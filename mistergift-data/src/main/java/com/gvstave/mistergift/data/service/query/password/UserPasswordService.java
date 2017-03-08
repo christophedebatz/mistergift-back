@@ -89,7 +89,7 @@ public class UserPasswordService {
 
                 // create mail model
                 Map<String, String> model = new HashMap<>();
-                model.put("user.name", user.getName());
+                model.put("user.name", user.getFirstName());
                 model.put("user.password.token", token);
                 model.put("user.password.token.expiration", String.valueOf(PASSWORD_TOKEN_TTL));
 

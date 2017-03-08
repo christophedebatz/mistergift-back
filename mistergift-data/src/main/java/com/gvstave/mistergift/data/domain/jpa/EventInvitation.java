@@ -2,6 +2,7 @@ package com.gvstave.mistergift.data.domain.jpa;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -66,7 +67,7 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
     @OneToOne
     private Event event;
 
-    /** Wether the target user will be an admin of the event. */
+    /** Whether the target user will be an admin of the event. */
     @Column(name = "is_admin")
     private boolean admin;
 
@@ -79,7 +80,7 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
      * Constructor.
      */
     public EventInvitation () {
-        this.key = UUID.fromString(getId().toString()).toString().replace("-", "");
+        this.key = UUID.randomUUID().toString().replace("-", "");
     }
 
     /**
