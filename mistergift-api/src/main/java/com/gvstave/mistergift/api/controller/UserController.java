@@ -51,9 +51,10 @@ public class UserController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+    public PageResponse<User> getUsers(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                       @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
         LOGGER.debug("Retrieving users with page={}", page);
-        PageRequest pageRequest = getPageRequest(page);
+        PageRequest pageRequest = getPageRequest(page, limit);
         return new PageResponse<>(userPersistenceService.findAll(pageRequest));
     }
 

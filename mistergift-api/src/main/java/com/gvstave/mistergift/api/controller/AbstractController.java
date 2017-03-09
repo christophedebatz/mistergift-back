@@ -58,8 +58,19 @@ class AbstractController {
      * @return The page request.
      */
     protected PageRequest getPageRequest(int page) {
-        return new PageRequest(Optional.of(page).map(p -> p - 1 >= 0 ? p - 1 : 0).get(), getMaximumResultsSize());
+        return new PageRequest(page - 1 >= 0 ? page - 1 : 0, getMaximumResultsSize());
+    }
 
+    /**
+     * Returns a page request for pagination.
+     *
+     * @param page The requested page number.
+     * @param limit The requested page limit.
+     * @return The page request.
+     */
+    protected PageRequest getPageRequest(int page, int limit) {
+        int appliedLimit = limit > getMaximumResultsSize() ? getMaximumResultsSize() : limit;
+        return new PageRequest(page - 1 >= 0 ? page - 1 : 0, appliedLimit);
     }
 
     /**

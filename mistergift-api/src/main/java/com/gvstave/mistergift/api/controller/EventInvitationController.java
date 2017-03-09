@@ -10,6 +10,7 @@ import com.gvstave.mistergift.data.service.command.EventInvitationWriterService;
 import com.gvstave.mistergift.data.service.query.EventInvitationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +42,11 @@ public class EventInvitationController extends AbstractController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me/invitations")
     public PageResponse<EventInvitation> getUserEventInvitations(
-        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
+        @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
         LOGGER.debug("Retrieving user event invitations for current user");
-        return new PageResponse<>(eventInvitationService.getUserEventInvitations(getUser(), getPageRequest(page)));
+        PageRequest pageRequest = getPageRequest(page, limit);
+        return new PageResponse<>(eventInvitationService.getUserEventInvitations(getUser(), pageRequest));
     }
 
     /**
@@ -62,8 +65,9 @@ public class EventInvitationController extends AbstractController {
     }
 
     /**
+     * Accepts an event invitation.
      *
-     * @param eventId
+     * @param eventId The invitation event id.
      * @throws InvalidFieldValueException
      * @throws UnauthorizedOperationException
      */
@@ -77,8 +81,9 @@ public class EventInvitationController extends AbstractController {
     }
 
     /**
+     * Refuses an event invitation.
      *
-     * @param invitationId
+     * @param invitationId The event invitation id.
      * @throws InvalidFieldValueException
      * @throws UnauthorizedOperationException
      */
@@ -91,9 +96,10 @@ public class EventInvitationController extends AbstractController {
     }
 
     /**
+     * Cancels an invitation.
      *
-     * @param userId
-     * @param invitationId
+     * @param userId The invited user id.
+     * @param invitationId The invitation id.
      * @throws InvalidFieldValueException
      * @throws UnauthorizedOperationException
      */

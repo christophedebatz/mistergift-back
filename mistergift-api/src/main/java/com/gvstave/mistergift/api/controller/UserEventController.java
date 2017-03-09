@@ -68,12 +68,13 @@ public class UserEventController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, path = "/me/events")
     public PageResponse<Map.Entry<String, List<Event>>> getUserEvents(
         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
         @RequestParam(value = "filters", required = false) String filters) {
         LOGGER.debug("Retrieving current-user events for page={} and filter={}", page, filters);
-        PageRequest pageable = getPageRequest(page);
 
-        List<Map.Entry<String, List<Event>>> events = new ArrayList<>();
-        List<String> eventStatus;
+        final PageRequest pageable = getPageRequest(page, limit);
+        final List<Map.Entry<String, List<Event>>> events = new ArrayList<>();
+        final List<String> eventStatus;
 
         if (filters != null) {
             eventStatus = Arrays.asList(filters.replaceAll("\\s+","").split(","));
@@ -138,11 +139,13 @@ public class UserEventController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/members")
     public PageResponse<User> getEventsMembers(
         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
         @PathVariable(value = "eventId") Long eventId) {
+
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
 
         if (event.isPresent()) {
-            return new PageResponse<>(userEventService.getEventMembers(event.get(), getPageRequest(page)));
+            return new PageResponse<>(userEventService.getEventMembers(event.get(), getPageRequest(page, limit)));
         }
 
         throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);
@@ -160,12 +163,13 @@ public class UserEventController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/guests")
     public PageResponse<User> getEventInvitedUsers(
         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
         @PathVariable(value = "eventId") Long eventId) {
         LOGGER.debug("Retrieving event invited users for event:id={} and page={}", eventId, page);
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
 
         if (event.isPresent()) {
-            return new PageResponse<>(userEventService.getEventPendingUsers(event.get(), getPageRequest(page)));
+            return new PageResponse<>(userEventService.getEventPendingUsers(event.get(), getPageRequest(page, limit)));
         }
 
         throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);
@@ -183,6 +187,7 @@ public class UserEventController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/users/{userId}/gifts")
     public PageResponse<UserGift> getEventUserGifts(
         @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
         @PathVariable(value = "eventId") Long eventId,
         @PathVariable(value = "userId") Long userId) {
         LOGGER.debug("Retrieving user event gifts list according current user for event:id={}, user:id={} and page={}", eventId, userId, page);
@@ -196,7 +201,7 @@ public class UserEventController extends AbstractController {
 
             if (userEvent.canSeeMines()) {
                 BooleanExpression qWhishlist = QUserGift.userGift.id.user.id.eq(userId);
-                return new PageResponse<>(userGiftPersistenceService.findAll(qWhishlist, getPageRequest(page)));
+                return new PageResponse<>(userGiftPersistenceService.findAll(qWhishlist, getPageRequest(page, limit)));
             }
         }
 
@@ -214,12 +219,13 @@ public class UserEventController extends AbstractController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/events/{eventId}/admins")
     public PageResponse<User> getEventAdmins(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
                                              @PathVariable(value = "eventId") Long eventId) {
         LOGGER.debug("Retrieving event administrators for event:id={} and page={}", eventId, page);
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
 
         if (event.isPresent()) {
-            return new PageResponse<>(userEventService.getEventAdmins(event.get(), getPageRequest(page)));
+            return new PageResponse<>(userEventService.getEventAdmins(event.get(), getPageRequest(page, limit)));
         }
 
         throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);
