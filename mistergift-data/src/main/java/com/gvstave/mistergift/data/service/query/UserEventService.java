@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +38,69 @@ public class UserEventService {
     /** The event repositories service. */
     @Inject
     private EventPersistenceService eventPersistenceService;
+
+    /**
+     * Retrieves the user events.
+     *
+     * @param user The current user.
+     * @param filters The event filter.
+     * @param pageable The pageable.
+     * @return The user events.
+     */
+    public Map<String, List<Event>> getUserEvents(User user, String filters, Pageable pageable) {
+        final Map<String, List<Event>> events = new HashMap<>();
+        final List<String> eventStatus;
+
+        if (filters != null) {
+            eventStatus = Arrays.asList(filters.replaceAll("\\s+","").split(","));
+        } else {
+            eventStatus = Arrays.asList(
+                    UserEvent.UserEvenFilter.INVITATION.getFilter(),
+                    UserEvent.UserEvenFilter.ADMIN.getFilter(),
+                    Event.EventStatus.CANCELLED.getStatus(),
+                    Event.EventStatus.UNPUBLISHED.getStatus(),
+                    Event.EventStatus.PUBLISHED.getStatus()
+            );
+        }
+
+        // user-event relation types
+        // pending event / invitation from other participants
+        String pendingFlag = UserEvent.UserEvenFilter.INVITATION.getFilter();
+        if (eventStatus.contains(pendingFlag)) {
+            List<Event> inviteEvents = getUserInvitationEvents(user, pageable);
+            events.put(pendingFlag, inviteEvents);
+        }
+
+        // event where i'm admin
+        String adminFlag = UserEvent.UserEvenFilter.ADMIN.getFilter();
+        if (eventStatus.contains(adminFlag)) {
+            events.put(adminFlag, getUserAdminEvents(user, pageable));
+        }
+
+        // event status type
+        // cancelled events
+        String cancelledFlag = Event.EventStatus.CANCELLED.getStatus();
+        if (eventStatus.contains(cancelledFlag)) {
+            List<Event> cancelled = getUserEventsByStatus(user, Event.EventStatus.CANCELLED, pageable);
+            events.put(cancelledFlag, cancelled);
+        }
+
+        // my unpublished events
+        String unpublishedFlag = Event.EventStatus.UNPUBLISHED.getStatus();
+        if (eventStatus.contains(unpublishedFlag)) {
+            List<Event> unpublished = getUserEventsByStatus(user, Event.EventStatus.UNPUBLISHED, pageable);
+            events.put(unpublishedFlag, unpublished);
+        }
+
+        // the published events
+        String publishedFlag = Event.EventStatus.PUBLISHED.getStatus();
+        if (eventStatus.contains(publishedFlag)) {
+            List<Event> published = getUserEventsByStatus(user, Event.EventStatus.PUBLISHED, pageable);
+            events.put(publishedFlag, published);
+        }
+
+        return events;
+    }
 
     /**
      * Returns the event according to their {@link Event.EventStatus}.
