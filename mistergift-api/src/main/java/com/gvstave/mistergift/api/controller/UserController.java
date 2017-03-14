@@ -2,16 +2,15 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.es.Product;
-import com.gvstave.mistergift.data.domain.jpa.FileMetadata;
-import com.gvstave.mistergift.data.domain.jpa.Gift;
-import com.gvstave.mistergift.data.domain.jpa.User;
+import com.gvstave.mistergift.data.domain.mongo.Product;
+import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
-import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import com.gvstave.mistergift.data.service.dto.UserDto;
+import com.gvstave.mistergift.data.service.query.EventService;
+import com.gvstave.mistergift.data.service.query.ProductService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,6 +39,18 @@ public class UserController extends AbstractController {
     /** The user service. */
     @Inject
     private UserService userService;
+
+    @Inject
+    private EventService eventService;
+
+    @Inject
+    private ProductService productService;
+
+    @Inject
+    private GiftPersistenceService giftPersistenceService;
+
+    @Inject
+    private UserGiftPersistenceService userGiftPersistenceService;
 
     /** The user writer service. */
     @Inject
@@ -142,12 +155,25 @@ public class UserController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, path = "/me/wishlist")
-    public PageResponse<Gift> getUserWishList(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
-        User user = getUser();
-        LOGGER.debug("Retrieving user={} viewable products with page={}", user, page);
-        // todo
-        return null;
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}/gifts")
+    public PageResponse<Product> getUserGifts(
+            @PathVariable(value = "id") Long userId,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
+        LOGGER.debug("Retrieving user-id={} gifts list with page={} and limit={}", userId, page, limit);
+
+        boolean userCanAskGifts = userService.fromId(userId)
+                .filter(user -> !eventService.retrieveCommonUsersEvents(userId, getUser()).isEmpty())
+                .isPresent();
+
+        if (userCanAskGifts) {
+            PageRequest pageable = getPageRequest(page, limit);
+            List<Gift> gifts = giftPersistenceService.findAll(QGift.gift.owner.id.eq(userId), pageable).getContent();
+            List<String> giftsProductsIds = gifts.stream().map(Gift::getProductId).collect(Collectors.toList());
+            return new PageResponse<>(productService.findByIdsIn(giftsProductsIds, pageable));
+        }
+
+        return PageResponse.empty();
     }
 
 	/**

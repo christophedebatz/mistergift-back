@@ -1,15 +1,15 @@
 package com.gvstave.mistergift.data.service.query;
 
-import com.gvstave.mistergift.data.domain.es.Product;
-import com.gvstave.mistergift.data.domain.jpa.Gift;
-import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.domain.jpa.ProductPersistenceService;
+import com.gvstave.mistergift.data.domain.mongo.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * The {@link Product} service.
@@ -17,23 +17,19 @@ import java.util.Objects;
 @Service
 public class ProductService {
 
-    /** The gift repositories service. */
     @Inject
-    private ProductPersistenceService productPersistenceService;
+    private MongoOperations mongoTemplate;
 
     /**
-     * Returns a pageable response of user gift.
      *
-     * @param user The user.
-     * @param pageable The page request.
-     * @return A page of {@link Gift}.
+     * @param ids
+     * @param pageable
+     * @return
      */
-    public Page<Gift> getUserWishList(User user, Pageable pageable) {
-        Objects.requireNonNull(user);
-        Objects.requireNonNull(pageable);
-
-//        return productPersistenceService.findAll(QPro, pageable);
-        return null;
+    public List<Product> findByIdsIn(List<String> ids, Pageable pageable) {
+        Query query = new Query().with(pageable);
+        query.addCriteria(Criteria.where("productId").in(ids));
+        return mongoTemplate.find(query, Product.class);
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,6 +33,15 @@ public class PageResponse<T> {
      */
     public PageResponse(Page<T> page) {
         this.page = page;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param list The list of items.
+     */
+    public PageResponse(List<T> list) {
+        this.page = new PageImpl<>(list);
     }
 
     /**

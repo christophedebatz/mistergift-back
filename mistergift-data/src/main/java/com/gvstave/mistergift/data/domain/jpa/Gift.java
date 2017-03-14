@@ -17,9 +17,13 @@ public class Gift extends AbstractTimestampableJpaBaseEntity<Long> {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User owner;
+
     /** The gift product id. */
     @Column(name = "product_id", nullable = false)
-    private Long productId;
+    private String productId;
 
     /** The users who have booked the gift. */
     @OneToMany
@@ -27,13 +31,13 @@ public class Gift extends AbstractTimestampableJpaBaseEntity<Long> {
         name = "users_gifts",
         joinColumns = { @JoinColumn(name = "gift_id", updatable = false) }
     )
-    private List<User> owners;
+    private List<User> bookers;
 
     /**
      * Constructor.
      */
     public Gift() {
-        owners = new ArrayList<>();
+        bookers = new ArrayList<>();
     }
 
     /**
@@ -59,8 +63,8 @@ public class Gift extends AbstractTimestampableJpaBaseEntity<Long> {
      *
      * @return The gift owners.
      */
-    public List<User> getOwners() {
-        return owners;
+    public List<User> getBookers() {
+        return bookers;
     }
 
     /**
@@ -68,8 +72,8 @@ public class Gift extends AbstractTimestampableJpaBaseEntity<Long> {
      *
      * @param owners The gift owners.
      */
-    public void setOwners(List<User> owners) {
-        this.owners = owners;
+    public void setBookers(List<User> owners) {
+        this.bookers = owners;
     }
 
     /**
@@ -77,7 +81,7 @@ public class Gift extends AbstractTimestampableJpaBaseEntity<Long> {
      *
      * @return The product id.
      */
-    public Long getProductId () {
+    public String getProductId () {
         return productId;
     }
 
@@ -86,7 +90,24 @@ public class Gift extends AbstractTimestampableJpaBaseEntity<Long> {
      *
      * @param productId The product id.
      */
-    public void setProductId (Long productId) {
+    public void setProductId (String productId) {
         this.productId = productId;
     }
+
+    /**
+     *
+     * @return
+     */
+    public User getOwner() {
+        return owner;
+    }
+
+    /**
+     *
+     * @param owner
+     */
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
 }

@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * .
  */
 @Configuration
-@ComponentScan(basePackageClasses = { Services.class, DataServices.class })
+@ComponentScan(basePackageClasses = { DataJpaConfiguration.class, Services.class, DataServices.class })
 @Import({ DataRedisConfiguration.class, DataJpaConfiguration.class, DataMongoConfiguration.class })
 @PropertySource("classpath:/WEB-INF/${server.role}.properties")
 public class DataWebConfiguration {

@@ -2,10 +2,9 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.es.Product;
+import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.domain.jpa.ProductPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -27,10 +25,6 @@ public class ProductController extends AbstractController {
 
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
-
-    /** The gift repositories service. */
-    @Inject
-    private ProductPersistenceService productPersistenceService;
 
     /**
      * Default constructor.

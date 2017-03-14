@@ -1,5 +1,6 @@
 package com.gvstave.mistergift.data.configuration;
 
+import com.gvstave.mistergift.data.domain.DataDomain;
 import com.gvstave.mistergift.data.domain.mongo.DataDomainMongo;
 import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * Configuration for mongodb.
  */
 @Configuration
-@ComponentScan(basePackageClasses = { DataDomainMongo.class })
-@EnableMongoRepositories(basePackageClasses = DataDomainMongo.class)
+@ComponentScan(basePackageClasses = { DataDomain.class })
+@EnableMongoRepositories(basePackageClasses = DataDomain.class)
 public class DataMongoConfiguration {
 
     @Bean

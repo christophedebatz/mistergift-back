@@ -23,7 +23,7 @@ public class UserGiftId implements Serializable {
 
     /** The associated product id. */
     @Column(name = "product_id", nullable = false)
-    private Long productId;
+    private String productId;
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ public class UserGiftId implements Serializable {
      * @param user The user.
      * @param productId The product id.
      */
-    public UserGiftId (User user, Long productId) {
+    public UserGiftId (User user, String productId) {
         this.user = user;
         this.productId = productId;
     }
@@ -57,7 +57,7 @@ public class UserGiftId implements Serializable {
      *
      * @return The product id.
      */
-    public Long getProductId () {
+    public String getProductId () {
         return productId;
     }
 

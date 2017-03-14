@@ -1,34 +1,39 @@
-package com.gvstave.mistergift.data.domain.es;
+package com.gvstave.mistergift.data.domain.mongo;
 
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.io.Serializable;
 
 /**
  * Represents a global product (such as Sony Ps4 or Canapé Cuir :-) )
  */
-@Document(indexName = "products", type = "catalog")
-public class Product extends AbstractElasticsearchBaseEntity<Long> {
+@Document(collection = "products")
+public class Product implements Serializable {
+
+    @Id
+    private String id;
 
     /** The product name. */
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    @Field
     private String name;
 
     /** The product brand. */
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    @Field
     private String brand;
 
     /** The product reference code. */
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    @Field
     private String reference;
 
     /** The product description. */
-    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    @Field
     private String description;
 
     /** The product picture. */
-    @Field(type = FieldType.Long, index = FieldIndex.not_analyzed)
+    @Field
     private Long pictureId;
 
     /**
@@ -36,6 +41,22 @@ public class Product extends AbstractElasticsearchBaseEntity<Long> {
      */
     public Product() {
         // nothing
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     *
+     * @param id
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
