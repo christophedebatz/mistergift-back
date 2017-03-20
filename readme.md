@@ -198,16 +198,20 @@ Your can invite another people who does not exists (at the moment) on MG.
 
 >  **POST** /events/{event-id}/externals
 ```
-{
-	[
-	   "name": "Julien Ducrot",
-	   "email": "pro@joulse.com"
-	],
-	[
+[
+    {
+        "admin": true,
+        "type": "target",
+        "name": "Julien Ducrot",
+        "email": "pro@joulse.com"
+    },
+	{
+	   "admin": false,
+	   "type": "participant",
 	   "name": "Christophe de Batz",
 	   "email": "christophe.db@gmail.com"
-	]
-}
+	}
+]
 ```
 
 #### Cancel an invitation

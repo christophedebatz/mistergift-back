@@ -5,6 +5,7 @@
             We hope you're fine ;-)<br />
             A friend of you ( ${senderUser.name} ) just invite you to join his event ${event.name}!
             MisterGift is a platform that allow people creating event and sharing whislist with friends!
+            User this email address when subscribing will allow you accepting this event invitation.
         </p>
 
         <p>

@@ -71,6 +71,9 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
     @Column(name = "is_admin")
     private boolean admin;
 
+    @Column(name = "is_external")
+    private boolean external;
+
     /** The type of invitation. */
     @Column
     @Enumerated(EnumType.ORDINAL)
@@ -171,6 +174,14 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
      */
     public void setAdmin (boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 
     /**

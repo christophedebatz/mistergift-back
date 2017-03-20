@@ -40,6 +40,9 @@ public class EventWriterService {
     @Inject
     private EventPersistenceService eventPersistenceService;
 
+    @Inject
+    private EventInvitationPersistenceService eventInvitationPersistenceService;
+
     /** The user event service. */
     @Inject
     private UserEventService userEventService;
@@ -159,7 +162,8 @@ public class EventWriterService {
         List<ExternalUserDto> results = new ArrayList<>();
 
         String from = env.getProperty("mail.from");
-        Locale locale = authenticatedUser.getUser().getLocale();
+        User user = authenticatedUser.getUser();
+        Locale locale = user.getLocale();
 
         // import external users data
         externalUsers.forEach(externalUser -> {
@@ -181,12 +185,13 @@ public class EventWriterService {
                 model.put("event", event);
 
                 EventInvitation invitation = new EventInvitation();
+                invitation.setType(externalUser.getType());
+                invitation.setEvent(event);
+                invitation.setAdmin(externalUser.isAdmin());
+                invitation.setExternal(true);
+                invitation.setSenderUser(user);
 
-                /**
-                 * todo:
-                 * - type of user event
-                 * - create invitation
-                 */
+                eventInvitationPersistenceService.save(invitation);
 
                 try {
                     externalUserEmailingService.send(from, recipients, model, locale);

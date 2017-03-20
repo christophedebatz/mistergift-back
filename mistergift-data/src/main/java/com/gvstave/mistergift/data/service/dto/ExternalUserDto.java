@@ -1,6 +1,6 @@
 package com.gvstave.mistergift.data.service.dto;
 
-import com.gvstave.mistergift.data.domain.jpa.Event;
+import com.gvstave.mistergift.data.domain.jpa.EventInvitation;
 import com.gvstave.mistergift.data.domain.jpa.User;
 
 import java.io.Serializable;
@@ -8,29 +8,36 @@ import java.util.Date;
 
 public class ExternalUserDto implements Serializable {
 
-    private User sender;
+    private EventInvitation.EventInvitationType type;
 
     private String email;
 
     private String name;
 
-    private Event event;
+    private boolean admin;
 
     private Date invitationDate;
 
-    public ExternalUserDto(User sender, String email, String name) {
-        this.sender = sender;
+    public ExternalUserDto(String email, String name) {
         this.email = email;
         this.name = name;
         this.invitationDate = new Date();
     }
 
-    public User getSender() {
-        return sender;
+    public EventInvitation.EventInvitationType getType() {
+        return type;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setType(EventInvitation.EventInvitationType type) {
+        this.type = type;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public String getEmail() {
