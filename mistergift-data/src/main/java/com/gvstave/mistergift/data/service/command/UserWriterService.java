@@ -4,6 +4,7 @@ import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.FileUploadException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
+import com.gvstave.mistergift.data.exception.UserNotFoundException;
 import com.gvstave.mistergift.data.service.dto.UserDto;
 import com.gvstave.mistergift.service.CroppingService;
 import org.springframework.core.env.Environment;
@@ -69,17 +70,34 @@ public class UserWriterService {
      * @param userDto The new user.
      * @return The created user id.
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public User createUser(UserDto userDto) {
-        Optional<User> existentUser = Optional.ofNullable(
-            userPersistenceService.findOne(QUser.user.email.eq(userDto.getEmail()))
-        );
+        Optional<String> userKey = Optional.ofNullable(userDto.getKey());
 
-        if (existentUser.isPresent()) {
-            throw new DuplicatedEntityException("user", "email");
+        if (!userKey.isPresent()) {
+            Optional<User> existentUser = Optional.ofNullable(
+                userPersistenceService.findOne(QUser.user.email.eq(userDto.getEmail()))
+            );
+
+            if (existentUser.isPresent()) {
+                throw new DuplicatedEntityException("user", "email");
+            }
+
+            return saveOrUpdate(userDto);
         }
 
-        return saveOrUpdate(userDto);
+        Optional<User> externalUser = Optional.ofNullable(
+            userPersistenceService.findOne(QUser.user.externalKey.eq(userKey.get()))
+        );
+
+        if (!externalUser.isPresent()) {
+            throw new UserNotFoundException();
+        }
+
+        User user = externalUser.get();
+        user.setRole(User.Role.ROLE_USER);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        return userPersistenceService.save(user);
     }
 
     /**
@@ -87,7 +105,6 @@ public class UserWriterService {
      * @param userDto
      * @return
      */
-    @Transactional
     public User saveOrUpdate(UserDto userDto) {
         // encode password and set role
         User user = new User();

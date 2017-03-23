@@ -14,6 +14,8 @@ public class UserDto implements Serializable {
 
     private Long id;
 
+    private String key;
+
     private String firstName;
 
     private String lastName;
@@ -31,6 +33,14 @@ public class UserDto implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getFirstName() {

@@ -56,6 +56,10 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
 
     }
 
+    /** The invitation external key. */
+    @Column(name = "external_key")
+    private String externalKey;
+
     /** The user first name. */
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -156,6 +160,22 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getExternalKey() {
+        return externalKey;
+    }
+
+    /**
+     *
+     * @param externalKey
+     */
+    public void setExternalKey(String externalKey) {
+        this.externalKey = externalKey;
     }
 
     /**

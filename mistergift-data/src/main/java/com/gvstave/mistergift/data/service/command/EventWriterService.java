@@ -172,26 +172,28 @@ public class EventWriterService {
                 String[] recipients = {externalUser.getEmail()};
 
                 User external = new User();
-                external.setEmail(external.getEmail());
+                external.setEmail(externalUser.getEmail());
                 external.setLocale(locale);
-                external.setFirstName(external.getFirstName());
+                external.setFirstName(externalUser.getFirstName());
+                external.setLastName(externalUser.getLastName());
                 external.setRole(User.Role.ROLE_EXTERNAL);
                 external.setCreationDate(new Date());
                 external.setModificationDate(new Date());
 
-                Map<String, Object> model = new HashMap<>();
-                model.put("senderUser", authenticatedUser.getUser());
-                model.put("externalUser", external);
-                model.put("event", event);
-
                 EventInvitation invitation = new EventInvitation();
+                invitation.setKey(UUID.randomUUID().toString());
                 invitation.setType(externalUser.getType());
                 invitation.setEvent(event);
                 invitation.setAdmin(externalUser.isAdmin());
-                invitation.setExternal(true);
+                invitation.setTargetUser(external);
                 invitation.setSenderUser(user);
 
                 eventInvitationPersistenceService.save(invitation);
+
+                Map<String, Object> model = new HashMap<>();
+                model.put("senderUser", user);
+                model.put("externalUser", external);
+                model.put("event", event);
 
                 try {
                     externalUserEmailingService.send(from, recipients, model, locale);

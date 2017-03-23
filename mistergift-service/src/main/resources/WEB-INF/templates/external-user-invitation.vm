@@ -5,11 +5,11 @@
             We hope you're fine ;-)<br />
             A friend of you ( ${senderUser.name} ) just invite you to join his event ${event.name}!
             MisterGift is a platform that allow people creating event and sharing whislist with friends!
-            User this email address when subscribing will allow you accepting this event invitation.
+            User this email address when subscribing will allow you joining this event invitation.
         </p>
 
         <p>
-            Follow <a href="https://mistergift.io/#signup?key=${invitation.key}"this link to free subscribe now!
+            Subscribe for free by following <a href="https://www.mistergift.io/#signup?key=${invitation.key}">this link</a>!
         </p>
 
         <p style="text-align: justify;">

@@ -12,16 +12,16 @@ public class ExternalUserDto implements Serializable {
 
     private String email;
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
 
     private boolean admin;
 
     private Date invitationDate;
 
-    public ExternalUserDto(String email, String name) {
-        this.email = email;
-        this.name = name;
-        this.invitationDate = new Date();
+    public ExternalUserDto() {
+        // for the players
     }
 
     public EventInvitation.EventInvitationType getType() {
@@ -48,12 +48,20 @@ public class ExternalUserDto implements Serializable {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Date getInvitationDate() {

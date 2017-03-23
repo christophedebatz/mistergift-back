@@ -110,7 +110,6 @@ public class UserController extends AbstractController {
     public User save(@RequestBody UserDto userDto) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserValid(userDto, false);
         LOGGER.debug("Saving user={}", userDto);
-
         return userWriterService.createUser(userDto);
     }
 
@@ -205,20 +204,22 @@ public class UserController extends AbstractController {
             throw new UnauthorizedOperationException("update user");
         }
 
-        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-            throw new InvalidFieldValueException("email");
-        }
-
         if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
             throw new InvalidFieldValueException("password");
         }
 
-        if (userDto.getFirstName() == null || userDto.getFirstName().isEmpty()) {
-            throw new InvalidFieldValueException("firstName");
-        }
+        if (userDto.getKey() == null) {
+            if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+                throw new InvalidFieldValueException("email");
+            }
 
-        if (userDto.getLastName() == null || userDto.getLastName().isEmpty()) {
-            throw new InvalidFieldValueException("lastName");
+            if (userDto.getFirstName() == null || userDto.getFirstName().isEmpty()) {
+                throw new InvalidFieldValueException("firstName");
+            }
+
+            if (userDto.getLastName() == null || userDto.getLastName().isEmpty()) {
+                throw new InvalidFieldValueException("lastName");
+            }
         }
 
     }
