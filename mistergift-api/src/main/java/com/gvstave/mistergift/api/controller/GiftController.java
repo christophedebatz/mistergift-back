@@ -40,6 +40,7 @@ public class GiftController extends AbstractController {
      */
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public @ResponseBody Gift getGiftDetails(@RequestParam("id") Long id) {
+        LOGGER.debug("Retrieving gift details for id={}", id);
         return giftPersistenceService.findOne(id);
     }
 
