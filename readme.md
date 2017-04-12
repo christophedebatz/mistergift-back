@@ -352,8 +352,8 @@ Example 1: book an entire gift
 ```
 // application/json
 {
-	"id": 38,
-	"type": "dynamic",
+	"event": 38,
+	"type": "fixed",
 	"value": 100
 }
 ```
@@ -363,26 +363,22 @@ Example 2: book a variable part of a gift (for instance 50% of the price)
 // application/json
 {
 	"id": 38,
-	"type": "dynamic",
+	"type": "relative",
 	"value": 50
 }
 ```
 
-Example 3: book a fixed part of a gift (for instance, only 25 euros)
-```
-// application/json
-{
-	"id": 38,
-	"type": "fixed",
-	"value": 25
-}
-```
+#### Retrieve all the participations for a gift
 
-#### Retrieve all the participations for a user for an event
+It retrieves the current user participation for a gift in particular.
 
-It retrieves all participations for the given user gifts, in terms of the user who made the request. If it's the given user, it will get nothing etc. (because surprise is surprise !)
+> **GET** /me/gifts/**{gift-id}**/participations
 
-> **GET** /users/**{user-id}**/events/**{event-id}**/participations[?page=**{ page-no }**]
+#### Retrieve all the participations for a gift
+
+It retrieves the current user participations, eventually for an event
+
+> **GET** /me/participations[?**eventId=4**&page=2@limit=6]
 
 ### <i class="icon-file"></i> Gift comments
 
@@ -396,7 +392,7 @@ It retrieves all participations for the given user gifts, in terms of the user w
 
 #### Retrieve all the comments for a gift
 
-> **GET** /gifts/**{gift-id}**/comments[?page=**{ page-no }**]
+**GET** /gifts/**{gift-id}**/comments[?page=**{ page-no }**]
 
 #### Post a comment for a gift
 

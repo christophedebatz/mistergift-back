@@ -48,21 +48,6 @@ public class ParticipationController extends AbstractController {
     }
 
     /**
-     * Returns the participation of the given user for a gift.
-     *
-     * @return The user participation.
-     */
-    @RequestMapping(method = RequestMethod.GET, path = "/gifts/{giftId}/participation")
-    public @ResponseBody Participation getUserGiftParticipation(
-            @PathVariable("giftId") Long giftId,
-            @PathVariable("userId") Long userId) {
-        LOGGER.debug("Retrieving current user gift participation for gift-id={} and user-id={}", giftId, userId);
-        Predicate predicate = QParticipation.participation.gift.id.eq(giftId)
-                .and(QParticipation.participation.user.id.eq(userId));
-        return participationPersistenceService.findOne(predicate);
-    }
-
-    /**
      * Returns the list of participations for the given gift.
      *
      * @param giftId The gift id@.
@@ -117,6 +102,9 @@ public class ParticipationController extends AbstractController {
             throw new ApiException("Unable to participate more than once to a gift", HttpStatus.CONFLICT);
         }
 
+        Gift gift = giftPersistenceService.findOne(giftId);
+
+        participation.setGift(gift);
         participation.setUser(getUser());
         Participation userParticipation = new Participation(participation);
         return ParticipationMapper.toParticipationDto(participationPersistenceService.save(userParticipation));
