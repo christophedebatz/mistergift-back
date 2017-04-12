@@ -51,6 +51,9 @@ public class Participation extends AbstractTimestampableJpaBaseEntity<Long> {
     @Enumerated(value = EnumType.STRING)
     private ParticipationType type;
 
+    @Column
+    private Long value;
+
     /**
      * Constructor.
      */
@@ -129,5 +132,13 @@ public class Participation extends AbstractTimestampableJpaBaseEntity<Long> {
 
     public void setType(ParticipationType type) {
         this.type = type;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 }

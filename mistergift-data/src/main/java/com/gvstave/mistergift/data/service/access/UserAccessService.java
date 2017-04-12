@@ -16,7 +16,7 @@ import java.util.Optional;
 public class UserAccessService {
 
     /** The maximum requests that an IP can make per second. */
-    private static final Integer MAX_REQUESTS_PER_SECOND = 2;
+    private static final int MAX_REQUESTS_PER_SECOND = 6;
 
     /** The cache service. */
     @Inject

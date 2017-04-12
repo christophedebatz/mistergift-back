@@ -2,6 +2,7 @@ package com.gvstave.mistergift.api.handler;
 
 import com.gvstave.mistergift.api.response.ErrorResponse;
 import com.gvstave.mistergift.api.response.Response;
+import com.gvstave.mistergift.data.exception.ApiException;
 import com.gvstave.mistergift.data.exception.DuplicatedEntityException;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
@@ -57,6 +58,8 @@ class GlobalExceptionHandler {
             return ErrorResponse.fromException(exception, HttpStatus.UNAUTHORIZED.value());
         } else if (exception instanceof EntityNotFoundException) {
             return ErrorResponse.fromException(exception, HttpStatus.NOT_FOUND.value());
+        } else if (exception instanceof ApiException) {
+            return ErrorResponse.fromException(exception, ((ApiException) exception).getStatus().value());
         }
 
         return ErrorResponse.fromException(exception, HttpStatus.INTERNAL_SERVER_ERROR.value());

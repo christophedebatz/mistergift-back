@@ -24,6 +24,8 @@ public class ParticipationDto implements Serializable {
 
     private Participation.ParticipationType type;
 
+    private Long value;
+
     public ParticipationDto() {
     }
 
@@ -57,5 +59,13 @@ public class ParticipationDto implements Serializable {
 
     public void setType(Participation.ParticipationType type) {
         this.type = type;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 }
