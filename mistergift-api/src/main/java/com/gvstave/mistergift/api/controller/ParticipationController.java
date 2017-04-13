@@ -2,27 +2,21 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.jpa.*;
-import com.gvstave.mistergift.data.exception.ApiException;
+import com.gvstave.mistergift.data.domain.jpa.Participation;
+import com.gvstave.mistergift.data.domain.jpa.ParticipationPersistenceService;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
+import com.gvstave.mistergift.data.service.command.ParticipationWriterService;
 import com.gvstave.mistergift.data.service.dto.ParticipationDto;
-import com.gvstave.mistergift.data.service.dto.mapper.ParticipationMapper;
-import com.gvstave.mistergift.data.utils.Streams;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.gvstave.mistergift.data.service.query.ParticipationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
- * This is the controller for gift requests.
+ * This is the controller for participation requests.
  */
 @UserRestricted
 @RestController
@@ -32,13 +26,17 @@ public class ParticipationController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(ParticipationController.class);
 
-    /** The gift persistence service. */
-    @Inject
-    private GiftPersistenceService giftPersistenceService;
-
     /** The participation persistence service. */
     @Inject
     private ParticipationPersistenceService participationPersistenceService;
+
+    /** The participation writer service. */
+    @Inject
+    private ParticipationWriterService participationWriterService;
+
+    /** The participation service. */
+    @Inject
+    private ParticipationService participationService;
 
     /**
      * Default constructor.
@@ -58,30 +56,25 @@ public class ParticipationController extends AbstractController {
             @PathVariable("giftId") Long giftId,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
-        LOGGER.debug("Retrieving all participations for gift-id={}", giftId);
-        Predicate predicate = QParticipation.participation.gift.id.eq(giftId);
-        return new PageResponse<>(participationPersistenceService.findAll(predicate, getPageRequest(page, limit)));
+        LOGGER.debug("Retrieving all participation for gift-id={}", giftId);
+        return new PageResponse<>(participationService.getGiftParticipations(giftId, getPageRequest(page, limit)));
     }
 
     /**
-     * Returns the list of participations of the current user and, eventually for an event.
+     * Returns the list of participation of the current user and, eventually for an event.
      *
      * @param eventId The event id (optional).
      * @param page The page.
      * @param limit The limit.
-     * @return The list of user participations.
+     * @return The list of user participation.
      */
     @RequestMapping(method = RequestMethod.GET, path = "/me/participations")
     public @ResponseBody PageResponse<Participation> getUserParticipations(
             @RequestParam(value = "eventId", required = false) Long eventId,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
-        LOGGER.debug("Retrieving current user participations for eventId={}", eventId);
-        BooleanExpression predicate = QParticipation.participation.user.eq(getUser());
-        if (eventId != null) {
-            predicate.and(QParticipation.participation.event.id.eq(eventId));
-        }
-        return new PageResponse<>(participationPersistenceService.findAll(predicate, getPageRequest(page, limit)));
+        LOGGER.debug("Retrieving current user participation for eventId={}", eventId);
+        return new PageResponse<>(participationService.getUserParticipations(eventId, getPageRequest(page, limit)));
     }
 
     /**
@@ -94,24 +87,12 @@ public class ParticipationController extends AbstractController {
     public @ResponseBody ParticipationDto participate(
             @PathVariable("giftId") Long giftId,
             @RequestBody ParticipationDto participation) {
-        QParticipation qParticipation = QParticipation.participation;
-        final Participation existingParticipation = participationPersistenceService.findOne(qParticipation.user.eq(getUser())
-                .and(qParticipation.gift.id.eq(giftId)));
-
-        if (existingParticipation != null) {
-            throw new ApiException("Unable to participate more than once to a gift", HttpStatus.CONFLICT);
-        }
-
-        Gift gift = giftPersistenceService.findOne(giftId);
-
-        participation.setGift(gift);
-        participation.setUser(getUser());
-        Participation userParticipation = new Participation(participation);
-        return ParticipationMapper.toParticipationDto(participationPersistenceService.save(userParticipation));
+        LOGGER.debug("Creating new participation for gift-id={} with participation={}", giftId, participation);
+        return participationWriterService.createParticipation(participation, giftId);
     }
 
     /**
-     * Update a participation.
+     * Updates a participation.
      *
      * @param giftId The gift id.
      * @param participation The participation to be updated.
@@ -121,19 +102,8 @@ public class ParticipationController extends AbstractController {
     public @ResponseBody ParticipationDto updateParticipation(
             @PathVariable("giftId") Long giftId,
             @RequestBody ParticipationDto participation) {
-        QParticipation qParticipation = QParticipation.participation;
-        final Participation existingParticipation = participationPersistenceService.findOne(qParticipation.user.eq(getUser())
-                .and(qParticipation.gift.id.eq(giftId)));
-
-        if (existingParticipation == null) {
-            throw new ApiException("Cannot find any participation", HttpStatus.NOT_FOUND);
-        }
-        Optional.ofNullable(participation.getUser()).ifPresent(existingParticipation::setUser);
-        Optional.ofNullable(participation.getEvent()).ifPresent(existingParticipation::setEvent);
-        Optional.ofNullable(participation.getGift()).ifPresent(existingParticipation::setGift);
-        Optional.ofNullable(participation.getType()).ifPresent(existingParticipation::setType);
-        Optional.ofNullable(participation.getValue()).ifPresent(existingParticipation::setValue);
-        return ParticipationMapper.toParticipationDto(participationPersistenceService.save(existingParticipation));
+        LOGGER.debug("Updating gift-id={} with participation={}", giftId, participation);
+        return participationWriterService.updateParticipation(participation, giftId);
     }
 
 }

@@ -112,7 +112,7 @@ public class UserEventService {
      * @return The events.
      */
     @Transactional(readOnly = true)
-    public List<Event> getUserEventsByStatus(User user, Event.EventStatus status, Pageable pageable) {
+    private List<Event> getUserEventsByStatus(User user, Event.EventStatus status, Pageable pageable) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(status);
 
@@ -141,7 +141,7 @@ public class UserEventService {
      * @return The user events.
      */
     @Transactional(readOnly = true)
-    public List<Event> getUserInvitationEvents(User user, Pageable pageable) {
+    private List<Event> getUserInvitationEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
         QUserEvent anyEvent = QEvent.event.participants.any();
@@ -192,7 +192,7 @@ public class UserEventService {
      * @return The list of administrated events.
      */
     @Transactional(readOnly = true)
-    public List<Event> getUserAdminEvents(User user, Pageable pageable) {
+    private List<Event> getUserAdminEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
         QUserEvent anyEvent = QEvent.event.participants.any();
