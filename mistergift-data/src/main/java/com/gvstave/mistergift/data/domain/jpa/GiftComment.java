@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Date;
 
 
 /**
@@ -17,4 +18,13 @@ import javax.persistence.Table;
 @JsonAutoDetect
 public class GiftComment extends Comment<Gift, Long> {
 
+    /**
+     * Default constructor.
+     * This is for Hibernate.
+     */
+    public GiftComment() {
+        setModificationDate(new Date());
+        setCreationDate(new Date());
+    }
+    
 }

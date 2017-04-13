@@ -3,7 +3,7 @@ package com.gvstave.mistergift.data.exception;
 /**
  * .
  */
-public class UnauthorizedOperationException extends Exception {
+public class UnauthorizedOperationException extends RuntimeException {
 
     /**
      *

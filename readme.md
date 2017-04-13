@@ -83,8 +83,8 @@ Endpoints
 | <kbd>string</kbd> name    | The event name |
 | <kbd>EventStatus</kbd> status      | The event status (removed, cancelled, published, unpublished)
 | <kbd>string</kbd> description | The event description     |
-| <kbd>Date</kbd> startDate | The event start date  |
-| <kbd>Date</kbd> endDate      | The event end date   |
+| <kbd>Date</kbd> startDate | The event start creationDate  |
+| <kbd>Date</kbd> endDate      | The event end creationDate   |
 | <kbd>string</kbd> address      | The event address   |
 | <kbd>FileMetadata</kbd> cover | The event cover picture  |
 | <kbd>List&lt;UserEvent&gt;</kbd> participants | The event participants relationships  |
@@ -387,8 +387,8 @@ It retrieves the current user participations, eventually for an event
 | <kbd>Gift</kbd> gift | The associated gift |
 | <kbd>User</kbd> autor | The user who writes the comment |
 | <kbd>string</kbd> text | The comment text |
-| <kbd>Date</kbd> creationDate | The date of creation |
-| <kbd>Date</kbd> modificationDate | The date of modification |
+| <kbd>Date</kbd> creationDate | The creationDate of creation |
+| <kbd>Date</kbd> modificationDate | The creationDate of modification |
 
 #### Retrieve all the comments for a gift
 
@@ -417,9 +417,9 @@ Notification
 | <kbd>User</kbd> content | The target user|
 | <kbd>Long</kbd> eventId | The event id |
 | <kbd>Type</kbd> type | The notification type (gift, comment, participation) |
-| <kbd>Date</kbd> readDate | The date of read |
-| <kbd>Date</kbd> date | The date |
+| <kbd>Date</kbd> readDate | The creationDate of read |
+| <kbd>Date</kbd> creationDate | The creationDate |
 
-> **GET** /me/notifications[?status=**{unread|read|all}**&from=**{from-date}**&to=**{toDate}**&page=**{page-no}**]
+> **GET** /me/notifications[?status=**{unread|read|all}**&from=**{from-creationDate}**&to=**{toDate}**&page=**{page-no}**]
 
-By default, the interval between the from date and the to date is one month and the default notifications status is "unread" (that's all notifications that the user doesn't read yet).
+By default, the interval between the from creationDate and the to creationDate is one month and the default notifications status is "unread" (that's all notifications that the user doesn't read yet).

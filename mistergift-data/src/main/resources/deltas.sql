@@ -38,9 +38,9 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
 
       CREATE TABLE `events` (
         id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        creation_date date NOT NULL,
-        modification_date date NOT NULL,
-        `date` datetime DEFAULT NULL,
+        creation_date creationDate NOT NULL,
+        modification_date creationDate NOT NULL,
+        `creationDate` datetime DEFAULT NULL,
         description varchar(255) NOT NULL,
         `name` varchar(75) NOT NULL,
         address varchar(255) DEFAULT NULL,
@@ -64,15 +64,15 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       
       CREATE TABLE gifts (
         id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        creation_date date NOT NULL,
-        modification_date date NOT NULL,
+        creation_date creationDate NOT NULL,
+        modification_date creationDate NOT NULL,
         event_id bigint(20) NOT NULL,
         product_id bigint(20) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
       CREATE TABLE landing_users (
         id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        creation_date date NOT NULL,
+        creation_date creationDate NOT NULL,
         email varchar(100) NOT NULL,
         city varchar(255) DEFAULT NULL,
         country varchar(255) DEFAULT NULL,
@@ -88,8 +88,8 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
       
       CREATE TABLE products (
         id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        creation_date date NOT NULL,
-        modification_date date NOT NULL,
+        creation_date creationDate NOT NULL,
+        modification_date creationDate NOT NULL,
         brand varchar(75) NOT NULL,
         description longtext,
         `name` varchar(75) NOT NULL,
@@ -99,14 +99,14 @@ CREATE PROCEDURE runDeltas(OUT res char(190))
 
       CREATE TABLE tokens (
         id varchar(75) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        expire_at date NOT NULL,
+        expire_at creationDate NOT NULL,
         user_id bigint(20) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
       
       CREATE TABLE users (
         id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        creation_date date NOT NULL,
-        modification_date date NOT NULL,
+        creation_date creationDate NOT NULL,
+        modification_date creationDate NOT NULL,
         email varchar(150) NOT NULL,
         `password` varchar(255) NOT NULL,
         role int(11) NOT NULL,

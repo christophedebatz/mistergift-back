@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Exception that is thrown when input data is not valid or incomplete.
  */
-public class InvalidFieldValueException extends Exception {
+public class InvalidFieldValueException extends RuntimeException {
 
     /** The fields that are not valid. */
     private Set<String> fields;

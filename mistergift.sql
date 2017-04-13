@@ -39,9 +39,9 @@ DROP TABLE IF EXISTS `gift`;
 CREATE TABLE `gift` (
 `id` bigint(20) NOT NULL,
   `brand` varchar(75) DEFAULT NULL,
-  `creation_date` date NOT NULL,
+  `creation_date` creationDate NOT NULL,
   `description` longtext,
-  `modification_date` date NOT NULL,
+  `modification_date` creationDate NOT NULL,
   `name` varchar(75) NOT NULL,
   `reference` varchar(25) DEFAULT NULL,
   `picture_id` bigint(20) NOT NULL
@@ -81,7 +81,7 @@ CREATE TABLE `links` (
 DROP TABLE IF EXISTS `token`;
 CREATE TABLE `token` (
   `id` varchar(75) NOT NULL,
-  `expire_at` date NOT NULL,
+  `expire_at` creationDate NOT NULL,
   `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

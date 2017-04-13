@@ -3,9 +3,7 @@ package com.gvstave.mistergift.data.service.dto.mapper;
 import com.gvstave.mistergift.data.domain.jpa.Participation;
 import com.gvstave.mistergift.data.service.dto.ParticipationDto;
 
-/**
- * Created by chris on 09/04/2017.
- */
+
 public class ParticipationMapper
 {
     /**
