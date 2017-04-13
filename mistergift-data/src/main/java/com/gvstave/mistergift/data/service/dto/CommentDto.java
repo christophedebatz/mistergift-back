@@ -15,9 +15,11 @@ public class CommentDto implements Serializable {
 
     private GiftDto gift;
 
-    private UserDto user;
+    private UserDto author;
 
     private String text;
+
+    private Long parentId;
 
     private Date creationDate;
 
@@ -35,16 +37,24 @@ public class CommentDto implements Serializable {
         this.gift = gift;
     }
 
-    public UserDto getUser() {
-        return user;
+    public UserDto getAuthor() {
+        return author;
     }
 
-    public void setUser(UserDto user) {
-        this.user = user;
+    public void setAuthor(UserDto author) {
+        this.author = author;
     }
 
     public String getText() {
         return text;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public void setText(String text) {

@@ -16,10 +16,11 @@ public class CommentMapper
     public static CommentDto map(GiftComment giftComment) {
         CommentDto dto = new CommentDto();
         dto.setText(giftComment.getText());
+        dto.setParentId(giftComment.getParentId());
         dto.setCreationDate(giftComment.getCreationDate());
         dto.setModificationDate(giftComment.getModificationDate());
         dto.setGift(GiftMapper.map(giftComment.getObject()));
-        dto.setUser(UserMapper.map(giftComment.getAuthor()));
+        dto.setAuthor(UserMapper.map(giftComment.getAuthor()));
         return dto;
     }
 

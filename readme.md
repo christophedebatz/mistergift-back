@@ -93,17 +93,17 @@ Endpoints
 
 > **GET** /events/**{ event-id }**
 
-#### Retrieve current-user events
+#### Retrieve current-author events
 
-Returns the logged-in user events. You can specify which types of events you want, each type must be separated by a coma.
-If no filter is given, you will get all user events, grouped by type.
+Returns the logged-in author events. You can specify which types of events you want, each type must be separated by a coma.
+If no filter is given, you will get all author events, grouped by type.
 
-- **invitation**: returns all the event user invitations
-- **admin**: returns all the events which the user is an administrator
-- **removed**: returns all the user removed events 
-- **cancelled**: returns all the user cancelled events
-- **published**: returns all the user published events
-- **unpublished**: returns all the user unpublished events
+- **invitation**: returns all the event author invitations
+- **admin**: returns all the events which the author is an administrator
+- **removed**: returns all the author removed events 
+- **cancelled**: returns all the author cancelled events
+- **published**: returns all the author published events
+- **unpublished**: returns all the author unpublished events
 
 For instance:
 
@@ -113,7 +113,7 @@ For instance:
 
 > **GET** /events/**{event-id}**/members[?page=**{ page-no }**]
 
-#### Retrieve event invited user(s)
+#### Retrieve event invited author(s)
 
 > **GET** /events/**{event-id}**/guests[?page=**{ page-no }**]
 
@@ -121,9 +121,9 @@ For instance:
 
 > **GET** /events/**{ event-id }**/admins[?page=**{ page-no }**]
 
-#### Retrieve event user whishlist
+#### Retrieve event author whishlist
 
-> **GET** /events/**{ event-id }**/users/**{ user-id }**/gifts[?page=**{ page-no }**]
+> **GET** /events/**{ event-id }**/users/**{ author-id }**/gifts[?page=**{ page-no }**]
 
 #### Create an event
 
@@ -153,7 +153,7 @@ With that endpoint, you can:
 - Unpublish it ("unpublished")
 - Remove it ("removed")
 
-> **PUT** /events/**{ user-id }**/status
+> **PUT** /events/**{ author-id }**/status
 
 ```
 {
@@ -175,17 +175,17 @@ You must be the event administrator.
 
 | Field        | Description           
 | ------------- |:-------------:|
-| <kbd>User</kbd> senderUser    | The user who invites somebody |
-| <kbd>User</kbd> targetUser      | The user who is invited to join an event      |
+| <kbd>User</kbd> senderUser    | The author who invites somebody |
+| <kbd>User</kbd> targetUser      | The author who is invited to join an event      |
 | <kbd>Event</kbd> event | The event     |
-| <kbd>EventInvitationType</kbd> type | The target user event relationship     |
-| <kbd>boolean</kbd> admin      | If the invited user will be an administrator     |
+| <kbd>EventInvitationType</kbd> type | The target author event relationship     |
+| <kbd>boolean</kbd> admin      | If the invited author will be an administrator     |
 
 #### Invite somebody
 
-Your can invite a user to join an event if you already takes part of this one. You have to pass the event as the body.
+Your can invite a author to join an event if you already takes part of this one. You have to pass the event as the body.
 
->  **POST** /users/**{ user-id }**/invitations
+>  **POST** /users/**{ author-id }**/invitations
 ```
 {
 	"id": 2
@@ -220,17 +220,17 @@ Your can invite another people who does not exists (at the moment) on MG.
 
 To cancel an invitation you must be the sender of the invitation.
 
-> **DELETE** /users/**{ user-id }**/invitations/**{ invitation-id }**
+> **DELETE** /users/**{ author-id }**/invitations/**{ invitation-id }**
 
 #### Accept an invitation
 
-To accept a pending invitation you must be the target (the invited user) of the invitation.
+To accept a pending invitation you must be the target (the invited author) of the invitation.
 
 > **POST** /me/events/**{ event-id }**
 
 #### Refuse an invitation
 
-To refuse a pending invitation you must be the target (the invited user) of the invitation.
+To refuse a pending invitation you must be the target (the invited author) of the invitation.
 
 > **DELETE** /me/invitations/**{ invitation-id }**
 
@@ -240,7 +240,7 @@ To refuse a pending invitation you must be the target (the invited user) of the 
 
 ### <i class="icon-file"></i> Auth
 
-#### Authenticate user (get user token)
+#### Authenticate author (get author token)
 
 > **POST** /authenticate
 
@@ -252,15 +252,15 @@ To refuse a pending invitation you must be the target (the invited user) of the 
 }
 ```
 
-#### Destroy user token
+#### Destroy author token
 
 > **DELETE** /token
 
-#### Recover user password (not logged-in user only)
+#### Recover author password (not logged-in author only)
 
 ***Step #1: send email with token***
 
-> **GET** /password/token?email=**{ user-email }**
+> **GET** /password/token?email=**{ author-email }**
 
 ***Step #2: set new password***
 
@@ -281,41 +281,41 @@ Request:
 
 | Field        | Description           
 | ------------- |:-------------:|
-| <kbd>string</kbd> name | The user name |
-| <kbd>string</kbd> email | The user email |
-| <kbd>string</kbd> password | The user password |
-| <kbd>Role</kbd> role | The user role (admin, user) |
-| <kbd>Token</kbd> token | The user token |
-| <kbd>FileMetadata</kbd> picture | The user profile picture |
-| <kbd>FileMetadata</kbd> thumbnail | The user profile picture thumbnail |
-| <kbd>List&lt;UserEvent&gt;</kbd> usersEvents | The user events relationships |
-| <kbd>string</kbd> locale | The user locale |
+| <kbd>string</kbd> name | The author name |
+| <kbd>string</kbd> email | The author email |
+| <kbd>string</kbd> password | The author password |
+| <kbd>Role</kbd> role | The author role (admin, author) |
+| <kbd>Token</kbd> token | The author token |
+| <kbd>FileMetadata</kbd> picture | The author profile picture |
+| <kbd>FileMetadata</kbd> thumbnail | The author profile picture thumbnail |
+| <kbd>List&lt;UserEvent&gt;</kbd> usersEvents | The author events relationships |
+| <kbd>string</kbd> locale | The author locale |
 
 #### Retrieve the users
 
 > **GET** /users[?page=**{ page-no }**]
 
-#### Retrieve the logged-in user
+#### Retrieve the logged-in author
 
 > **GET** /me
 
-#### Retrieve a specific user
+#### Retrieve a specific author
 
-> **GET** /users/**{ user-id }**
+> **GET** /users/**{ author-id }**
 
-#### Create a user
+#### Create a author
 
 > **POST** /users
 
 You must provide an object with:
-* The user first name ("firstName" node)
-* The user last name  ("lastName" node)
-* The user email ("email" node)
-* The user raw password ("password" node)
+* The author first name ("firstName" node)
+* The author last name  ("lastName" node)
+* The author email ("email" node)
+* The author raw password ("password" node)
 
-#### Update the logged-in user
+#### Update the logged-in author
 
-You must be the user that you attempt to update.
+You must be the author that you attempt to update.
 
 > **PUT** /me
 
@@ -323,11 +323,11 @@ You must be the user that you attempt to update.
 
 > **POST** /me/picture
 
-#### Retrieve logged-in user whishlist
+#### Retrieve logged-in author whishlist
 
 > **GET** /me/whishlist
 
-#### Retrieve logged-in user timeline
+#### Retrieve logged-in author timeline
 
 > **GET** /me/timeline
 
@@ -336,15 +336,15 @@ You must be the user that you attempt to update.
 
 ### <i class="icon-file"></i> Whishlist
 
-#### Retrieve the public whishlist of a user
+#### Retrieve the public whishlist of a author
 
 > **GET** /me/whishlist[?page=**{ page-no }**]
 
-#### Participate to a user gift
+#### Participate to a author gift
 
 > **POST** /gifts/**{gift-id}**/participations
 
-To reserve a gift for a user, you have to post the gift (only its id is sufficient) into the user participations (it's a bag with all user participations for a specific event).
+To reserve a gift for a author, you have to post the gift (only its id is sufficient) into the author participations (it's a bag with all author participations for a specific event).
 
 A partir du moment ou un cadeau a été réservé dans un event, c'est marqué dans le cadeau et ce cadeau est caché sur les autre events où le membre est inscrit (todo mettre un flag eventReservationId dans le gift)
 
@@ -370,13 +370,13 @@ Example 2: book a variable part of a gift (for instance 50% of the price)
 
 #### Retrieve all the participations for a gift
 
-It retrieves the current user participation for a gift in particular.
+It retrieves the current author participation for a gift in particular.
 
 > **GET** /me/gifts/**{gift-id}**/participations
 
 #### Retrieve all the participations for a gift
 
-It retrieves the current user participations, eventually for an event
+It retrieves the current author participations, eventually for an event
 
 > **GET** /me/participations[?**eventId=4**&page=2@limit=6]
 
@@ -385,36 +385,50 @@ It retrieves the current user participations, eventually for an event
 | Field        | Description           
 | ------------- |:-------------:|
 | <kbd>Gift</kbd> gift | The associated gift |
-| <kbd>User</kbd> autor | The user who writes the comment |
+| <kbd>User</kbd> author | The user who writes the comment |
+| <kbd>Long</kbd> parentId | The comment parent id |
 | <kbd>string</kbd> text | The comment text |
 | <kbd>Date</kbd> creationDate | The creationDate of creation |
 | <kbd>Date</kbd> modificationDate | The creationDate of modification |
 
 #### Retrieve all the comments for a gift
 
-**GET** /gifts/**{gift-id}**/comments[?page=**{ page-no }**]
+* You can pass a user id ("userId") to limit the results to a specific user (as the comments author)
 
-#### Post a comment for a gift
+**GET** /gifts/**{gift-id}**/comments[?userId=**{ user-id }**&page=**{ page-no }**&limit=**{ limit }**]
+
+#### Post a new comment for a gift
+
+You have to pass the parameter "text" on the body of your request. This will be the text of the comment.
 
 > **POST** /gifts/**{gift-id}**/comments
 
 #### Update a comment for a gift
 
-> **PUT** /gifts/**{gift-id}**/comments/**{comment-id}**
+Same as a new comment, you have to pass the new text under parameter "text" on the body of the request.
 
+> **PUT** /comments/**{comment-id}**
+
+#### Reply to a comment
+
+* Mistergift supports multi-level comments
+
+Same as previously, you have to pass the parameter "text" on the body of the request.
+
+> **POST** /comments/**{comment-id}**
 
 ### <i class="icon-file"></i> User notifications
 
-Notifications are a good way to maintains user informed of site dynamism and to creates move of users.
+Notifications are a good way to maintains author informed of site dynamism and to creates move of users.
 Notifications can be broadcasted by the MG administrators but are mainly automatic!
 
 
-#### Retrieves user notifications
+#### Retrieves author notifications
 
 Notification
 | Field        | Description           
 | ------------- |:-------------:|
-| <kbd>User</kbd> content | The target user|
+| <kbd>User</kbd> content | The target author|
 | <kbd>Long</kbd> eventId | The event id |
 | <kbd>Type</kbd> type | The notification type (gift, comment, participation) |
 | <kbd>Date</kbd> readDate | The creationDate of read |
@@ -422,4 +436,4 @@ Notification
 
 > **GET** /me/notifications[?status=**{unread|read|all}**&from=**{from-creationDate}**&to=**{toDate}**&page=**{page-no}**]
 
-By default, the interval between the from creationDate and the to creationDate is one month and the default notifications status is "unread" (that's all notifications that the user doesn't read yet).
+By default, the interval between the from creationDate and the to creationDate is one month and the default notifications status is "unread" (that's all notifications that the author doesn't read yet).
