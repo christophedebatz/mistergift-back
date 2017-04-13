@@ -10,6 +10,7 @@ import com.gvstave.mistergift.data.service.dto.ParticipationDto;
 import com.gvstave.mistergift.data.service.query.ParticipationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +26,6 @@ public class ParticipationController extends AbstractController {
 
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(ParticipationController.class);
-
-    /** The participation persistence service. */
-    @Inject
-    private ParticipationPersistenceService participationPersistenceService;
 
     /** The participation writer service. */
     @Inject
@@ -51,8 +48,9 @@ public class ParticipationController extends AbstractController {
      * @param giftId The gift id@.
      * @return The participations.
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/gifts/{giftId}/participations")
-    public @ResponseBody PageResponse<Participation> getGiftParticipation(
+    public PageResponse<Participation> getGiftParticipation(
             @PathVariable("giftId") Long giftId,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
@@ -68,8 +66,9 @@ public class ParticipationController extends AbstractController {
      * @param limit The limit.
      * @return The list of user participation.
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me/participations")
-    public @ResponseBody PageResponse<Participation> getUserParticipations(
+    public PageResponse<Participation> getUserParticipations(
             @RequestParam(value = "eventId", required = false) Long eventId,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
@@ -83,8 +82,9 @@ public class ParticipationController extends AbstractController {
      * @param giftId The gift id that the user want to participe.
      * @param participation The created participation.
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, path = "/gifts/{giftId}/participations")
-    public @ResponseBody ParticipationDto participate(
+    public ParticipationDto participate(
             @PathVariable("giftId") Long giftId,
             @RequestBody ParticipationDto participation) {
         LOGGER.debug("Creating new participation for gift-id={} with participation={}", giftId, participation);
@@ -98,8 +98,9 @@ public class ParticipationController extends AbstractController {
      * @param participation The participation to be updated.
      * @return The new participation.
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.PUT, path = "/gifts/{giftId}/participations")
-    public @ResponseBody ParticipationDto updateParticipation(
+    public ParticipationDto updateParticipation(
             @PathVariable("giftId") Long giftId,
             @RequestBody ParticipationDto participation) {
         LOGGER.debug("Updating gift-id={} with participation={}", giftId, participation);
