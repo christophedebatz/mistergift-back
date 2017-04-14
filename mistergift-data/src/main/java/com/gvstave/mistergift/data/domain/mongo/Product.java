@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Represents a global product (such as Sony Ps4 or Canapé Cuir :-) )
@@ -19,7 +20,8 @@ public class Product implements Serializable {
         BRAND("brand"),
         REFERENCE("reference"),
         DESCRIPTION("description"),
-        PICTURE_ID("pictureId");
+        PICTURE_ID("pictureId"),
+        DATE("date");
 
         String name;
 
@@ -55,6 +57,10 @@ public class Product implements Serializable {
     /** The product picture. */
     @Field
     private Long pictureId;
+
+    /** The date of adding. */
+    @Field
+    private Date date;
 
     /**
      * Hibernate constructor.
@@ -152,21 +158,35 @@ public class Product implements Serializable {
     }
 
     /**
-     * Returns the gift picture.
      *
-     * @return The gift picture.
+     * @return
      */
-    public Long getPicture() {
+    public Long getPictureId() {
         return pictureId;
     }
 
     /**
-     * Set the gift picture id.
      *
-     * @param pictureId The gift picture id.
+     * @param pictureId
      */
-    public void setPicture(Long pictureId) {
+    public void setPictureId(Long pictureId) {
         this.pictureId = pictureId;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     *
+     * @param date
+     */
+    public void setDate(Date date) {
+        this.date = date;
     }
 
 }

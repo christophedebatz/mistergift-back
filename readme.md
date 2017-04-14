@@ -437,3 +437,26 @@ Notification
 > **GET** /me/notifications[?status=**{unread|read|all}**&from=**{from-creationDate}**&to=**{toDate}**&page=**{page-no}**]
 
 By default, the interval between the from creationDate and the to creationDate is one month and the default notifications status is "unread" (that's all notifications that the author doesn't read yet).
+
+### <i class="icon-file"></i> Products
+
+The products are the base of the gifts. What's the difference between a product and a gift?
+* A product represents an item that everyone can buy online (on Amazon or everywhere else)
+* A gift is the link between a product and a user on MG
+
+#### Retrieve the last added products
+
+* By default, the limit is back-side capped at 10 items per request.
+* The since parameter is an ISO date which represents the product adding date.
+
+> **GET** /products/[?limit=**{ limit }**&since=**{ date }**]
+
+#### Retrieve a product by its id
+
+> **GET** /products/**{ product-id }**
+
+#### Search a product
+It will search on product brand name, description and name.
+
+> **GET** /products/?q=**{ search }**[&page=**{ page }**&limit=**{ limit }**]
+

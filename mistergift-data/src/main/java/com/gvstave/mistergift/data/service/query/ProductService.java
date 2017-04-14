@@ -61,11 +61,14 @@ public class ProductService {
      * @return The products.
      */
     @Transactional(readOnly = true)
-    public List<Product> getLastProducts(Integer limit) {
+    public List<Product> getLastProducts(Integer limit, Date since) {
         if (limit == null) {
             limit = MAX_PRODUCTS_COUNT;
         }
         final Query query = new Query().with(new PageRequest(1, limit, Sort.Direction.DESC));
+        if (since != null) {
+            query.addCriteria(Criteria.where(Product.Fields.DATE.getName()).gte(since));
+        }
         return mongo.find(query, Product.class);
     }
 

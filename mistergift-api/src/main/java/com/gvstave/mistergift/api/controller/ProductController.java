@@ -74,13 +74,15 @@ public class ProductController extends AbstractController {
      * Returns the last products.
      *
      * @param limit The limit.
+     * @param since The since date.
      * @return The last products.
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/last")
     public List<Product> getLastProducts(
-            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
-        return productService.getLastProducts(limit);
+            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
+            @RequestParam(value = "since", required = false) Date since) {
+        return productService.getLastProducts(limit, since);
     }
 
 }
