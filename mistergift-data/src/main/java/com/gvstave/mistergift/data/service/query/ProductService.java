@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.mongo.Product;
+import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The {@link Product} service.
@@ -88,7 +90,36 @@ public class ProductService {
         //@formatter:off
         Criteria criteria = Criteria.where(Product.Fields.BRAND.getName()).regex(search)
                 .orOperator(Criteria.where(Product.Fields.DESCRIPTION.getName()).regex(search)
-                .orOperator(Criteria.where(Product.Fields.NAME.getName()).regex(search)));
+                        .orOperator(Criteria.where(Product.Fields.NAME.getName()).regex(search)));
+        //@formatter:on
+        query.addCriteria(criteria);
+        return mongo.find(query, Product.class);
+    }
+
+    /**
+     * Returns the product by search (this is an advanced search), by:
+     * - by brand
+     * - by name
+     * - by description
+     * - by reference
+     *
+     * @param search The search.
+     * @param pageable The pageable.
+     * @return The results.
+     */
+    @Transactional(readOnly = true)
+    public List<Product> search(final SearchRequestDto search, final Pageable pageable) {
+        final Query query = new Query().with(pageable);
+        //@formatter:off
+        Criteria criteria = new Criteria();
+        Optional.ofNullable(search.getName())
+                .ifPresent(name -> criteria.orOperator(Criteria.where(Product.Fields.NAME.getName()).regex(name)));
+        Optional.ofNullable(search.getBrand())
+                .ifPresent(brand -> criteria.orOperator(Criteria.where(Product.Fields.BRAND.getName()).regex(brand)));
+        Optional.ofNullable(search.getDescription())
+                .ifPresent(description -> criteria.orOperator(Criteria.where(Product.Fields.DESCRIPTION.getName()).regex(description)));
+        Optional.ofNullable(search.getReference())
+                .ifPresent(reference -> criteria.orOperator(Criteria.where(Product.Fields.REFERENCE.getName()).is(reference)));
         //@formatter:on
         query.addCriteria(criteria);
         return mongo.find(query, Product.class);

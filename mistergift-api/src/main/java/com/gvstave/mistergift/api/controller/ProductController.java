@@ -5,6 +5,7 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
+import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
 import com.gvstave.mistergift.data.service.query.ProductService;
 import com.querydsl.core.types.Predicate;
 import org.slf4j.Logger;
@@ -62,12 +63,31 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET)
-    public PageResponse<Product> searchProduct(
+    public PageResponse<Product> search(
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
             @PathVariable(value = "q") String query) {
         LOGGER.debug("Searching products with query={}, page={} and limit={}", query, page, limit);
-        return new PageResponse<>(productService.search(query, getPageRequest(page)));
+        return new PageResponse<>(productService.search(query, getPageRequest(page, limit)));
+    }
+
+    /**
+     * Allow an advanced search for product.
+     *
+     * @param page The page.
+     * @param limit The limit.
+     * @param search The advanced search dto.
+     * @return The products.
+     */
+    @UserRestricted
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(method = RequestMethod.GET)
+    public PageResponse<Product> searchWith(
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
+            @RequestBody SearchRequestDto search){
+        LOGGER.debug("Searching products with query={}, page={} and limit={}", search, page, limit);
+        return new PageResponse<>(productService.search(search, getPageRequest(page, limit)));
     }
 
     /**
