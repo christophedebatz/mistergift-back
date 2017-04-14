@@ -13,6 +13,26 @@ import java.io.Serializable;
 @Document(collection = "products")
 public class Product implements Serializable {
 
+    public enum Fields {
+        ID("id"),
+        NAME("name"),
+        BRAND("brand"),
+        REFERENCE("reference"),
+        DESCRIPTION("description"),
+        PICTURE_ID("pictureId");
+
+        String name;
+
+        Fields(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    /** The product id. */
     @Id
     private String id;
 

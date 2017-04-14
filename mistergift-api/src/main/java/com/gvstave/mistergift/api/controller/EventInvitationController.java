@@ -35,9 +35,11 @@ public class EventInvitationController extends AbstractController {
     private EventInvitationService eventInvitationService;
 
     /**
+     * Returns the current user event invitations.
      *
-     * @param page
-     * @return
+     * @param page The page.
+     * @param limit The limit.
+     * @return The event invitations.
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/me/invitations")
