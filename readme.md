@@ -458,7 +458,7 @@ The products are the base of the gifts. What's the difference between a product 
 #### Quick product search
 It will search on product brand name, description and name.
 
-> **GET** /products/?q=**{ search }**[&page=**{ page }**&limit=**{ limit }**]
+> **GET** /products/search?q=**{ search }**[&page=**{ page }**&limit=**{ limit }**]
 
 #### Advanced product search
 You also want an advanced search with an object passed on the request body and named "search" which should contains:
@@ -469,7 +469,7 @@ You also want an advanced search with an object passed on the request body and n
 
 All these parameters are optional.
 
-> **GET** /products/[?page=**{ page }**&limit=**{ limit }**]
+> **GET** /products/search/advanced[?page=**{ page }**&limit=**{ limit }**]
 
 An example of request:
 ```

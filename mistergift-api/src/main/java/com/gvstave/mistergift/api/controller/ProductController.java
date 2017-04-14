@@ -48,7 +48,7 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public Product getProductById(@RequestParam("id") String id) {
+    public Product getProductById(@RequestParam("id") final String id) {
         return productService.findById(id);
     }
 
@@ -62,11 +62,11 @@ public class ProductController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, path = "/search")
     public PageResponse<Product> search(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
-            @PathVariable(value = "q") String query) {
+            @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
+            @PathVariable(value = "q") final String query) {
         LOGGER.debug("Searching products with query={}, page={} and limit={}", query, page, limit);
         return new PageResponse<>(productService.search(query, getPageRequest(page, limit)));
     }
@@ -81,11 +81,11 @@ public class ProductController extends AbstractController {
      */
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, path = "/search/advanced")
     public PageResponse<Product> searchWith(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
-            @RequestBody SearchRequestDto search){
+            @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page,
+            @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
+            @RequestBody final SearchRequestDto search){
         LOGGER.debug("Searching products with query={}, page={} and limit={}", search, page, limit);
         return new PageResponse<>(productService.search(search, getPageRequest(page, limit)));
     }
@@ -100,8 +100,8 @@ public class ProductController extends AbstractController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/last")
     public List<Product> getLastProducts(
-            @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit,
-            @RequestParam(value = "since", required = false) Date since) {
+            @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
+            @RequestParam(value = "since", required = false) final Date since) {
         return productService.getLastProducts(limit, since);
     }
 

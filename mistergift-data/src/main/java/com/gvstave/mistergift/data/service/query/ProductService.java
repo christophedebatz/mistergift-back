@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -113,13 +112,13 @@ public class ProductService {
         //@formatter:off
         Criteria criteria = new Criteria();
         Optional.ofNullable(search.getName())
-                .ifPresent(name -> criteria.orOperator(Criteria.where(Product.Fields.NAME.getName()).regex(name)));
+                .ifPresent(name -> criteria.andOperator(Criteria.where(Product.Fields.NAME.getName()).regex(name)));
         Optional.ofNullable(search.getBrand())
-                .ifPresent(brand -> criteria.orOperator(Criteria.where(Product.Fields.BRAND.getName()).regex(brand)));
+                .ifPresent(brand -> criteria.andOperator(Criteria.where(Product.Fields.BRAND.getName()).regex(brand)));
         Optional.ofNullable(search.getDescription())
-                .ifPresent(description -> criteria.orOperator(Criteria.where(Product.Fields.DESCRIPTION.getName()).regex(description)));
+                .ifPresent(description -> criteria.andOperator(Criteria.where(Product.Fields.DESCRIPTION.getName()).regex(description)));
         Optional.ofNullable(search.getReference())
-                .ifPresent(reference -> criteria.orOperator(Criteria.where(Product.Fields.REFERENCE.getName()).is(reference)));
+                .ifPresent(reference -> criteria.andOperator(Criteria.where(Product.Fields.REFERENCE.getName()).is(reference)));
         //@formatter:on
         query.addCriteria(criteria);
         return mongo.find(query, Product.class);

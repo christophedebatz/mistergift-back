@@ -21,7 +21,8 @@ public class Product implements Serializable {
         REFERENCE("reference"),
         DESCRIPTION("description"),
         PICTURE_ID("pictureId"),
-        DATE("date");
+        DATE("date"),
+        SLUG("slug");
 
         String name;
 
@@ -61,6 +62,10 @@ public class Product implements Serializable {
     /** The date of adding. */
     @Field
     private Date date;
+
+    /** The slug name. */
+    @Field
+    private String slug;
 
     /**
      * Hibernate constructor.
@@ -189,4 +194,19 @@ public class Product implements Serializable {
         this.date = date;
     }
 
+    /**
+     *
+     * @return
+     */
+    public String getSlug() {
+        return slug;
+    }
+
+    /**
+     *
+     * @param slug
+     */
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 }
