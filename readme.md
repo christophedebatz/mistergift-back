@@ -464,7 +464,7 @@ It will search on product brand name, description and name.
 You also want an advanced search with an object passed on the request body and named "search" which should contains:
 * **name**: the name of the product
 * **brand**: the brand of the product
-* **description**: the description of the product
+* **description**: the description@ of the product
 * **reference**: the reference of the product
 
 All these parameters are optional.

@@ -66,7 +66,7 @@ public class ProductController extends AbstractController {
     public PageResponse<Product> search(
             @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
-            @PathVariable(value = "q") final String query) {
+            @RequestParam(value = "q") final String query) {
         LOGGER.debug("Searching products with query={}, page={} and limit={}", query, page, limit);
         return new PageResponse<>(productService.search(query, getPageRequest(page, limit)));
     }
@@ -102,6 +102,7 @@ public class ProductController extends AbstractController {
     public List<Product> getLastProducts(
             @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
             @RequestParam(value = "since", required = false) final Date since) {
+        LOGGER.debug("Retrieving last {} products, since {}", limit, since);
         return productService.getLastProducts(limit, since);
     }
 
