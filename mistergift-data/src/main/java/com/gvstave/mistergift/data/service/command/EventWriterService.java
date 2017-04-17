@@ -59,24 +59,20 @@ public class EventWriterService {
      * Creates new event and add it to the given user.
      *
      * @param event The event to create.
-     * @param user  The event user.
      * @return The created event.
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
     @Transactional
-    public Event createEvent(Event event, User user) throws UnauthorizedOperationException, InvalidFieldValueException {
-        Objects.requireNonNull(event);
-        Objects.requireNonNull(user);
-
+    public Event createEvent(Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserCanUpdateEvent(event, false);
 
         Event savedEvent = eventPersistenceService.save(event); // useless?
-        UserEventId userEventId = new UserEventId(savedEvent, user);
+        UserEventId userEventId = new UserEventId(savedEvent, authenticatedUser.getUser());
         UserEvent userEvent = new UserEvent(userEventId, true);
-        userEvent = userEventPersistenceService.save(userEvent);
+        userEventPersistenceService.save(userEvent);
 
-        return userEvent.getId().getEvent();
+        return event;
     }
 
     /**
@@ -129,17 +125,14 @@ public class EventWriterService {
 
     /**
      * @param event
-     * @param user
      * @throws UnauthorizedOperationException
      * @throws InvalidFieldValueException
      */
     @Transactional
-    public Event updateEvent(Event event, User user) throws UnauthorizedOperationException, InvalidFieldValueException {
-        Objects.requireNonNull(event);
-        Objects.requireNonNull(user);
+    public Event updateEvent(Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserCanUpdateEvent(event, true);
 
-        if (!userEventService.isUserEventAdmin(user, event.getId())) {
+        if (!userEventService.isUserEventAdmin(authenticatedUser.getUser(), event.getId())) {
             throw new UnauthorizedOperationException("update event status");
         }
 

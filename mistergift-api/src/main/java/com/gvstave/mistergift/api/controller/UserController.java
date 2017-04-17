@@ -156,7 +156,7 @@ public class UserController extends AbstractController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, value = "/users/{userId}/gifts")
     public PageResponse<Product> getUserGifts(
-            @PathVariable(value = "id") Long userId,
+            @PathVariable(value = "userId") Long userId,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") Integer limit) {
         LOGGER.debug("Retrieving user-id={} gifts list with page={} and limit={}", userId, page, limit);

@@ -1,7 +1,10 @@
 package com.gvstave.mistergift.data.configuration;
 
+import com.gvstave.mistergift.data.Data;
 import com.gvstave.mistergift.data.service.DataServices;
 import com.gvstave.mistergift.service.Services;
+import com.gvstave.sdk.cdiscount.Cdiscount;
+import com.gvstave.sdk.cdiscount.configuration.CdiscountWebConfiguration;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,8 +18,8 @@ import javax.inject.Inject;
  * .
  */
 @Configuration
-@ComponentScan(basePackageClasses = { DataJpaConfiguration.class, Services.class, DataServices.class })
-@Import({ DataRedisConfiguration.class, DataJpaConfiguration.class, DataMongoConfiguration.class })
+@ComponentScan(basePackageClasses = { DataJpaConfiguration.class, Data.class, Services.class, DataServices.class, Cdiscount.class})
+@Import({ DataRedisConfiguration.class, DataJpaConfiguration.class, DataMongoConfiguration.class, CdiscountWebConfiguration.class})
 @PropertySource("classpath:/WEB-INF/${server.role}.properties")
 public class DataWebConfiguration {
 

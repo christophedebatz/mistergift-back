@@ -1,5 +1,10 @@
 package com.gvstave.mistergift.data.domain.jpa;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateDeserializer;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateSerializer;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
@@ -20,11 +25,15 @@ abstract class AbstractTimestampableJpaBaseEntity<T extends Serializable> extend
     /** The create date. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date creationDate;
 
     /** The modification date. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modification_date", nullable = false)
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date modificationDate;
 
     /**

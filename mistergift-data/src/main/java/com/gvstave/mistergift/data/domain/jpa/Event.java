@@ -3,6 +3,11 @@ package com.gvstave.mistergift.data.domain.jpa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.cfg.JacksonJodaDateFormat;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateDeserializer;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateSerializer;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 
 import javax.persistence.Column;
@@ -72,7 +77,7 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
          * @return The event status.
          */
         public static EventStatus fromString(String str) throws InvalidFieldValueException {
-            return Arrays.asList(EventStatus.values()).stream()
+            return Arrays.stream(EventStatus.values())
                 .filter(status -> status.getStatus().equalsIgnoreCase(str)).findFirst()
                 .orElseThrow(() -> new InvalidFieldValueException("fromString::str"));
         }
@@ -80,7 +85,7 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
     }
 
     /** The event name. */
-    @Column(name = "name", length = 75, unique = true, nullable = false)
+    @Column(name = "name", length = 75, nullable = false)
     private String name;
 
     /** The event status. */
@@ -95,11 +100,15 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
     /** The event start date. */
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date startDate;
 
     /** The event end date. */
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date endDate;
 
     /** The event address. */

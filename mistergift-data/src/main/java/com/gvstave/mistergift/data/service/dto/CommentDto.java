@@ -3,6 +3,10 @@ package com.gvstave.mistergift.data.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateDeserializer;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateSerializer;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,8 +25,12 @@ public class CommentDto implements Serializable {
 
     private Long parentId;
 
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date creationDate;
 
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date modificationDate;
 
     public CommentDto() {

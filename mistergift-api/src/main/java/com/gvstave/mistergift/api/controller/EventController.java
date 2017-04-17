@@ -67,7 +67,7 @@ public class EventController extends AbstractController {
     @RequestMapping(method = RequestMethod.POST, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public Event save(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         LOGGER.debug("Creating event={}", event);
-        return eventWriterService.createEvent(event, getUser());
+        return eventWriterService.createEvent(event);
     }
 
     /**
@@ -82,7 +82,7 @@ public class EventController extends AbstractController {
     @RequestMapping(method = RequestMethod.PUT, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public Event update(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         LOGGER.debug("Updating event id={}", event);
-        return eventWriterService.updateEvent(event, getUser());
+        return eventWriterService.updateEvent(event);
     }
 
     /**

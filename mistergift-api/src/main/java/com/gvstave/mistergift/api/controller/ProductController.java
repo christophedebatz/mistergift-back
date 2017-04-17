@@ -5,6 +5,7 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
+import com.gvstave.mistergift.data.provider.cdiscount.Test;
 import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
 import com.gvstave.mistergift.data.service.query.ProductService;
 import com.querydsl.core.types.Predicate;
@@ -33,6 +34,9 @@ public class ProductController extends AbstractController {
     @Inject
     private ProductService productService;
 
+    @Inject
+    private Test test;
+
     /**
      * Default constructor.
      */
@@ -53,7 +57,7 @@ public class ProductController extends AbstractController {
     }
 
     /**
-     * Search for a product.
+     * SearchRequest for a product.
      *
      * @param page The page.
      * @param limit The limit.
@@ -68,6 +72,7 @@ public class ProductController extends AbstractController {
             @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
             @RequestParam(value = "q") final String query) {
         LOGGER.debug("Searching products with query={}, page={} and limit={}", query, page, limit);
+        test.getProducts(query);
         return new PageResponse<>(productService.search(query, getPageRequest(page, limit)));
     }
 

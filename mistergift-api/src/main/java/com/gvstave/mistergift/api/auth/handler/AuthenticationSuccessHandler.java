@@ -29,18 +29,20 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
             throw new RuntimeException("Could not find user in user details.");
         }
 
-        User user = (User) authentication.getPrincipal();
-        Token token = user.getToken();
+        User currentUser = (User) authentication.getPrincipal();
+        Token token = currentUser.getToken();
 
         Map<String, Object> session = new LinkedHashMap<>();
         session.put("token", token.getId());
         session.put("expireAt", token.getExpireAt());
 
         Map<String, Object> general = new LinkedHashMap<>();
-        general.put("id", user.getId());
-        general.put("email", user.getEmail());
-        general.put("firstName", user.getFirstName());
-        general.put("lastName", user.getLastName());
+        Map<String, Object> user = new LinkedHashMap<>();
+        user.put("id", currentUser.getId());
+        user.put("email", currentUser.getEmail());
+        user.put("firstName", currentUser.getFirstName());
+        user.put("lastName", currentUser.getLastName());
+        general.put("user", user);
         general.put("session", session);
 
         Map<String, Object> response = new LinkedHashMap<>();

@@ -1,5 +1,9 @@
 package com.gvstave.mistergift.data.domain.jpa;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateDeserializer;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateSerializer;
 import com.gvstave.mistergift.data.domain.BaseEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,6 +22,8 @@ public class Token implements BaseEntity<String> {
 
     @Column(name = "expire_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date expireAt;
 
     @OneToOne

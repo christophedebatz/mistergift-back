@@ -2,7 +2,6 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.provider.common.ProductSupplierService;
 import com.gvstave.mistergift.provider.api.SearchBuilder;
 import com.gvstave.mistergift.provider.common.ProductComparator;
 import com.gvstave.mistergift.provider.domain.RemoteProduct;
@@ -27,8 +26,8 @@ public class SearchController extends AbstractController {
     private static Logger LOGGER = LoggerFactory.getLogger(SearchController.class);
 
     /** The product suppliers. */
-    @Inject
-    private List<ProductSupplierService> productSuppliers;
+    //@Inject
+    //private List<ProductSupplierService> productSuppliers;
 
     /** The env. */
     @Inject
@@ -88,9 +87,9 @@ public class SearchController extends AbstractController {
 
         // get remoteProducts list
         List<RemoteProduct> remoteProducts = new ArrayList<>();
-        for (ProductSupplierService productSupplier : productSuppliers) {
-            remoteProducts.addAll(productSupplier.search(builder));
-        }
+        //for (ProductSupplierService productSupplier : productSuppliers) {
+        //    remoteProducts.addAll(productSupplier.search(builder));
+        //}
 
         // sort: price asc, desc; name asc, desc
         String sort = request.getParameter("sort");

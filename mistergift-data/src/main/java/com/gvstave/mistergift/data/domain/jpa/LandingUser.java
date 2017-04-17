@@ -1,5 +1,10 @@
 package com.gvstave.mistergift.data.domain.jpa;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateDeserializer;
+import com.gvstave.mistergift.data.configuration.serialization.JacksonDateSerializer;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.util.Date;
@@ -35,6 +40,8 @@ public class LandingUser extends AbstractJpaBaseEntity<Long>
     /** The create date. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date creationDate;
 
     /**
