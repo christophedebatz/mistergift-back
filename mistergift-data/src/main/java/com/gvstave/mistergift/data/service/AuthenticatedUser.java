@@ -3,6 +3,7 @@ package com.gvstave.mistergift.data.service;
 import com.gvstave.mistergift.data.domain.jpa.User;
 import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ public class AuthenticatedUser {
      *
      * @return the user
      */
+    @Transactional(readOnly = true)
     public User getUser() {
         final Long userId = userThreadLocal.get();
         return userId == null ? null : userPersistenceService.findOne(userId);

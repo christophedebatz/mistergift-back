@@ -6,6 +6,8 @@ import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.provider.cdiscount.Test;
+import com.gvstave.mistergift.data.service.command.ProductWriterService;
+import com.gvstave.mistergift.data.service.dto.ProductDto;
 import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
 import com.gvstave.mistergift.data.service.query.ProductService;
 import com.querydsl.core.types.Predicate;
@@ -33,6 +35,9 @@ public class ProductController extends AbstractController {
     /** The product service. */
     @Inject
     private ProductService productService;
+
+    @Inject
+    private ProductWriterService productWriterService;
 
     @Inject
     private Test test;
@@ -110,5 +115,18 @@ public class ProductController extends AbstractController {
         LOGGER.debug("Retrieving last {} products, since {}", limit, since);
         return productService.getLastProducts(limit, since);
     }
+
+    /**
+     * Inserts new product.
+     *
+     * @param product The product.
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(method = RequestMethod.POST)
+    public void insertNewProduct(@RequestBody final ProductDto product) {
+        LOGGER.debug("Inserting new product", product);
+        productWriterService.createNewProduct(product);
+    }
+
 
 }

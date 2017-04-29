@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(schema = "mistergift", name = "users")
@@ -97,12 +98,10 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
     private FileMetadata thumbnail;
 
     /** The user events. */
-    @OneToMany
-    @JoinTable(name = "user_events",
-        joinColumns = { @JoinColumn(name = "user_id", updatable = false) }
-    )
-    private List<UserEvent> userEvents;
+    @OneToMany(mappedBy = "participant")
+    private Set<UserEventParticipation> participations;
 
+    /** The user locale. */
     @Column(name = "locale")
     private String locale;
 
@@ -288,22 +287,19 @@ public class User extends AbstractTimestampableJpaBaseEntity<Long> {
     }
 
     /**
-     * Returns the user events.
      *
-     * @return The user events.
+     * @return
      */
     @JsonIgnore
-    public List<UserEvent> getUserEvents() {
-        return userEvents;
+    public Set<UserEventParticipation> getParticipations() {
+        return participations;
     }
 
     /**
-     * Sets the user events.
      *
-     * @param userEvents The user events.
+     * @param participations
      */
-    public void setUserEvents(List<UserEvent> userEvents) {
-        this.userEvents = userEvents;
+    public void setParticipations(Set<UserEventParticipation> participations) {
+        this.participations = participations;
     }
-
 }

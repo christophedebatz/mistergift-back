@@ -2,9 +2,9 @@ package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.provider.api.SearchBuilder;
-import com.gvstave.mistergift.provider.common.ProductComparator;
-import com.gvstave.mistergift.provider.domain.RemoteProduct;
+import com.gvstave.sdk.cdiscount.api.product.search.CdiscountProductSearchRequest;
+import com.gvstave.sdk.cdiscount.common.ProductComparator;
+import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -45,67 +45,67 @@ public class SearchController extends AbstractController {
      *
      * @return Serialized users list.
      */
-    @UserRestricted
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody List<RemoteProduct> searchProduct(HttpServletRequest request, @RequestParam(value = "query", required = true) String query) {
-        LOGGER.debug("Searching remoteProducts with query={}", query);
-        SearchBuilder builder = SearchBuilder.create()
-                .withQuery(query);
-
-        // current page requested
-        if (!request.getParameter("page").isEmpty()) {
-            builder.withPagination(
-                Integer.parseInt(request.getParameter("page")),
-                Integer.parseInt(environment.getProperty("page.size"))
-            );
-        }
-
-        // include market places
-        if (!request.getParameter("market").isEmpty()) {
-            builder.includeMarketPlace(Boolean.parseBoolean(request.getParameter("market")));
-        }
-
-        // price between
-        if (!request.getParameter("minPrice").isEmpty() && !request.getParameter("maxPrice").isEmpty()) {
-            builder.withPriceBetween(
-                Integer.parseInt(request.getParameter("minPrice")),
-                Integer.parseInt(request.getParameter("maxPrice"))
-            );
-        }
-
-        // brands
-        if (!request.getParameter("brands").isEmpty()) {
-            List<String> brands = Arrays.asList(
-                request.getParameter("brands")
-                    .replaceAll("\\s", "")
-                    .split(",")
-            );
-
-            builder.withBrands(brands);
-        }
-
-        // get remoteProducts list
-        List<RemoteProduct> remoteProducts = new ArrayList<>();
-        //for (ProductSupplierService productSupplier : productSuppliers) {
-        //    remoteProducts.addAll(productSupplier.search(builder));
-        //}
-
-        // sort: price asc, desc; name asc, desc
-        String sort = request.getParameter("sort");
-        if (!sort.isEmpty()) {
-            String[] sorts = sort.replaceAll("\\s", "").split(":");
-            if (sorts.length == 2) {
-                remoteProducts.sort(
-                    new ProductComparator(
-                        ProductComparator.SortItem.of(sorts[0]),
-                        ProductComparator.SortDirection.of(sorts[1])
-                    )
-                );
-            }
-        }
-
-        return remoteProducts;
-    }
+//    @UserRestricted
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(method = RequestMethod.POST)
+//    public @ResponseBody List<RemoteProduct> searchProduct(HttpServletRequest request, @RequestParam(value = "query", required = true) String query) {
+//        LOGGER.debug("Searching remoteProducts with query={}", query);
+//        CdiscountProductSearchRequest builder = CdiscountProductSearchRequest.create()
+//                .withQuery(query);
+//
+//        // current page requested
+//        if (!request.getParameter("page").isEmpty()) {
+//            builder.withPagination(
+//                Integer.parseInt(request.getParameter("page")),
+//                Integer.parseInt(environment.getProperty("page.size"))
+//            );
+//        }
+//
+//        // include market places
+//        if (!request.getParameter("market").isEmpty()) {
+//            builder.includeMarketPlace(Boolean.parseBoolean(request.getParameter("market")));
+//        }
+//
+//        // price between
+//        if (!request.getParameter("minPrice").isEmpty() && !request.getParameter("maxPrice").isEmpty()) {
+//            builder.withPriceBetween(
+//                Integer.parseInt(request.getParameter("minPrice")),
+//                Integer.parseInt(request.getParameter("maxPrice"))
+//            );
+//        }
+//
+//        // brands
+//        if (!request.getParameter("brands").isEmpty()) {
+//            List<String> brands = Arrays.asList(
+//                request.getParameter("brands")
+//                    .replaceAll("\\s", "")
+//                    .split(",")
+//            );
+//
+//            builder.withBrands(brands);
+//        }
+//
+//        // get remoteProducts list
+//        List<RemoteProduct> remoteProducts = new ArrayList<>();
+//        //for (ProductSupplierService productSupplier : productSuppliers) {
+//        //    remoteProducts.addAll(productSupplier.search(builder));
+//        //}
+//
+//        // sort: price asc, desc; name asc, desc
+//        String sort = request.getParameter("sort");
+//        if (!sort.isEmpty()) {
+//            String[] sorts = sort.replaceAll("\\s", "").split(":");
+//            if (sorts.length == 2) {
+//                remoteProducts.sort(
+//                    new ProductComparator(
+//                        ProductComparator.SortItem.of(sorts[0]),
+//                        ProductComparator.SortDirection.of(sorts[1])
+//                    )
+//                );
+//            }
+//        }
+//
+//        return remoteProducts;
+    //}
 
 }

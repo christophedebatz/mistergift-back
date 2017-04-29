@@ -154,11 +154,6 @@
             <version>1.8.5</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.gvstave.mistergift</groupId>
-            <artifactId>mistergift-provider</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
     <profiles>
         <profile>

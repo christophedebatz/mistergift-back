@@ -5,18 +5,16 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.domain.jpa.UserEvent;
+import com.gvstave.mistergift.data.domain.jpa.UserEventParticipation;
 import com.gvstave.mistergift.data.domain.jpa.UserGift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.UserEventPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserEventParticipationPersistenceService;
 import com.gvstave.mistergift.data.domain.jpa.UserGiftPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
-import com.gvstave.mistergift.data.service.query.UserEventService;
+import com.gvstave.mistergift.data.service.query.UserEventParticipationService;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,10 +27,10 @@ import java.util.*;
 @UserRestricted
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserEventController extends AbstractController {
+public class UserEventParticipationController extends AbstractController {
 
     /** The logger. */
-    private static Logger LOGGER = LoggerFactory.getLogger(UserEventController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(UserEventParticipationController.class);
 
     /** The event repositories service. */
     @Inject
@@ -40,11 +38,11 @@ public class UserEventController extends AbstractController {
 
     /** The user events repositories service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventParticipationPersistenceService userEventParticipationPersistenceService;
 
     /** The user event service. */
     @Inject
-    private UserEventService userEventService;
+    private UserEventParticipationService userEventParticipationService;
 
     /** The whishlist repositories service. */
     @Inject
@@ -53,7 +51,7 @@ public class UserEventController extends AbstractController {
     /**
      * Default constructor.
      */
-    public UserEventController () throws TooManyRequestException {
+    public UserEventParticipationController() throws TooManyRequestException {
         super();
     }
 
@@ -73,7 +71,7 @@ public class UserEventController extends AbstractController {
         LOGGER.debug("Retrieving current-user events for page={} and filter={}", page, filters);
 
         final PageRequest pageable = getPageRequest(page, limit);
-        return userEventService.getUserEvents(getUser(), filters, pageable);
+        return userEventParticipationService.getUserEvents(getUser(), filters, pageable);
     }
 
     /**
@@ -94,7 +92,7 @@ public class UserEventController extends AbstractController {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
 
         if (event.isPresent()) {
-            return new PageResponse<>(userEventService.getEventMembers(event.get(), getPageRequest(page, limit)));
+            return new PageResponse<>(userEventParticipationService.getEventMembers(event.get(), getPageRequest(page, limit)));
         }
 
         throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);
@@ -118,7 +116,7 @@ public class UserEventController extends AbstractController {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
 
         if (event.isPresent()) {
-            return new PageResponse<>(userEventService.getEventPendingUsers(event.get(), getPageRequest(page, limit)));
+            return new PageResponse<>(userEventParticipationService.getEventPendingUsers(event.get(), getPageRequest(page, limit)));
         }
 
         throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);
@@ -141,14 +139,14 @@ public class UserEventController extends AbstractController {
         @PathVariable(value = "userId") Long userId) {
         LOGGER.debug("Retrieving user event gifts list according current user for event:id={}, user:id={} and page={}", eventId, userId, page);
 
-        BooleanExpression qUserEvent = QUserEvent.userEvent.id.event.id.eq(eventId)
-            .and(QUserEvent.userEvent.id.user.id.eq(userId));
-        Optional<UserEvent> userEventOpt = Optional.ofNullable(userEventPersistenceService.findOne(qUserEvent));
+        BooleanExpression qUserEvent = QUserEventParticipation.userEventParticipation.event.id.eq(eventId)
+            .and(QUserEventParticipation.userEventParticipation.participant.id.eq(userId));
+        Optional<UserEventParticipation> userEventOpt = Optional.ofNullable(userEventParticipationPersistenceService.findOne(qUserEvent));
 
         if (userEventOpt.isPresent()) {
-            UserEvent userEvent = userEventOpt.get();
+            UserEventParticipation userEventParticipation = userEventOpt.get();
 
-            if (userEvent.canSeeMines()) {
+            if (userEventParticipation.canSeeMines()) {
                 BooleanExpression qWhishlist = QUserGift.userGift.id.user.id.eq(userId);
                 return new PageResponse<>(userGiftPersistenceService.findAll(qWhishlist, getPageRequest(page, limit)));
             }
@@ -174,7 +172,7 @@ public class UserEventController extends AbstractController {
         Optional<Event> event = Optional.ofNullable(eventPersistenceService.findOne(eventId));
 
         if (event.isPresent()) {
-            return new PageResponse<>(userEventService.getEventAdmins(event.get(), getPageRequest(page, limit)));
+            return new PageResponse<>(userEventParticipationService.getEventAdmins(event.get(), getPageRequest(page, limit)));
         }
 
         throw new EntityNotFoundException("Unable to retrieve event with id=" + eventId);

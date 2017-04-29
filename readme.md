@@ -479,3 +479,15 @@ An example of request:
   "description": "entertainment computer"
 }
 ```
+
+#### Save a new product manually
+
+> **POST** /products
+
+* **name**: The product name.
+* **description**: The product description.
+* **brand**: The product brand.
+* **reference**: The external product reference (i.e. internal product id of Amazon).
+* **pictureId**: The picture id.
+* **date**: The date of insertion.
+* **url**: The url of the product page (Amazon, Cdiscount, Fnac...).

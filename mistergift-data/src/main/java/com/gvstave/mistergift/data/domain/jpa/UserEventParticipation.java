@@ -1,20 +1,21 @@
 package com.gvstave.mistergift.data.domain.jpa;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.gvstave.mistergift.data.domain.BaseEntity;
-import com.querydsl.core.annotations.QueryInit;
 
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "mistergift", name = "users_events")
+@Table(schema = "mistergift", name = "user_event_participations",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"event_id", "participant_id"})}
+)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserEvent implements BaseEntity<UserEventId> {
+public class UserEventParticipation extends AbstractJpaBaseEntity<Long> {
 
     /**
      * The user event filter.
      */
-    public enum UserEvenFilter {
+    public enum UserEventFilter {
 
         /** The relation describes that the user is an admin of the event. */
         ADMIN("admin"),
@@ -41,7 +42,7 @@ public class UserEvent implements BaseEntity<UserEventId> {
          *
          * @param filter The filter.
          */
-        UserEvenFilter(String filter) {
+        UserEventFilter(String filter) {
             this.filter = filter;
         }
 
@@ -56,10 +57,14 @@ public class UserEvent implements BaseEntity<UserEventId> {
 
     }
 
-    /** The id. */
-    @QueryInit({"event", "user"})
-    @EmbeddedId
-    private UserEventId id;
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    @JsonBackReference
+    private Event event;
+
+    @ManyToOne
+    @JoinColumn(name = "participant_id")
+    private User participant;
 
     /** Whether other event users can see other event users whislist. */
     @Column(name = "can_see_others")
@@ -81,7 +86,7 @@ public class UserEvent implements BaseEntity<UserEventId> {
     /**
      * Hibernate constructor.
      */
-    public UserEvent() {
+    public UserEventParticipation() {
         // nothing
     }
 
@@ -91,27 +96,15 @@ public class UserEvent implements BaseEntity<UserEventId> {
      * @param id
      * @param isAdmin
      */
-    public UserEvent(UserEventId id, boolean isAdmin) {
-        this.id = id;
+    public UserEventParticipation(Long id, boolean isAdmin) {
+        setId(id);
         this.isAdmin = isAdmin;
     }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public UserEventId getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     */
-    @Override
-    public void setId(UserEventId id) {
-        this.id = id;
+    public UserEventParticipation(Event event, User participant, boolean isAdmin) {
+        this.event = event;
+        this.participant = participant;
+        this.isAdmin = isAdmin;
     }
 
     /**
@@ -188,4 +181,51 @@ public class UserEvent implements BaseEntity<UserEventId> {
         this.invitation = invitation;
     }
 
+    /**
+     *
+     * @return
+     */
+    public Event getEvent() {
+        return event;
+    }
+
+    /**
+     *
+     * @param event
+     */
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public User getParticipant() {
+        return participant;
+    }
+
+    /**
+     *
+     * @param participant
+     */
+    public void setParticipant(User participant) {
+        this.participant = participant;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isCanSeeOthers() {
+        return canSeeOthers;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isCanSeeMines() {
+        return canSeeMines;
+    }
 }

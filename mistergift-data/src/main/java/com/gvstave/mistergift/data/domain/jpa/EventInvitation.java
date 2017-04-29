@@ -52,7 +52,7 @@ public class EventInvitation extends AbstractTimestampableJpaBaseEntity<Long> {
     }
 
     /** The identifier of the invitation. */
-    @Column(unique = true, nullable = false)
+    @Column(name="`key`", unique = true, nullable = false)
     private String key;
 
     /** The user who sends the event invitation. */

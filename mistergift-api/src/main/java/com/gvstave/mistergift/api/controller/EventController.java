@@ -8,6 +8,7 @@ import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
 import com.gvstave.mistergift.data.service.command.EventWriterService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
+import com.gvstave.mistergift.data.service.dto.EventDto;
 import com.gvstave.mistergift.data.service.dto.ExternalUserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class EventController extends AbstractController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST, path = "/events", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public Event save(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
+    public EventDto save(@RequestBody Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         LOGGER.debug("Creating event={}", event);
         return eventWriterService.createEvent(event);
     }

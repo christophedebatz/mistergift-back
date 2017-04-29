@@ -1,11 +1,14 @@
 package com.gvstave.mistergift.data.service.command;
 
+import com.google.common.collect.Sets;
 import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.service.AuthenticatedUser;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
+import com.gvstave.mistergift.data.service.dto.EventDto;
 import com.gvstave.mistergift.data.service.dto.ExternalUserDto;
-import com.gvstave.mistergift.data.service.query.UserEventService;
+import com.gvstave.mistergift.data.service.dto.mapper.EventMapper;
+import com.gvstave.mistergift.data.service.query.UserEventParticipationService;
 import com.gvstave.mistergift.service.mailing.ExternalUserEmailingService;
 import com.gvstave.mistergift.service.mailing.exception.MailException;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -34,7 +37,7 @@ public class EventWriterService {
 
     /** The user event repositories service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventParticipationPersistenceService userEventParticipationPersistenceService;
 
     /** The event repositories service. */
     @Inject
@@ -45,7 +48,7 @@ public class EventWriterService {
 
     /** The user event service. */
     @Inject
-    private UserEventService userEventService;
+    private UserEventParticipationService userEventParticipationService;
 
     /** The external user emailing service. */
     @Inject
@@ -64,15 +67,15 @@ public class EventWriterService {
      * @throws InvalidFieldValueException
      */
     @Transactional
-    public Event createEvent(Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
+    public EventDto createEvent(Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserCanUpdateEvent(event, false);
+        User user = authenticatedUser.getUser();
 
-        Event savedEvent = eventPersistenceService.save(event); // useless?
-        UserEventId userEventId = new UserEventId(savedEvent, authenticatedUser.getUser());
-        UserEvent userEvent = new UserEvent(userEventId, true);
-        userEventPersistenceService.save(userEvent);
+        UserEventParticipation userEventParticipation = new UserEventParticipation(event, user, true);
+        userEventParticipationPersistenceService.save(userEventParticipation);
 
-        return event;
+        event.setParticipants(Sets.newHashSet(userEventParticipation));
+        return EventMapper.map(eventPersistenceService.save(event));
     }
 
     /**
@@ -87,7 +90,7 @@ public class EventWriterService {
         Objects.requireNonNull(eventId);
         Objects.requireNonNull(user);
 
-        if (!userEventService.isUserEventAdmin(user, eventId)) {
+        if (!userEventParticipationService.isUserEventAdmin(user, eventId)) {
             throw new UnauthorizedOperationException("remove event");
         }
         eventPersistenceService.delete(eventId);
@@ -109,7 +112,7 @@ public class EventWriterService {
         Objects.requireNonNull(status);
         Objects.requireNonNull(user);
 
-        if (!userEventService.isUserEventAdmin(user, eventId)) {
+        if (!userEventParticipationService.isUserEventAdmin(user, eventId)) {
             throw new UnauthorizedOperationException("update event status");
         }
         Optional<Event> event = Optional.of(eventPersistenceService.findOne(eventId));
@@ -132,7 +135,7 @@ public class EventWriterService {
     public Event updateEvent(Event event) throws UnauthorizedOperationException, InvalidFieldValueException {
         ensureUserCanUpdateEvent(event, true);
 
-        if (!userEventService.isUserEventAdmin(authenticatedUser.getUser(), event.getId())) {
+        if (!userEventParticipationService.isUserEventAdmin(authenticatedUser.getUser(), event.getId())) {
             throw new UnauthorizedOperationException("update event status");
         }
 

@@ -67,6 +67,9 @@ public class Product implements Serializable {
     @Field
     private String slug;
 
+    @Field
+    private String url;
+
     /**
      * Hibernate constructor.
      */
@@ -208,5 +211,21 @@ public class Product implements Serializable {
      */
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     *
+     * @param url
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

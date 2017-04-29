@@ -19,8 +19,9 @@ public class EventService {
     @Inject
     private EventPersistenceService eventPersistenceService;
 
+    /** The user persistence service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventParticipationPersistenceService userEventParticipationPersistenceService;
 
     /**
      * Returns an event by its id, or null if it does not exist.
@@ -39,9 +40,10 @@ public class EventService {
      * @param targetUser The target user.
      * @return
      */
-    public List<UserEvent> retrieveCommonUsersEvents(Long sourceUserId, User targetUser) {
-        BooleanExpression query = QUserEvent.userEvent.id.user.id.eq(sourceUserId).and(QUserEvent.userEvent.id.user.eq(targetUser));
-        return userEventPersistenceService.streamAll(query).collect(Collectors.toList());
+    public List<UserEventParticipation> retrieveCommonUsersEvents(Long sourceUserId, User targetUser) {
+        QUser qParticipant = QUserEventParticipation.userEventParticipation.participant;
+        BooleanExpression query = qParticipant.id.eq(sourceUserId).and(qParticipant.eq(targetUser));
+        return userEventParticipationPersistenceService.streamAll(query).collect(Collectors.toList());
     }
 
 }

@@ -5,7 +5,7 @@ import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.domain.jpa.EventInvitationPersistenceService;
 import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.UserEventPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserEventParticipationPersistenceService;
 import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class EventInvitationWriterService {
 
     /** The user event repositories service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventParticipationPersistenceService userEventParticipationPersistenceService;
 
     /**
      * Invites another user to join an event.
@@ -63,9 +63,8 @@ public class EventInvitationWriterService {
 
         if (targetEvent.isPresent() && targetUser.isPresent()) {
             boolean userCanInvit = targetEvent.get().getParticipants().stream()
-                .filter(UserEvent::isAdmin)
-                .map(UserEvent::getId)
-                .map(UserEventId::getUser)
+                .filter(UserEventParticipation::isAdmin)
+                .map(UserEventParticipation::getParticipant)
                 .anyMatch(fromUser::equals);
 
             if (userCanInvit) {
@@ -75,10 +74,9 @@ public class EventInvitationWriterService {
                 invitation.setEvent(targetEvent.get());
                 invitation = eventInvitationPersistenceService.save(invitation);
 
-                UserEvent userEvent = new UserEvent();
-                userEvent.setInvitation(invitation);
-                userEvent.setId(new UserEventId(targetEvent.get(), targetUser.get()));
-                userEventPersistenceService.save(userEvent);
+                UserEventParticipation userEventParticipation = new UserEventParticipation(targetEvent.get(), targetUser.get(), false);
+                userEventParticipation.setInvitation(invitation);
+                userEventParticipationPersistenceService.save(userEventParticipation);
 
                 return invitation;
             } else {
@@ -100,11 +98,11 @@ public class EventInvitationWriterService {
         Objects.requireNonNull(user);
         Objects.requireNonNull(eventId);
 
-        QUserEvent qUserEvent = QUserEvent.userEvent;
+        QUserEventParticipation qUserEvent = QUserEventParticipation.userEventParticipation;
         Optional.ofNullable(
-            userEventPersistenceService.findOne(
-                qUserEvent.id.event.id.eq(eventId)
-                    .and(qUserEvent.id.user.eq(user))
+            userEventParticipationPersistenceService.findOne(
+                qUserEvent.event.id.eq(eventId)
+                    .and(qUserEvent.participant.eq(user))
                     .and(qUserEvent.invitation.isNotNull())
             )
         )
@@ -131,7 +129,7 @@ public class EventInvitationWriterService {
             }
 
             eventInvitationPersistenceService.delete(invitation);
-            userEventPersistenceService.save(userEvent);
+            userEventParticipationPersistenceService.save(userEvent);
         });
     }
 
@@ -150,13 +148,13 @@ public class EventInvitationWriterService {
             .filter(filter -> filter.getTargetUser().equals(user))
             .ifPresent(invitation -> {
                 eventInvitationPersistenceService.delete(invitation);
-                QUserEvent qUserEvent = QUserEvent.userEvent;
+                QUserEventParticipation qUserEvent = QUserEventParticipation.userEventParticipation;
                 Optional.ofNullable(
-                    userEventPersistenceService.findOne(
-                        qUserEvent.id.user.eq(user)
-                            .and(qUserEvent.id.event.eq(invitation.getEvent())
+                    userEventParticipationPersistenceService.findOne(
+                        qUserEvent.participant.eq(user)
+                            .and(qUserEvent.event.eq(invitation.getEvent())
                                 .and(qUserEvent.invitation.isNotNull()))))
-                    .ifPresent(userEventPersistenceService::delete);
+                    .ifPresent(userEventParticipationPersistenceService::delete);
             }
         );
     }
@@ -172,16 +170,16 @@ public class EventInvitationWriterService {
         Objects.requireNonNull(user);
         Objects.requireNonNull(invitationId);
 
-        QUserEvent qUserEvent = QUserEvent.userEvent;
+        QUserEventParticipation qUserEvent = QUserEventParticipation.userEventParticipation;
         Optional.ofNullable(
-            userEventPersistenceService.findOne(
+            userEventParticipationPersistenceService.findOne(
                 qUserEvent.invitation.isNotNull()
                     .and(qUserEvent.invitation.id.eq(invitationId)))
         )
         .filter(filter -> filter.getInvitation().getSenderUser().equals(user))
         .ifPresent(userEvent -> {
             eventInvitationPersistenceService.delete(userEvent.getInvitation());
-            userEventPersistenceService.delete(userEvent);
+            userEventParticipationPersistenceService.delete(userEvent);
         });
     }
 

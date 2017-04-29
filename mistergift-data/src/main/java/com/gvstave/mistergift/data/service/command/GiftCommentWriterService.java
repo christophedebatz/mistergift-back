@@ -4,21 +4,11 @@ import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.*;
 import com.gvstave.mistergift.data.service.AuthenticatedUser;
 import com.gvstave.mistergift.data.service.dto.CommentDto;
-import com.gvstave.mistergift.data.service.dto.ExternalUserDto;
 import com.gvstave.mistergift.data.service.dto.mapper.CommentMapper;
-import com.gvstave.mistergift.data.service.query.UserEventService;
-import com.gvstave.mistergift.service.mailing.ExternalUserEmailingService;
-import com.gvstave.mistergift.service.mailing.exception.MailException;
-import org.apache.commons.validator.routines.EmailValidator;
-import org.omg.CORBA.DynAnyPackage.Invalid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 /**

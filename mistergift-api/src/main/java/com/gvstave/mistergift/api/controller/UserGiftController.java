@@ -1,16 +1,11 @@
 package com.gvstave.mistergift.api.controller;
 
 import com.gvstave.mistergift.api.controller.annotation.UserRestricted;
-import com.gvstave.mistergift.api.response.PageResponse;
-import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.service.command.UserGiftWriterService;
 import com.gvstave.mistergift.data.service.dto.GiftDto;
-import com.gvstave.mistergift.data.service.dto.UserDto;
-import com.gvstave.mistergift.data.service.query.ProductService;
-import com.gvstave.mistergift.data.service.query.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * This is the controller for whishlist requests.

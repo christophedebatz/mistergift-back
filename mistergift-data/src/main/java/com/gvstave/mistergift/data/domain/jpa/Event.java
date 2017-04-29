@@ -2,12 +2,8 @@ package com.gvstave.mistergift.data.domain.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.joda.cfg.JacksonJodaDateFormat;
-import com.gvstave.mistergift.data.configuration.serialization.JacksonDateDeserializer;
-import com.gvstave.mistergift.data.configuration.serialization.JacksonDateSerializer;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 
 import javax.persistence.Column;
@@ -22,10 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(schema = "mistergift", name = "events")
@@ -100,15 +93,11 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
     /** The event start date. */
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonDeserialize(using = JacksonDateDeserializer.class)
-    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date startDate;
 
     /** The event end date. */
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonDeserialize(using = JacksonDateDeserializer.class)
-    @JsonSerialize(using = JacksonDateSerializer.class)
     private Date endDate;
 
     /** The event address. */
@@ -126,13 +115,14 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
     @JoinTable(name = "event_participants",
         joinColumns = { @JoinColumn(name = "event_id", nullable = false, updatable = false) }
     )
-    private List<UserEvent> participants;
+    @JsonManagedReference
+    private Set<UserEventParticipation> participants;
 
     /**
      * Constructor.
      */
     public Event() {
-        this.participants = new ArrayList<>();
+        this.participants = new HashSet<>();
     }
 
     /**
@@ -220,7 +210,7 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
      * @return
      */
     @JsonIgnore
-    public List<UserEvent> getParticipants () {
+    public Set<UserEventParticipation> getParticipants () {
         return participants;
     }
 
@@ -228,7 +218,7 @@ public class Event extends AbstractTimestampableJpaBaseEntity<Long> {
      *
      * @param participants
      */
-    public void setParticipants (List<UserEvent> participants) {
+    public void setParticipants (Set<UserEventParticipation> participants) {
         this.participants = participants;
     }
 

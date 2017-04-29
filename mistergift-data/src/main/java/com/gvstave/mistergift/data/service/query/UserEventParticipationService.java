@@ -3,10 +3,9 @@ package com.gvstave.mistergift.data.service.query;
 import com.gvstave.mistergift.data.domain.jpa.*;
 import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.domain.jpa.UserEvent;
-import com.gvstave.mistergift.data.domain.jpa.UserEventId;
+import com.gvstave.mistergift.data.domain.jpa.UserEventParticipation;
 import com.gvstave.mistergift.data.domain.jpa.EventPersistenceService;
-import com.gvstave.mistergift.data.domain.jpa.UserEventPersistenceService;
+import com.gvstave.mistergift.data.domain.jpa.UserEventParticipationPersistenceService;
 import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import com.gvstave.mistergift.data.utils.Streams;
 import com.querydsl.core.types.Predicate;
@@ -25,11 +24,11 @@ import java.util.stream.Collectors;
  * The user event service.
  */
 @Service
-public class UserEventService {
+public class UserEventParticipationService {
 
     /** The user event repositories service. */
     @Inject
-    private UserEventPersistenceService userEventPersistenceService;
+    private UserEventParticipationPersistenceService userEventParticipationPersistenceService;
 
     /** The user repositories service. */
     @Inject
@@ -55,8 +54,8 @@ public class UserEventService {
             eventStatus = Arrays.asList(filters.replaceAll("\\s+","").split(","));
         } else {
             eventStatus = Arrays.asList(
-                    UserEvent.UserEvenFilter.INVITATION.getFilter(),
-                    UserEvent.UserEvenFilter.ADMIN.getFilter(),
+                    UserEventParticipation.UserEventFilter.INVITATION.getFilter(),
+                    UserEventParticipation.UserEventFilter.ADMIN.getFilter(),
                     Event.EventStatus.CANCELLED.getStatus(),
                     Event.EventStatus.UNPUBLISHED.getStatus(),
                     Event.EventStatus.PUBLISHED.getStatus()
@@ -65,14 +64,14 @@ public class UserEventService {
 
         // user-event relation types
         // pending event / invitation from other participants
-        String pendingFlag = UserEvent.UserEvenFilter.INVITATION.getFilter();
+        String pendingFlag = UserEventParticipation.UserEventFilter.INVITATION.getFilter();
         if (eventStatus.contains(pendingFlag)) {
             List<Event> inviteEvents = getUserInvitationEvents(user, pageable);
             events.put(pendingFlag, inviteEvents);
         }
 
         // event where i'm admin
-        String adminFlag = UserEvent.UserEvenFilter.ADMIN.getFilter();
+        String adminFlag = UserEventParticipation.UserEventFilter.ADMIN.getFilter();
         if (eventStatus.contains(adminFlag)) {
             events.put(adminFlag, getUserAdminEvents(user, pageable));
         }
@@ -116,7 +115,7 @@ public class UserEventService {
         Objects.requireNonNull(user);
         Objects.requireNonNull(status);
 
-        BooleanExpression bUser = QEvent.event.participants.any().id.user.eq(user);
+        BooleanExpression bUser = QEvent.event.participants.any().participant.eq(user);
 
         // if unpublished events requested, only admin user can see them
         if (Event.EventStatus.UNPUBLISHED == status) {
@@ -144,8 +143,8 @@ public class UserEventService {
     private List<Event> getUserInvitationEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
-        QUserEvent anyEvent = QEvent.event.participants.any();
-        Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.invitation.isNotNull());
+        QUserEventParticipation anyEvent = QEvent.event.participants.any();
+        Predicate predicate = anyEvent.participant.eq(user).and(anyEvent.invitation.isNotNull());
 
         if (pageable != null) {
             return eventPersistenceService.findAll(predicate, pageable).getContent();
@@ -165,21 +164,20 @@ public class UserEventService {
     public Page<User> getEventPendingUsers(Event event, Pageable pageable) {
         Objects.requireNonNull(event);
 
-        Predicate predicate = QUserEvent.userEvent.id.event.eq(event)
-            .and(QUserEvent.userEvent.invitation.isNotNull());
+        Predicate predicate = QUserEventParticipation.userEventParticipation.event.eq(event)
+            .and(QUserEventParticipation.userEventParticipation.invitation.isNotNull());
 
-        Page<UserEvent> userEvent;
+        Page<UserEventParticipation> userEvent;
         if (pageable != null) {
-            userEvent = userEventPersistenceService.findAll(predicate, pageable);
+            userEvent = userEventParticipationPersistenceService.findAll(predicate, pageable);
         } else {
-            List<UserEvent> userEvents = Streams.of(userEventPersistenceService.findAll(predicate))
+            List<UserEventParticipation> userEventParticipations = Streams.of(userEventParticipationPersistenceService.findAll(predicate))
                 .collect(Collectors.toList());
-            userEvent = new PageImpl<>(userEvents);
+            userEvent = new PageImpl<>(userEventParticipations);
         }
 
         List<User> pendingUsers = Streams.of(userEvent)
-            .map(UserEvent::getId)
-            .map(UserEventId::getUser)
+            .map(UserEventParticipation::getParticipant)
             .collect(Collectors.toList());
 
         return new PageImpl<>(pendingUsers);
@@ -195,8 +193,8 @@ public class UserEventService {
     private List<Event> getUserAdminEvents(User user, Pageable pageable) {
         Objects.requireNonNull(user);
 
-        QUserEvent anyEvent = QEvent.event.participants.any();
-        Predicate predicate = anyEvent.id.user.eq(user).and(anyEvent.isAdmin.isTrue());
+        QUserEventParticipation anyEvent = QEvent.event.participants.any();
+        Predicate predicate = anyEvent.participant.eq(user).and(anyEvent.isAdmin.isTrue());
 
         if (pageable != null) {
             return eventPersistenceService.findAll(predicate, pageable).getContent();
@@ -217,8 +215,8 @@ public class UserEventService {
         Objects.requireNonNull(event);
         Objects.requireNonNull(pageable);
 
-        QUserEvent qUserEvent = QUserEvent.userEvent;
-        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.invitation.isNull());
+        QUserEventParticipation qUserEvent = QUserEventParticipation.userEventParticipation;
+        Predicate predicate = qUserEvent.event.eq(event).and(qUserEvent.invitation.isNull());
 
         return userPersistenceService.findAll(predicate, pageable);
     }
@@ -235,8 +233,8 @@ public class UserEventService {
         Objects.requireNonNull(event);
         Objects.requireNonNull(pageable);
 
-        QUserEvent qUserEvent = QUser.user.userEvents.any();
-        Predicate predicate = qUserEvent.id.event.eq(event).and(qUserEvent.isAdmin.isTrue());
+        QUserEventParticipation qUserEvent = QUser.user.participations.any();
+        Predicate predicate = qUserEvent.event.eq(event).and(qUserEvent.isAdmin.isTrue());
 
         return userPersistenceService.findAll(predicate, pageable);
     }
@@ -253,11 +251,11 @@ public class UserEventService {
         Objects.requireNonNull(user);
         Objects.requireNonNull(eventId);
 
-        QUserEvent qEvent = QUserEvent.userEvent;
-        BooleanExpression qEventExp = qEvent.id.event.id.eq(eventId)
-            .and(qEvent.id.user.eq(user))
+        QUserEventParticipation qEvent = QUserEventParticipation.userEventParticipation;
+        BooleanExpression qEventExp = qEvent.event.id.eq(eventId)
+            .and(qEvent.participant.eq(user))
             .and(qEvent.isAdmin.isTrue());
 
-        return Optional.ofNullable(userEventPersistenceService.findOne(qEventExp)).isPresent();
+        return Optional.ofNullable(userEventParticipationPersistenceService.findOne(qEventExp)).isPresent();
     }
 }
