@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Exception that is thrown when input data is not valid or incomplete.
  */
-public class ProductNotFoundException extends Exception {
+public class ProductNotFoundException extends RuntimeException {
 
     /**
      * Constructor without details.

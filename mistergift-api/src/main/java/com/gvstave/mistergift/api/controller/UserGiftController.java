@@ -42,8 +42,18 @@ public class UserGiftController extends AbstractController {
                        @PathVariable(value = "userId") Long userId) throws UnauthorizedOperationException, InvalidFieldValueException {
         LOGGER.debug("Updating gift={}", giftDto);
 
+    }
 
-
+    /**
+     * Inserts new product.
+     *
+     * @param giftDto The product.
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(method = RequestMethod.POST)
+    public void insertNewGift(@RequestBody final GiftDto giftDto) {
+        LOGGER.debug("Inserting new gift", giftDto);
+        userGiftWriterService.createNewUserGift(giftDto);
     }
 
 }

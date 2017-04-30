@@ -73,7 +73,6 @@ public class UserGiftWriterService {
             gift.setEvent(giftDto.getEvent());
             gift.setProductId(giftDto.getProductId());
             giftPersistenceService.save(gift);
-
             UserGift userGift = new UserGift();
             userGift.setId(new UserGiftId(user.get(), giftDto.getProductId()));
             userGiftPersistenceService.save(userGift);

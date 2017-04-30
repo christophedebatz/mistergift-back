@@ -128,5 +128,4 @@ public class ProductController extends AbstractController {
         productWriterService.createNewProduct(product);
     }
 
-
 }
