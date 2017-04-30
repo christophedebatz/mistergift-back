@@ -4,6 +4,10 @@ import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.service.dto.EventDto;
 import com.gvstave.mistergift.data.service.dto.ProductDto;
+import com.gvstave.mistergift.service.misc.StringUtils;
+import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
+
+import java.util.Date;
 
 
 public class ProductMapper
@@ -26,5 +30,21 @@ public class ProductMapper
        return product;
     }
 
+    /**
+     *
+     * @param remoteProduct
+     * @return
+     */
+    public static Product unmap(RemoteProduct remoteProduct) {
+        Product product = new Product();
+        product.setReference(remoteProduct.getApiId());
+        product.setSlug(StringUtils.toSlug(remoteProduct.getName()));
+        product.setUrl(remoteProduct.getUrl());
+        product.setDate(new Date());
+        product.setBrand(remoteProduct.getBrand());
+        product.setDescription(remoteProduct.getDescription());
+        product.setName(remoteProduct.getName());
+        return product;
+    }
 
 }

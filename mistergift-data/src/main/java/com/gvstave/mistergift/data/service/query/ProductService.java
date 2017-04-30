@@ -1,13 +1,15 @@
 package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.mongo.Product;
+import com.gvstave.mistergift.data.provider.cdiscount.ProductSupplier;
 import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
+import com.gvstave.mistergift.data.service.dto.mapper.ProductMapper;
+import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.MongoRegexCreator;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The {@link Product} service.
@@ -24,7 +27,10 @@ import java.util.Optional;
 public class ProductService {
 
     /** The max products items. */
-    private static final Integer MAX_PRODUCTS_COUNT = 10;
+    private static final Integer PRODUCT_SEARCH_COUNT = 10;
+
+    @Inject
+    private ProductSupplier productSupplier;
 
     /** The mongo template. */
     @Inject
@@ -64,7 +70,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> getLastProducts(Integer limit, Date since) {
         if (limit == null) {
-            limit = MAX_PRODUCTS_COUNT;
+            limit = PRODUCT_SEARCH_COUNT;
         }
         final Query query = new Query().with(new PageRequest(1, limit, Sort.Direction.DESC));
         if (since != null) {
@@ -92,7 +98,10 @@ public class ProductService {
                         .orOperator(Criteria.where(Product.Fields.NAME.getName()).regex(search)));
         //@formatter:on
         query.addCriteria(criteria);
-        return mongo.find(query, Product.class);
+        final List<Product> products = mongo.find(query, Product.class);
+        products.addAll(fetchNewProducts(products, search));
+
+        return products;
     }
 
     /**
@@ -112,16 +121,53 @@ public class ProductService {
         //@formatter:off
         Criteria criteria = new Criteria();
         Optional.ofNullable(search.getName())
-                .ifPresent(name -> criteria.andOperator(Criteria.where(Product.Fields.NAME.getName()).regex(name)));
+                .ifPresent(name -> {
+                    Criteria cName = Criteria.where(Product.Fields.NAME.getName()).regex(name);
+                    criteria.andOperator(cName);
+                });
         Optional.ofNullable(search.getBrand())
-                .ifPresent(brand -> criteria.andOperator(Criteria.where(Product.Fields.BRAND.getName()).regex(brand)));
+                .ifPresent(brand -> {
+                    Criteria cBrand = Criteria.where(Product.Fields.BRAND.getName()).regex(brand);
+                    criteria.andOperator(cBrand);
+                });
         Optional.ofNullable(search.getDescription())
-                .ifPresent(description -> criteria.andOperator(Criteria.where(Product.Fields.DESCRIPTION.getName()).regex(description)));
+                .ifPresent(description -> {
+                    Criteria cDescription = Criteria.where(Product.Fields.DESCRIPTION.getName()).regex(description);
+                    criteria.andOperator(cDescription);
+                });
         Optional.ofNullable(search.getReference())
-                .ifPresent(reference -> criteria.andOperator(Criteria.where(Product.Fields.REFERENCE.getName()).is(reference)));
+                .ifPresent(reference -> {
+                    Criteria cName = Criteria.where(Product.Fields.REFERENCE.getName()).is(reference);
+                    criteria.andOperator(cName);
+                });
         //@formatter:on
         query.addCriteria(criteria);
-        return mongo.find(query, Product.class);
+        final List<Product> products = mongo.find(query, Product.class);
+        products.addAll(fetchNewProducts(products, search.getName()));
+
+        return products;
+    }
+
+    /**
+     *
+     * @param alreadyPresentProducts
+     * @param search
+     * @return
+     */
+    private List<Product> fetchNewProducts(final List<Product> alreadyPresentProducts, final String search) {
+        if (alreadyPresentProducts.size() < PRODUCT_SEARCH_COUNT) {
+            PageRequest pageRequest = new PageRequest(0, PRODUCT_SEARCH_COUNT - alreadyPresentProducts.size());
+            List<String> productsNames = alreadyPresentProducts.stream().map(Product::getName).collect(Collectors.toList());
+            List<RemoteProduct> remoteProducts = productSupplier.getProducts(search, productsNames, pageRequest);
+
+            //@formatter:off
+            remoteProducts.stream()
+                .map(ProductMapper::unmap)
+                .forEach(mongo::save);
+            //@formatter:on
+        }
+
+        return alreadyPresentProducts;
     }
 
 }

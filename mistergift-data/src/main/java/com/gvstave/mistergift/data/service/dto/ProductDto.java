@@ -44,7 +44,9 @@ public class ProductDto implements Serializable {
 
     /** The date of adding. */
     @JsonProperty
-    private Date date;
+    @JsonDeserialize(using = JacksonDateDeserializer.class)
+    @JsonSerialize(using = JacksonDateSerializer.class)
+    private Date date = new Date();
 
     /** The slug name. */
     @JsonProperty

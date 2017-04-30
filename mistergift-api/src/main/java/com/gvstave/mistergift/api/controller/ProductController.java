@@ -5,16 +5,14 @@ import com.gvstave.mistergift.api.response.PageResponse;
 import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
-import com.gvstave.mistergift.data.provider.cdiscount.Test;
+import com.gvstave.mistergift.data.provider.cdiscount.ProductSupplier;
 import com.gvstave.mistergift.data.service.command.ProductWriterService;
 import com.gvstave.mistergift.data.service.dto.ProductDto;
 import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
 import com.gvstave.mistergift.data.service.query.ProductService;
-import com.querydsl.core.types.Predicate;
+import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +34,13 @@ public class ProductController extends AbstractController {
     @Inject
     private ProductService productService;
 
+    /** The product writer service. */
     @Inject
     private ProductWriterService productWriterService;
 
+    /** The product supplier. */
     @Inject
-    private Test test;
+    private ProductSupplier productSupplier;
 
     /**
      * Default constructor.
@@ -72,13 +72,12 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/search")
-    public PageResponse<Product> search(
+    public PageResponse<RemoteProduct> search(
             @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
             @RequestParam(value = "q") final String query) {
         LOGGER.debug("Searching products with query={}, page={} and limit={}", query, page, limit);
-        test.getProducts(query);
-        return new PageResponse<>(productService.search(query, getPageRequest(page, limit)));
+        return new PageResponse<>(productSupplier.getProducts(query, getPageRequest(page, limit)));
     }
 
     /**
