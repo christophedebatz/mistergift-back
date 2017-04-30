@@ -1,8 +1,6 @@
 package com.gvstave.mistergift.data.service.dto.mapper;
 
-import com.gvstave.mistergift.data.domain.jpa.Gift;
 import com.gvstave.mistergift.data.domain.jpa.User;
-import com.gvstave.mistergift.data.service.dto.GiftDto;
 import com.gvstave.mistergift.data.service.dto.UserDto;
 
 

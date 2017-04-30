@@ -491,3 +491,11 @@ An example of request:
 * **pictureId**: The picture id.
 * **date**: The date of insertion.
 * **url**: The url of the product page (Amazon, Cdiscount, Fnac...).
+
+#### Save a new user gift
+
+> **POST** /me/gifts
+
+* **event**: The event (not used yet).
+* **user**: The user (not used yet, by default it's the current user).
+* **productId**: The product id.

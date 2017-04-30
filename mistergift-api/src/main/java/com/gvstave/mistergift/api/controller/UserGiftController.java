@@ -5,7 +5,7 @@ import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import com.gvstave.mistergift.data.exception.UnauthorizedOperationException;
 import com.gvstave.mistergift.data.service.command.UserGiftWriterService;
-import com.gvstave.mistergift.data.service.dto.GiftDto;
+import com.gvstave.mistergift.data.service.dto.UserGiftDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,6 +25,7 @@ public class UserGiftController extends AbstractController {
     /** The logger. */
     private static Logger LOGGER = LoggerFactory.getLogger(UserGiftController.class);
 
+    /** The user gift persistence writer service. */
     @Inject
     private UserGiftWriterService userGiftWriterService;
 
@@ -35,25 +36,17 @@ public class UserGiftController extends AbstractController {
         super();
     }
 
-    @UserRestricted
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(path = "/user/{userId}/gifts", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public void update(@RequestBody GiftDto giftDto,
-                       @PathVariable(value = "userId") Long userId) throws UnauthorizedOperationException, InvalidFieldValueException {
-        LOGGER.debug("Updating gift={}", giftDto);
-
-    }
 
     /**
      * Inserts new product.
      *
-     * @param giftDto The product.
+     * @param userGiftDto The product.
      */
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @RequestMapping(method = RequestMethod.POST)
-    public void insertNewGift(@RequestBody final GiftDto giftDto) {
-        LOGGER.debug("Inserting new gift", giftDto);
-        userGiftWriterService.createNewUserGift(giftDto);
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/me/gifts", method = RequestMethod.POST)
+    public UserGiftDto insertNewUserGift(@RequestBody final UserGiftDto userGiftDto) {
+        LOGGER.debug("Inserting new gift", userGiftDto);
+        return userGiftWriterService.createNewUserGift(userGiftDto);
     }
 
 }

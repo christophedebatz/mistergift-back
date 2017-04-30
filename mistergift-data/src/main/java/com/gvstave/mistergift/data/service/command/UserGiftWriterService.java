@@ -5,9 +5,8 @@ import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.exception.InvalidFieldValueException;
 import com.gvstave.mistergift.data.exception.ProductNotFoundException;
 import com.gvstave.mistergift.data.service.AuthenticatedUser;
-import com.gvstave.mistergift.data.service.dto.GiftDto;
+import com.gvstave.mistergift.data.service.dto.UserGiftDto;
 import com.gvstave.mistergift.data.service.query.UserService;
-import com.gvstave.mistergift.data.service.query.password.UserNotFoundException;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,45 +35,52 @@ public class UserGiftWriterService {
     private MongoOperations mongoOperations;
 
     /**
+     * Create a new user gift.
      *
-     * @param giftDto
+     * @param userGiftDto The gift dto.
      * @throws InvalidFieldValueException
      * @throws ProductNotFoundException
      */
     @Transactional
-    public void createNewUserGift(GiftDto giftDto) throws InvalidFieldValueException, ProductNotFoundException {
-        if (giftDto.getEvent().getId() == null) {
+    public UserGiftDto createNewUserGift(UserGiftDto userGiftDto) throws InvalidFieldValueException, ProductNotFoundException {
+        if (userGiftDto.getEvent().getId() == null) {
             throw new InvalidFieldValueException("event");
         }
-        if (giftDto.getUser().getId() == null) {
+        if (userGiftDto.getUser().getId() == null) {
             throw new InvalidFieldValueException("user");
         }
-        if (giftDto.getProductId() == null) {
+        if (userGiftDto.getProductId() == null) {
             throw new InvalidFieldValueException("productId");
         }
 
-        Optional<User> user = userService.fromId(giftDto.getUser().getId());
+        Optional<User> user = userService.fromId(userGiftDto.getUser().getId());
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("productId").is(giftDto.getProductId()));
+        query.addCriteria(Criteria.where("productId").is(userGiftDto.getProductId()));
         Product product = mongoOperations.findOne(query, Product.class);
 
         if (product == null) {
-            throw new ProductNotFoundException(giftDto.getProductId());
+            throw new ProductNotFoundException(userGiftDto.getProductId());
         }
 
-        if (giftDto.getUser().getId().equals(AuthenticatedUser.getUserId())) {
+        if (userGiftDto.getUser().getId().equals(AuthenticatedUser.getUserId())) {
             throw new InvalidFieldValueException("userId");
         }
 
         if (user.isPresent()) {
             Gift gift = new Gift();
-            gift.setEvent(giftDto.getEvent());
-            gift.setProductId(giftDto.getProductId());
+            gift.setEvent(userGiftDto.getEvent());
+            gift.setProductId(userGiftDto.getProductId());
             giftPersistenceService.save(gift);
             UserGift userGift = new UserGift();
-            userGift.setId(new UserGiftId(user.get(), giftDto.getProductId()));
+            userGift.setId(new UserGiftId(user.get(), userGiftDto.getProductId()));
             userGiftPersistenceService.save(userGift);
+            UserGiftDto dto = new UserGiftDto();
+            dto.setEvent(userGiftDto.getEvent());
+            dto.setProductId(userGiftDto.getProductId());
+            dto.setUser(user.get());
+            return dto;
         }
+        return null;
     }
 }

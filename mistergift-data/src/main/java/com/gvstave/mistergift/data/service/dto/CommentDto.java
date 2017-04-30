@@ -17,7 +17,7 @@ public class CommentDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private GiftDto gift;
+    private UserGiftDto gift;
 
     private UserDto author;
 
@@ -37,11 +37,11 @@ public class CommentDto implements Serializable {
         // this is for jackson
     }
 
-    public GiftDto getGift() {
+    public UserGiftDto getGift() {
         return gift;
     }
 
-    public void setGift(GiftDto gift) {
+    public void setGift(UserGiftDto gift) {
         this.gift = gift;
     }
 

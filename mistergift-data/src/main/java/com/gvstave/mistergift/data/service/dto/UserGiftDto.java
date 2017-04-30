@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @JsonAutoDetect
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GiftDto implements Serializable {
+public class UserGiftDto implements Serializable {
 
     /** The serial version UUID. */
     private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class GiftDto implements Serializable {
     /**
      * Constructor.
      */
-    public GiftDto() {
+    public UserGiftDto() {
         // this is for jackson
     }
 

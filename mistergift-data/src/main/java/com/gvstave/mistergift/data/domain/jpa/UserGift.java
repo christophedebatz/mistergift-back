@@ -47,4 +47,5 @@ public class UserGift implements BaseEntity<UserGiftId> {
     public void setId (UserGiftId id) {
         this.id = id;
     }
+
 }
