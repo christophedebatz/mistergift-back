@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -100,9 +101,9 @@ public class ProductService {
         //@formatter:on
         query.addCriteria(criteria);
         final List<Product> products = mongo.find(query, Product.class);
-        products.addAll(fetchNewProducts(products, search));
+        products.addAll(fetchNewProducts(products, search, pageable));
 
-        return products.stream().map(ProductMapper::map).collect(Collectors.toList());
+            return products.stream().map(ProductMapper::map).collect(Collectors.toList());
     }
 
     /**
@@ -144,7 +145,7 @@ public class ProductService {
         //@formatter:on
         query.addCriteria(criteria);
         final List<Product> products = mongo.find(query, Product.class);
-        products.addAll(fetchNewProducts(products, search.getName()));
+        products.addAll(fetchNewProducts(products, search.getName(), pageable));
 
         return products.stream().map(ProductMapper::map).collect(Collectors.toList());
     }
@@ -156,24 +157,29 @@ public class ProductService {
      * @param search The input search.
      * @return The new product for this search input.
      */
-    private List<Product> fetchNewProducts(final List<Product> alreadyPresentProducts, final String search) {
-        if (alreadyPresentProducts.size() < PRODUCT_SEARCH_COUNT) {
-            PageRequest pageRequest = new PageRequest(0, PRODUCT_SEARCH_COUNT - alreadyPresentProducts.size());
+    private List<Product> fetchNewProducts(final List<Product> alreadyPresentProducts, final String search, final Pageable pageable) {
+        List<Product> newProducts = new ArrayList<>();
+
+        if (alreadyPresentProducts.size() < pageable.getPageSize()) {
+            PageRequest pageRequest = new PageRequest(0, pageable.getPageSize() - alreadyPresentProducts.size());
 
             //@formatter:off
             List<String> productsNames = alreadyPresentProducts.stream()
                     .map(Product::getName)
                     .collect(Collectors.toList());
 
-            List<RemoteProduct> remoteProducts = productSupplier.getProducts(search, productsNames, pageRequest);
+            List<RemoteProduct> remoteProducts = productSupplier.getRemoteProducts(search, productsNames, pageRequest);
 
             remoteProducts.stream()
                 .map(ProductMapper::unmap)
-                .forEach(mongo::save);
+                .forEach(product -> {
+                    mongo.save(product);
+                    newProducts.add(product);
+                });
             //@formatter:on
         }
 
-        return alreadyPresentProducts;
+        return newProducts;
     }
 
 }

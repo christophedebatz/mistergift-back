@@ -27,7 +27,7 @@ public class ProductSupplier {
      *
      * @return
      */
-    public List<RemoteProduct> getProducts(String search, List<String> names, Pageable pageable) {
+    public List<RemoteProduct> getRemoteProducts(String search, List<String> names, Pageable pageable) {
         CdiscountProductSearchQuery searchQuery = new CdiscountProductSearchQuery();
         CdiscountProductSearchRequest searchRequest = new CdiscountProductSearchRequest(search);
         searchQuery.setSearchRequest(searchRequest);
