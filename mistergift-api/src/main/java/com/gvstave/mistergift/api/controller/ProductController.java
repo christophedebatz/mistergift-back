@@ -9,6 +9,7 @@ import com.gvstave.mistergift.data.provider.cdiscount.ProductSupplier;
 import com.gvstave.mistergift.data.service.command.ProductWriterService;
 import com.gvstave.mistergift.data.service.dto.ProductDto;
 import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
+import com.gvstave.mistergift.data.service.dto.mapper.ProductMapper;
 import com.gvstave.mistergift.data.service.query.ProductService;
 import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
 import org.slf4j.Logger;
@@ -72,12 +73,12 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/search")
-    public PageResponse<RemoteProduct> search(
+    public PageResponse<ProductDto> search(
             @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
             @RequestParam(value = "q") final String query) {
         LOGGER.debug("Searching products with query={}, page={} and limit={}", query, page, limit);
-        return new PageResponse<>(productSupplier.getProducts(query, getPageRequest(page, limit)));
+        return new PageResponse<>(productService.search(query, getPageRequest(page, limit)));
     }
 
     /**
@@ -91,7 +92,7 @@ public class ProductController extends AbstractController {
     @UserRestricted
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, path = "/search/advanced")
-    public PageResponse<Product> searchWith(
+    public PageResponse<ProductDto> searchWith(
             @RequestParam(value = "page", required = false, defaultValue = "1") final Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = "1") final Integer limit,
             @RequestBody final SearchRequestDto search){

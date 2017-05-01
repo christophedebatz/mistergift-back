@@ -2,6 +2,7 @@ package com.gvstave.mistergift.data.service.query;
 
 import com.gvstave.mistergift.data.domain.mongo.Product;
 import com.gvstave.mistergift.data.provider.cdiscount.ProductSupplier;
+import com.gvstave.mistergift.data.service.dto.ProductDto;
 import com.gvstave.mistergift.data.service.dto.SearchRequestDto;
 import com.gvstave.mistergift.data.service.dto.mapper.ProductMapper;
 import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
@@ -90,7 +91,7 @@ public class ProductService {
      * @return The results.
      */
     @Transactional(readOnly = true)
-    public List<Product> search(final String search, final Pageable pageable) {
+    public List<ProductDto> search(final String search, final Pageable pageable) {
         final Query query = new Query().with(pageable);
         //@formatter:off
         Criteria criteria = Criteria.where(Product.Fields.BRAND.getName()).regex(search)
@@ -101,7 +102,7 @@ public class ProductService {
         final List<Product> products = mongo.find(query, Product.class);
         products.addAll(fetchNewProducts(products, search));
 
-        return products;
+        return products.stream().map(ProductMapper::map).collect(Collectors.toList());
     }
 
     /**
@@ -116,7 +117,7 @@ public class ProductService {
      * @return The results.
      */
     @Transactional(readOnly = true)
-    public List<Product> search(final SearchRequestDto search, final Pageable pageable) {
+    public List<ProductDto> search(final SearchRequestDto search, final Pageable pageable) {
         final Query query = new Query().with(pageable);
         //@formatter:off
         Criteria criteria = new Criteria();
@@ -145,22 +146,27 @@ public class ProductService {
         final List<Product> products = mongo.find(query, Product.class);
         products.addAll(fetchNewProducts(products, search.getName()));
 
-        return products;
+        return products.stream().map(ProductMapper::map).collect(Collectors.toList());
     }
 
     /**
+     * Query products providers with an input search and the already present products names.
      *
-     * @param alreadyPresentProducts
-     * @param search
-     * @return
+     * @param alreadyPresentProducts The already present products names.
+     * @param search The input search.
+     * @return The new product for this search input.
      */
     private List<Product> fetchNewProducts(final List<Product> alreadyPresentProducts, final String search) {
         if (alreadyPresentProducts.size() < PRODUCT_SEARCH_COUNT) {
             PageRequest pageRequest = new PageRequest(0, PRODUCT_SEARCH_COUNT - alreadyPresentProducts.size());
-            List<String> productsNames = alreadyPresentProducts.stream().map(Product::getName).collect(Collectors.toList());
-            List<RemoteProduct> remoteProducts = productSupplier.getProducts(search, productsNames, pageRequest);
 
             //@formatter:off
+            List<String> productsNames = alreadyPresentProducts.stream()
+                    .map(Product::getName)
+                    .collect(Collectors.toList());
+
+            List<RemoteProduct> remoteProducts = productSupplier.getProducts(search, productsNames, pageRequest);
+
             remoteProducts.stream()
                 .map(ProductMapper::unmap)
                 .forEach(mongo::save);

@@ -8,6 +8,7 @@ import com.gvstave.mistergift.service.misc.StringUtils;
 import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class ProductMapper
@@ -47,4 +48,22 @@ public class ProductMapper
         return product;
     }
 
+    /**
+     *
+     * @param product
+     * @return
+     */
+    public static ProductDto map(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setName(product.getName());
+        dto.setBrand(product.getBrand());
+        dto.setDescription(product.getDescription());
+        dto.setDate(product.getDate());
+        dto.setUrl(product.getUrl());
+        dto.setId(product.getId());
+        dto.setPictureId(product.getPictureId());
+        dto.setReference(product.getReference());
+        dto.setSlug(product.getSlug());
+        return dto;
+    }
 }
