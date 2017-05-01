@@ -461,7 +461,7 @@ It will search both on brand name, description and name.
 > **GET** /products/search?q=**{ search-input }**[&page=**{ page }**&limit=**{ limit }**]
 
 #### Advanced product search
-You also want an advanced searchRequest with an object passed on the request body and named "searchRequest" which should contains:
+You also want an advanced search with an object passed on the request body and named "search" which should contains:
 * **name**: the name of the product
 * **brand**: the brand of the product
 * **description**: the description@ of the product
