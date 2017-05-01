@@ -455,12 +455,12 @@ The products are the base of the gifts. What's the difference between a product 
 
 > **GET** /products/**{ product-id }**
 
-#### Quick product searchRequest
-It will searchRequest on product brand name, description and name.
+#### Quick product search
+It will search both on brand name, description and name.
 
-> **GET** /products/searchRequest?q=**{ searchRequest }**[&page=**{ page }**&limit=**{ limit }**]
+> **GET** /products/search?q=**{ search-input }**[&page=**{ page }**&limit=**{ limit }**]
 
-#### Advanced product searchRequest
+#### Advanced product search
 You also want an advanced searchRequest with an object passed on the request body and named "searchRequest" which should contains:
 * **name**: the name of the product
 * **brand**: the brand of the product
@@ -469,14 +469,15 @@ You also want an advanced searchRequest with an object passed on the request bod
 
 All these parameters are optional.
 
-> **GET** /products/searchRequest/advanced[?page=**{ page }**&limit=**{ limit }**]
+> **GET** /products/search/advanced[?page=**{ page }**&limit=**{ limit }**]
 
-An example of request:
+An example of advanced body request:
 ```
 {
   "brand": "Sony",
   "name": "PS",
-  "description": "entertainment computer"
+  "description": "entertainment computer",
+  ...
 }
 ```
 
