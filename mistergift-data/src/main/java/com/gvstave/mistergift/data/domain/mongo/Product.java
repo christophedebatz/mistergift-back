@@ -1,6 +1,7 @@
 package com.gvstave.mistergift.data.domain.mongo;
 
 
+import com.gvstave.sdk.Provider;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -55,9 +56,16 @@ public class Product implements Serializable {
     @Field
     private String description;
 
-    /** The product picture. */
+    /** The product picture id. */
     @Field
     private Long pictureId;
+
+    /** The product picture url. */
+    @Field
+    private String pictureUrl;
+
+    @Field
+    private Provider provider;
 
     /** The date of adding. */
     @Field
@@ -185,8 +193,40 @@ public class Product implements Serializable {
      *
      * @return
      */
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    /**
+     *
+     * @param pictureUrl
+     */
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    /**
+     *
+     * @return
+     */
     public Date getDate() {
         return date;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Provider getProvider() {
+        return provider;
+    }
+
+    /**
+     *
+     * @param provider
+     */
+    public void setProvider(Provider provider) {
+        this.provider = provider;
     }
 
     /**

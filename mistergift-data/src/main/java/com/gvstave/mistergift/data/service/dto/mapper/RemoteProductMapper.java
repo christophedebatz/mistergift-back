@@ -1,26 +1,20 @@
 package com.gvstave.mistergift.data.service.dto.mapper;
 
-import com.gvstave.mistergift.data.domain.jpa.GiftComment;
-import com.gvstave.mistergift.data.service.dto.CommentDto;
+import com.gvstave.sdk.Provider;
 import com.gvstave.sdk.cdiscount.api.product.response.CdiscountOfferResponse;
 import com.gvstave.sdk.cdiscount.api.product.response.CdiscountProductResponse;
-import com.gvstave.sdk.cdiscount.api.product.response.CdiscountSearchProductResponse;
-import com.gvstave.sdk.cdiscount.domain.Api;
 import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
-import com.gvstave.sdk.cdiscount.service.Provider;
-
-import java.rmi.Remote;
-import java.util.Optional;
 
 /**
- *
+ * Mapper for products.
  */
 public class RemoteProductMapper
 {
     /**
+     * Maps a product from Cdiscount Response to a {@link RemoteProduct} one.
      *
-     * @param product
-     * @return
+     * @param product The cdiscount product.
+     * @return The remote product.
      */
     public static RemoteProduct mapCdiscount(CdiscountProductResponse product) {
         RemoteProduct remote = new RemoteProduct();

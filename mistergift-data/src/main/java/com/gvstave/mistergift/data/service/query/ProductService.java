@@ -145,7 +145,11 @@ public class ProductService {
         //@formatter:on
         query.addCriteria(criteria);
         final List<Product> products = mongo.find(query, Product.class);
-        products.addAll(fetchNewProducts(products, search.getName(), pageable));
+
+        if (products.size() < pageable.getPageSize()) {
+            Pageable newRequest = new PageRequest(0, pageable.getPageSize() - products.size());
+            fetchNewProducts(products, search.getName(), newRequest);
+        }
 
         return products.stream().map(ProductMapper::map).collect(Collectors.toList());
     }
@@ -160,24 +164,20 @@ public class ProductService {
     private List<Product> fetchNewProducts(final List<Product> alreadyPresentProducts, final String search, final Pageable pageable) {
         List<Product> newProducts = new ArrayList<>();
 
-        if (alreadyPresentProducts.size() < pageable.getPageSize()) {
-            PageRequest pageRequest = new PageRequest(0, pageable.getPageSize() - alreadyPresentProducts.size());
+        //@formatter:off
+        List<String> productsNames = alreadyPresentProducts.stream()
+                .map(Product::getName)
+                .collect(Collectors.toList());
 
-            //@formatter:off
-            List<String> productsNames = alreadyPresentProducts.stream()
-                    .map(Product::getName)
-                    .collect(Collectors.toList());
+        List<RemoteProduct> remoteProducts = productSupplier.getRemoteProducts(search, productsNames, pageable);
 
-            List<RemoteProduct> remoteProducts = productSupplier.getRemoteProducts(search, productsNames, pageRequest);
-
-            remoteProducts.stream()
-                .map(ProductMapper::unmap)
-                .forEach(product -> {
-                    mongo.save(product);
-                    newProducts.add(product);
-                });
-            //@formatter:on
-        }
+        remoteProducts.stream()
+            .map(ProductMapper::unmap)
+            .forEach(product -> {
+                mongo.save(product);
+                newProducts.add(product);
+            });
+        //@formatter:on
 
         return newProducts;
     }

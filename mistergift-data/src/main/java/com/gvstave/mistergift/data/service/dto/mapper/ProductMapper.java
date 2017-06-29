@@ -1,21 +1,23 @@
 package com.gvstave.mistergift.data.service.dto.mapper;
 
-import com.gvstave.mistergift.data.domain.jpa.Event;
 import com.gvstave.mistergift.data.domain.mongo.Product;
-import com.gvstave.mistergift.data.service.dto.EventDto;
 import com.gvstave.mistergift.data.service.dto.ProductDto;
 import com.gvstave.mistergift.service.misc.StringUtils;
 import com.gvstave.sdk.cdiscount.domain.RemoteProduct;
 
 import java.util.Date;
-import java.util.List;
 
 
+/**
+ * Mapper for product.
+ */
 public class ProductMapper
 {
+
     /**
+     * Maps from product dto into regular product one.
      *
-     * @return
+     * @return The product.
      */
     public static Product unmap(ProductDto dto) {
        Product product = new Product();
@@ -32,26 +34,30 @@ public class ProductMapper
     }
 
     /**
+     * Maps from remote product into regular one.
      *
-     * @param remoteProduct
-     * @return
+     * @param remoteProduct The remote product.
+     * @return The product.
      */
     public static Product unmap(RemoteProduct remoteProduct) {
         Product product = new Product();
         product.setReference(remoteProduct.getApiId());
         product.setSlug(StringUtils.toSlug(remoteProduct.getName()));
         product.setUrl(remoteProduct.getUrl());
+        product.setPictureUrl(remoteProduct.getPictureUrl());
         product.setDate(new Date());
         product.setBrand(remoteProduct.getBrand());
         product.setDescription(remoteProduct.getDescription());
         product.setName(remoteProduct.getName());
+        product.setProvider(remoteProduct.getProvider());
         return product;
     }
 
     /**
+     * Maps from regular product into its dto.
      *
-     * @param product
-     * @return
+     * @param product The regular product.
+     * @return The dto product.
      */
     public static ProductDto map(Product product) {
         ProductDto dto = new ProductDto();
@@ -66,4 +72,5 @@ public class ProductMapper
         dto.setSlug(product.getSlug());
         return dto;
     }
+
 }
