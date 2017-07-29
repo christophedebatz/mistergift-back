@@ -31,6 +31,7 @@ public class ProductService {
     /** The max products items. */
     private static final Integer PRODUCT_SEARCH_COUNT = 10;
 
+    /** The product supplier. */
     @Inject
     private ProductSupplier productSupplier;
 

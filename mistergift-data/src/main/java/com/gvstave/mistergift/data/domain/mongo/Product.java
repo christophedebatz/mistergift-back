@@ -15,6 +15,7 @@ import java.util.Date;
 @Document(collection = "products")
 public class Product implements Serializable {
 
+    /** The fields of products document. */
     public enum Fields {
         ID("id"),
         NAME("name"),
@@ -64,6 +65,7 @@ public class Product implements Serializable {
     @Field
     private String pictureUrl;
 
+    /** The provider. */
     @Field
     private Provider provider;
 
@@ -75,6 +77,7 @@ public class Product implements Serializable {
     @Field
     private String slug;
 
+    /** The url. */
     @Field
     private String url;
 

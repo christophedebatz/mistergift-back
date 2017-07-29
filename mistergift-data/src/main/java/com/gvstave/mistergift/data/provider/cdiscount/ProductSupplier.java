@@ -15,23 +15,32 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *
+ */
 @Service
 public class ProductSupplier {
 
     private static final int PRODUCTS_PER_PAGE = 5;
 
+    /** The Cdiscount connector. */
     @Inject
     private CdiscountConnector<CdiscountSearchProductResponse> connector;
 
     /**
+     * Returns the remote products.
      *
-     * @return
+     * @param search The product search.
+     * @param names The names.
+     * @param pageable The pageable.
+     * @return The list of remote products.
      */
     public List<RemoteProduct> getRemoteProducts(String search, List<String> names, Pageable pageable) {
         CdiscountProductSearchQuery searchQuery = new CdiscountProductSearchQuery();
         CdiscountProductSearchRequest searchRequest = new CdiscountProductSearchRequest(search);
         searchQuery.setSearchRequest(searchRequest);
         CdiscountSearchProductResponse fetch = connector.fetch(Connector.CdiscountQueryType.Search, searchQuery);
+
 
         //@formatter:off
         if (fetch.getError() == null && fetch.getItemCount() != null && fetch.getItemCount() > 0) {
@@ -46,4 +55,5 @@ public class ProductSupplier {
 
         return null;
     }
+
 }
