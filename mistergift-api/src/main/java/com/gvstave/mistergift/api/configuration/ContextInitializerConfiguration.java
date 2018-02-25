@@ -21,7 +21,6 @@ import java.util.List;
  * The Spring context initializer.
  */
 @Configuration
-@EnableWebMvc
 public class ContextInitializerConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextInitializer<ConfigurableWebApplicationContext> {
 
     /**

@@ -8,6 +8,7 @@ import com.gvstave.mistergift.data.domain.jpa.UserPersistenceService;
 import com.gvstave.mistergift.data.service.query.UserService;
 import com.gvstave.mistergift.data.service.command.UserWriterService;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +40,7 @@ import java.util.Date;
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     /** The user repositories service. */
-    @Inject
+    @Autowired
     private UserService userService;
 
     /** The user writer service. */

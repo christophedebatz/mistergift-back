@@ -23,9 +23,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.inject.Inject;
 
-/**
- * .
- */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)

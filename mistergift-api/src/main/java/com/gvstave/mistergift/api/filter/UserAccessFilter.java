@@ -6,6 +6,7 @@ import com.gvstave.mistergift.api.response.Response;
 import com.gvstave.mistergift.data.service.access.UserAccessService;
 import com.gvstave.mistergift.data.exception.TooManyRequestException;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ import java.util.Objects;
 /**
  * This filter checks all client request.
  */
-@Service
+@Component
 public class UserAccessFilter implements Filter {
 
     /**
